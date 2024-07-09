@@ -59,10 +59,17 @@ class Carrot{
     }
 
     show_contact(){
+        var html='';
+        html+='<div>I offer development services for Unity3D applications and games across various platforms. Additionally, I can develop web apps and web games. I am available for participation in large projects. Feel free to contact me via email:</div>';
+        html+='<ul class="text-left mt-3">';
+        html+="<li>Phone:<a href='tel:'>0978651577</a></li>";
+        html+="<li>Mail:<a href='mailto:tranthienthanh93@gmail.com'>tranthienthanh93@gmail.com</a></li>";
+        html+='</ul>';
+
         Swal.fire({
             title:"Contacts",
             icon:"info",
-            text:"call me:0978651577"+" mail:tranthienthanh93@gmail.com",
+            html:html,
             iconColor: cr.color_btn,
             confirmButtonColor: cr.color_btn
         })
