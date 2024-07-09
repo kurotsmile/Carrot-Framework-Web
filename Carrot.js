@@ -62,7 +62,9 @@ class Carrot{
         Swal.fire({
             title:"Contacts",
             icon:"info",
-            text:"call me:0978651577"
+            text:"call me:0978651577",
+            iconColor: cr.color_btn,
+            confirmButtonColor: cr.color_btn
         })
     }
 }
