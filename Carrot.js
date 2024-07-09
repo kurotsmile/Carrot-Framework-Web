@@ -11,7 +11,11 @@ class Carrot{
                 if(obj_call!=null) window[obj_call][func_call]();
             })
             .fail(function(jqxhr, settings, exception) {
-                console.log("Script loading failed: " + exception);
+                Swal.fire({
+                    title:"Error",
+                    icon:"error",
+                    text:"Script loading failed: " + exception
+                })
             });
         }
     }
@@ -55,7 +59,11 @@ class Carrot{
     }
 
     show_contact(){
-
+        Swal.fire({
+            title:"Contacts",
+            icon:"info",
+            text:"call me:0978651577"
+        })
     }
 }
 var cr=new Carrot();
