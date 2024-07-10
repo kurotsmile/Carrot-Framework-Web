@@ -75,14 +75,17 @@ class Carrot{
         })
     }
 
-    show_pay(){
+    show_pay(name_item='Test item',tip='Please start paying to use the corresponding function',price_item='2.00'){
         Swal.fire({
             title: 'Order Item',
             html: `
+              ${name_item} <br/><br/>
+              <b style="color:${this.color_btn}"><i class="fas fa-dollar-sign"></i> ${price_item}</b> USD  <br/><br/>
+              ${tip}
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_xclick">
                 <input type="hidden" name="business" value="tranthienthanh93@gmail.com">
-                <input type="hidden" name="item_name" value="Sample Item">
+                <input type="hidden" name="item_name" value="Song">
                 <input type="hidden" name="amount" value="2.00">
                 <input type="hidden" name="currency_code" value="USD">
                 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
