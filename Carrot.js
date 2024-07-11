@@ -3,6 +3,19 @@ class Carrot{
     lang="en";
     color_btn="#fa1675";
 
+    site_name="Site Name";
+    site_url="https://carrotstore.web.app";
+    email1="tranthienthanh93@gmail.com";
+    email2="kurotsmile@gmail.com";
+    link_twitte="https://twitter.com/carrotstore1";
+    link_pinterest="https://br.pinterest.com/tranrot93";
+    link_linkedin="https://www.linkedin.com/in/tranthienthanh";
+    link_fb="https://www.facebook.com/kurotsmile";
+
+    addHandlebars(){
+        $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
+    }
+
     loadJs(path_js, obj_call, func_call = "show") {
         if(window[obj_call]!=null){
             window[obj_call][func_call]();
@@ -98,7 +111,23 @@ class Carrot{
     }
 
     show_pp(emp_contain,act_done=null){
-        this.laodHtml(emp_contain,"Carrot-Framework-Web/privacy_policy/"+this.lang+".html",act_done);
+        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=3", function(data) {
+            var template = Handlebars.compile(data);
+            var html = template({
+                site_name: cr.site_name,
+                site_url:cr.site_url,
+                email1:cr.email1,
+                email2:cr.email2,
+                link_fb:cr.link_fb,
+                link_linkedin:cr.link_linkedin,
+                link_pinterest:cr.link_pinterest,
+                link_twitte:cr.link_twitte
+            });
+            $(emp_contain).html(html);
+            if(act_done!=null) act_done();
+        });
+
+        //this.laodHtml(emp_contain,"Carrot-Framework-Web/privacy_policy/"+this.lang+".html",act_done);
     }
 
     laodHtml(emp_contain,url_file,act_done=null,act_fail=null){
