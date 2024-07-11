@@ -92,6 +92,9 @@ class Carrot{
         if(this.email1!="") html+="<li>Mail:<a href='mailto:"+this.email1+"'>"+this.email1+"</a></li>";
         if(this.email2!="") html+="<li>Mail:<a href='mailto:"+this.email2+"'>"+this.email2+"</a></li>";
         if(this.link_fb!="") html+="<li>Facebook:<a href='"+this.link_fb+"' target='_blank'>"+this.link_fb+"</a></li>";
+        if(this.link_linkedin!="") html+="<li>Linkedin:<a href='"+this.link_linkedin+"' target='_blank'>"+this.link_linkedin+"</a></li>";
+        if(this.link_pinterest!="") html+="<li>Pinterest:<a href='"+this.link_pinterest+"' target='_blank'>"+this.link_pinterest+"</a></li>";
+        if(this.link_twitte!="") html+="<li>X:<a href='"+this.link_twitte+"' target='_blank'>"+this.link_twitte+"</a></li>";
 
         html+='</ul>';
 
@@ -100,7 +103,7 @@ class Carrot{
             icon:"info",
             html:html,
             iconColor: cr.color_btn,
-            confirmButtonColor: cr.color_btn
+            confirmButtonColor: cr.color_btn,
         })
     }
 
@@ -178,6 +181,26 @@ class Carrot{
             }
         }
         return false;
+    }
+
+    showSearch(act_done=null){
+        Swal.fire({
+            title:"Search",
+            input: "text",
+            inputLabel:"Search Content",
+            confirmButtonColor: cr.color_btn,
+            preConfirm:(val)=>{
+                if(val.trim()==""){
+                    Swal.fire({
+                        icon:"error",
+                        text:"Search keywords cannot be empty!",
+                        confirmButtonColor: cr.color_btn
+                    });
+                }else{
+                    if(act_done!=null) act_done(val);
+                }             
+            }
+        });
     }
 }
 var cr=new Carrot();
