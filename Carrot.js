@@ -41,6 +41,10 @@ class Carrot{
         }
     }
 
+    setColor(color){
+        cr.color_btn=color;
+    }
+
     set_color_btn(color){
         cr.color_btn=color;
     }
