@@ -53,7 +53,7 @@ class Carrot{
             if(result.isConfirmed){
                 cr.lang=$("#dropdown_lang").val();
                 localStorage.setItem("lang",cr.lang);
-                if(act_done!=null) act_done();
+                if(act_done!=null) act_done({"lang":cr.lang});
             }
         });
     }
