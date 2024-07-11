@@ -14,7 +14,7 @@ zh - Chinese
 hr - Croatian
 cs - Czech
 da - Danish
-nl - Dutch
+nl- Dutch
 en - English
 et - Estonian
 fi - Finnish
