@@ -21,6 +21,10 @@ class Carrot{
         this.site_name=name;
     }
 
+    setSiteUrl(url){
+        this.site_url=url;
+    }
+
     addHandlebars(){
         if(window['Handlebars']==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
     }
@@ -129,24 +133,44 @@ class Carrot{
           });
     }
 
-    show_pp(emp_contain,act_done=null){
-        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12", function(data) {
-            var template = Handlebars.compile(data);
-            var html = template({
-                site_name: cr.site_name,
-                site_url:cr.site_url,
-                email1:cr.email1,
-                email2:cr.email2,
-                link_fb:cr.link_fb,
-                link_linkedin:cr.link_linkedin,
-                link_pinterest:cr.link_pinterest,
-                link_twitte:cr.link_twitte
-            });
-            $(emp_contain).html(html);
+    show_pp(emp_contain,act_done=null,act_fail=null){
+        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12")
+        .done(function(data) {
+            $(emp_contain).html(cr.getDataTemplate(data));
             if(act_done!=null) act_done();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log('Failed to load data:', textStatus, errorThrown);
+            alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+            if(act_fail!=null) act_fail();
         });
+    }
 
-        //this.laodHtml(emp_contain,"Carrot-Framework-Web/privacy_policy/"+this.lang+".html",act_done);
+    getDataTemplate(data){
+        var template = Handlebars.compile(data);
+        var html = template({
+            site_name: cr.site_name,
+            site_url:cr.site_url,
+            email1:cr.email1,
+            email2:cr.email2,
+            link_fb:cr.link_fb,
+            link_linkedin:cr.link_linkedin,
+            link_pinterest:cr.link_pinterest,
+            link_twitte:cr.link_twitte,
+            contact_phone:cr.contact_phone
+        });
+        return html;
+    }
+
+    show_tos(emp_contain,act_done=null,act_fail=null){
+        $.get("Carrot-Framework-Web/terms_of_service/"+this.lang+".html?a=12")
+        .done(function(data) {
+            $(emp_contain).html(cr.getDataTemplate(data));
+            if(act_done!=null) act_done();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log('Failed to load data:', textStatus, errorThrown);
+            alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+            if(act_fail!=null) act_fail();
+        });
     }
 
     laodHtml(emp_contain,url_file,act_done=null,act_fail=null){
