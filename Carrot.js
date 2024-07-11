@@ -11,6 +11,7 @@ class Carrot{
     link_pinterest="https://br.pinterest.com/tranrot93";
     link_linkedin="https://www.linkedin.com/in/tranthienthanh";
     link_fb="https://www.facebook.com/kurotsmile";
+    contact_phone="+840978651577";
 
     onLoad(){
         this.addHandlebars();
@@ -87,8 +88,11 @@ class Carrot{
         var html='';
         html+='<div>I offer development services for Unity3D applications and games across various platforms. Additionally, I can develop web apps and web games. I am available for participation in large projects. Feel free to contact me via email:</div>';
         html+='<ul class="text-left mt-3">';
-        html+="<li>Phone:<a href='tel:'>0978651577</a></li>";
-        html+="<li>Mail:<a href='mailto:tranthienthanh93@gmail.com'>tranthienthanh93@gmail.com</a></li>";
+        if(this.contact_phone!="") html+="<li>Phone:<a href='tel:"+this.contact_phone+"'>"+this.contact_phone+"</a></li>";
+        if(this.email1!="") html+="<li>Mail:<a href='mailto:"+this.email1+"'>"+this.email1+"</a></li>";
+        if(this.email2!="") html+="<li>Mail:<a href='mailto:"+this.email2+"'>"+this.email2+"</a></li>";
+        if(this.link_fb!="") html+="<li>Facebook:<a href='"+this.link_fb+"' target='_blank'>"+this.link_fb+"</a></li>";
+
         html+='</ul>';
 
         Swal.fire({
@@ -110,8 +114,8 @@ class Carrot{
               <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                 <input type="hidden" name="cmd" value="_xclick">
                 <input type="hidden" name="business" value="tranthienthanh93@gmail.com">
-                <input type="hidden" name="item_name" value="Song">
-                <input type="hidden" name="amount" value="2.00">
+                <input type="hidden" name="item_name" value="${name_item}">
+                <input type="hidden" name="amount" value="${price_item}">
                 <input type="hidden" name="currency_code" value="USD">
                 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                 <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
