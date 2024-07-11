@@ -12,8 +12,12 @@ class Carrot{
     link_linkedin="https://www.linkedin.com/in/tranthienthanh";
     link_fb="https://www.facebook.com/kurotsmile";
 
+    setSiteName(name){
+        this.site_name=name;
+    }
+
     addHandlebars(){
-        $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
+        if(Handlebars==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
     }
 
     loadJs(path_js, obj_call, func_call = "show") {
@@ -111,7 +115,7 @@ class Carrot{
     }
 
     show_pp(emp_contain,act_done=null){
-        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=3", function(data) {
+        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12", function(data) {
             var template = Handlebars.compile(data);
             var html = template({
                 site_name: cr.site_name,
