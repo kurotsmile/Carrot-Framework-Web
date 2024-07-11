@@ -12,12 +12,16 @@ class Carrot{
     link_linkedin="https://www.linkedin.com/in/tranthienthanh";
     link_fb="https://www.facebook.com/kurotsmile";
 
+    onLoad(){
+        this.addHandlebars();
+    }
+
     setSiteName(name){
         this.site_name=name;
     }
 
     addHandlebars(){
-        if(Handlebars==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
+        if(window['Handlebars']==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
     }
 
     loadJs(path_js, obj_call, func_call = "show") {
