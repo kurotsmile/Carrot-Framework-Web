@@ -143,5 +143,29 @@ class Carrot{
             }
         });
     }
+
+    top(act_start=null,act_done=null){
+        $('html, body').animate({ scrollTop: 0 }, 800, function() {
+            if(act_start!=null) act_start();
+            setTimeout(function() {
+                if(act_done!=null) act_done();
+            }, 1000);
+        });
+    }
+
+    arg(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        var sParameterName;
+    
+        for (var i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+            
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    }
 }
 var cr=new Carrot();
