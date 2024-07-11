@@ -96,5 +96,19 @@ class Carrot{
             confirmButtonColor: cr.color_btn
           });
     }
+
+    show_pp(emp_contain,act_done=null){
+        this.laodHtml(emp_contain,"Carrot-Framework-Web/privacy_policy/"+this.lang+".html",act_done);
+    }
+
+    laodHtml(emp_contain,url_file,act_done=null,act_fail=null){
+        $(emp_contain).load(url_file, function(response, status, xhr) {
+            if (status == "success") {
+                if(act_done!=null) act_done();
+            } else if (status == "error") {
+                if(act_fail!=null) act_fail();
+            }
+        });
+    }
 }
 var cr=new Carrot();
