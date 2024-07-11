@@ -14,6 +14,7 @@ class Carrot{
     contact_phone="+840978651577";
 
     onLoad(){
+        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/style.css">');
         this.addHandlebars();
     }
 
@@ -111,7 +112,31 @@ class Carrot{
         })
     }
 
+    addOrder(){
+        var itemShopCard=$(`
+                <div id='cr_order'>
+                    <div>
+                        <i class="fas fa-hourglass-end fa-spin"></i>
+                        Please click here if you have already paid
+                    </div>
+                    <button class="btn btn-sm btn-dark" id="cr_order_close"><i class="fas fa-window-close"></i><button>
+                </div>
+            `);
+        $(itemShopCard).find("#cr_order_close").click(function (e) {
+            $("#cr_order").remove();
+            return false;
+        });
+
+        $(itemShopCard).click(function(){
+            Swal.fire({
+                text:"sdsd"
+            });
+        });
+        $("body").append(itemShopCard);
+    }
+
     show_pay(name_item='Test item',tip='Please start paying to use the corresponding function',price_item='2.00'){
+        this.addOrder();
         Swal.fire({
             title: 'Order Item',
             html: `
