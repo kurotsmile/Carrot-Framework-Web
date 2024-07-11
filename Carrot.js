@@ -67,7 +67,7 @@ class Carrot{
             didOpen:()=>{
                 $.getJSON('https://raw.githubusercontent.com/kurotsmile/Database-Store-Json/main/lang.json', function(data) {
                     $.each(data.all_item,function(index,lang){
-                        if(lang.key==m.lang)
+                        if(lang.key==cr.lang)
                             $("#dropdown_lang").append($('<option>', { value: lang.key,text : lang.name,selected:true}));
                         else
                             $("#dropdown_lang").append($('<option>', { value: lang.key,text : lang.name}));
