@@ -134,15 +134,10 @@ class Carrot{
     }
 
     show_pp(emp_contain,act_done=null,act_fail=null){
-        $.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12")
-        .done(function(data) {
+        this.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12",(data)=>{
             $(emp_contain).html(cr.getDataTemplate(data));
             if(act_done!=null) act_done();
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log('Failed to load data:', textStatus, errorThrown);
-            alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
-            if(act_fail!=null) act_fail();
-        });
+        },act_fail);
     }
 
     getDataTemplate(data){
@@ -162,26 +157,27 @@ class Carrot{
     }
 
     show_tos(emp_contain,act_done=null,act_fail=null){
-        $.get("Carrot-Framework-Web/terms_of_service/"+this.lang+".html?a=12")
-        .done(function(data) {
+        this.get("Carrot-Framework-Web/terms_of_service/"+this.lang+".html?a=12",(data)=>{
             $(emp_contain).html(cr.getDataTemplate(data));
             if(act_done!=null) act_done();
+        },act_fail);
+    }
+
+    get(url,act_done=null,act_fail=null){
+        $.get(url)
+        .done(function(data) {
+            if(act_done!=null) act_done(data);
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log('Failed to load data:', textStatus, errorThrown);
-            alert('Không thể tải dữ liệu. Vui lòng thử lại sau.');
+            Swal.fire({
+                icon:"error",
+                title:"Error",
+                text:"Unable to download data from ("+url+"). Please try again later!",
+                confirmButtonColor: cr.color_btn
+            });
             if(act_fail!=null) act_fail();
         });
     }
 
-    laodHtml(emp_contain,url_file,act_done=null,act_fail=null){
-        $(emp_contain).load(url_file, function(response, status, xhr) {
-            if (status == "success") {
-                if(act_done!=null) act_done();
-            } else if (status == "error") {
-                if(act_fail!=null) act_fail();
-            }
-        });
-    }
 
     top(act_start=null,act_done=null){
         $('html, body').animate({ scrollTop: 0 }, 800, function() {
