@@ -1,6 +1,6 @@
 #cr_order{
     width: 250px;
-    height: 70px;
+    height: 50px;
     position: fixed;
     right: 20px;
     bottom: 20px;
@@ -8,5 +8,24 @@
     z-index: 3000;
     border-radius: 8px;
     color: white;
-    font-size: 9px;
+    font-size: 10px;
+}
+#cr_order #cr_order_close{
+    position: absolute;
+    top: 9px;
+    right: 9px;
+}
+
+#cr_order #cr_order_icon{
+    position: absolute;
+    left: 21px;
+    top: 14px;
+    font-size: 20px;
+}
+
+#cr_order #cr_order_body{
+    position: absolute;
+    top: 10px;
+    left: 57px;
+    right: 46px;
 }

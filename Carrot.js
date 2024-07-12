@@ -112,14 +112,22 @@ class Carrot{
         })
     }
 
+    showConfimOrder(){
+        Swal.fire({
+            title:'Confirm purchase',
+            html:'Enter the confirmation code we sent to your email!',
+            confirmButtonColor: cr.color_btn
+        });
+    }
+
     addOrder(){
         var itemShopCard=$(`
                 <div id='cr_order'>
-                    <div>
-                        <i class="fas fa-hourglass-end fa-spin"></i>
+                    <i class="fas fa-hourglass-end fa-spin" id="cr_order_icon"></i>
+                    <div id='cr_order_body'>    
                         Please click here if you have already paid
                     </div>
-                    <button class="btn btn-sm btn-dark" id="cr_order_close"><i class="fas fa-window-close"></i><button>
+                    <button class="btn btn-sm btn-dark" id="cr_order_close"><i class="fas fa-window-close"></i></button>
                 </div>
             `);
         $(itemShopCard).find("#cr_order_close").click(function (e) {
@@ -128,9 +136,7 @@ class Carrot{
         });
 
         $(itemShopCard).click(function(){
-            Swal.fire({
-                text:"sdsd"
-            });
+            cr.showConfimOrder();
         });
         $("body").append(itemShopCard);
     }
