@@ -259,7 +259,7 @@ class Carrot{
 
 
     top(act_start=null,act_done=null){
-        $('html, body').animate({ scrollTop: 0 }, 800, function() {
+        $('html, body').animate({ scrollTop: 0 }, "slow", function() {
             if(act_start!=null) act_start();
             setTimeout(function() {
                 if(act_done!=null) act_done();
