@@ -19,6 +19,8 @@ class Carrot{
 
     dev=false;
 
+    act_done_pay=null;
+
     onLoad(){
         if(localStorage.getItem("dev")!=null){
             if(localStorage.getItem("dev")=="1") this.dev=true;
@@ -166,6 +168,8 @@ class Carrot{
                             window.open(cr.data_order_cr.val, '_blank').focus();
                         else
                             localStorage.setItem(cr.data_order_cr.type,cr.data_order_cr.val);
+                        
+                        if(cr.act_done_pay!=null) cr.act_done_pay(cr.data_order_cr);
                         cr.deleteOrder();
                     },2000);
                 }else{
