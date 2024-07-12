@@ -15,6 +15,8 @@ class Carrot{
 
     data_order_cr=null;
 
+    ver="0.1";
+
     onLoad(){
         $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/style.css">');
         this.addHandlebars();
@@ -213,7 +215,7 @@ class Carrot{
     }
 
     show_pp(emp_contain,act_done=null,act_fail=null){
-        this.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?a=12",(data)=>{
+        this.get("Carrot-Framework-Web/privacy_policy/"+this.lang+".html?v="+this.ver,(data)=>{
             $(emp_contain).html(cr.getDataTemplate(data));
             if(act_done!=null) act_done();
         },act_fail);
@@ -236,7 +238,7 @@ class Carrot{
     }
 
     show_tos(emp_contain,act_done=null,act_fail=null){
-        this.get("Carrot-Framework-Web/terms_of_service/"+this.lang+".html?a=12",(data)=>{
+        this.get("Carrot-Framework-Web/terms_of_service/"+this.lang+".html?v="+this.ver,(data)=>{
             $(emp_contain).html(cr.getDataTemplate(data));
             if(act_done!=null) act_done();
         },act_fail);
