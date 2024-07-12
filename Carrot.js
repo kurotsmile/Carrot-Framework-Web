@@ -34,6 +34,10 @@ class Carrot{
         this.site_url=url;
     }
 
+    setVer(ver){
+        this.ver=ver;
+    }
+
     addHandlebars(){
         if(window['Handlebars']==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
     }
