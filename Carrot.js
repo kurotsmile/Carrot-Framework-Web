@@ -112,13 +112,40 @@ class Carrot{
         })
     }
 
+    createCodeOrder(){
+        const month = ["Rose", "Tulip", "Daisy", "Sunflower", "Lily", "Orchid", "Lavender", "Marigold", "Jasmine", "Chrysanthemum", "Poppy", "Peony"];
+        const d = new Date();
+        let name = month[d.getMonth()]+"-"+d.getFullYear();
+        return name;
+    }
+
     showConfimOrder(){
         var html='Enter the confirmation code we sent to your email!';
-        html+='<input class="form-control mt-2"/>'
+        html+='<input class="form-control mt-2" id="codeConfimOrder"/>'
         Swal.fire({
             title:'Confirm purchase',
             html:html,
             confirmButtonColor: cr.color_btn
+        }).then((result)=>{
+            if(result.isConfirmed){
+                var codeConfimOrder=$("#codeConfimOrder").val();
+                if(codeConfimOrder==cr.createCodeOrder()){
+                    Swal.fire({
+                        icon:"success",
+                        title:"Confirm purchase",
+                        text:'Successful order confirmation!\n You can use the purchased products!',
+                        confirmButtonColor: cr.color_btn
+                    });
+                    $("#cr_order").remove();
+                }else{
+                    Swal.fire({
+                        icon:"error",
+                        title:"Confirm purchase",
+                        text:'The order verification code is incorrect, please check your email!',
+                        confirmButtonColor: cr.color_btn
+                    });
+                }
+            }
         });
     }
 
