@@ -32,6 +32,7 @@ class Carrot{
             this.data_order_cr=JSON.parse(localStorage.getItem("data_order_cr"));
             this.addOrder(this.data_order_cr);
         }
+        this.loadJs("Carrot-Framework-Web/cr_db_json.js");
     }
 
     setSiteName(name){
