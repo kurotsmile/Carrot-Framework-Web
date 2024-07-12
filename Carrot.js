@@ -61,7 +61,7 @@ class Carrot{
         cr.color_btn=color;
     }
 
-    show_setting(act_done=null){
+    show_setting(act_done=null,html_extension=''){
         var html='';
         html+='<form>';
         html+='<div class="form-group">';
@@ -70,6 +70,7 @@ class Carrot{
             html+='<small id="emailHelp" class="form-text text-muted">Select your country and language</small>';
         html+='</div>';
         html+='</form>';
+        html+=html_extension;
         Swal.fire({
             title:"Setting",
             html:html,
