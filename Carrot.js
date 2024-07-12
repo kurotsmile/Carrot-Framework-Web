@@ -113,16 +113,18 @@ class Carrot{
     }
 
     showConfimOrder(){
+        var html='Enter the confirmation code we sent to your email!';
+        html+='<input class="form-control mt-2"/>'
         Swal.fire({
             title:'Confirm purchase',
-            html:'Enter the confirmation code we sent to your email!',
+            html:html,
             confirmButtonColor: cr.color_btn
         });
     }
 
     addOrder(){
         var itemShopCard=$(`
-                <div id='cr_order'>
+                <div id='cr_order' role="button">
                     <i class="fas fa-hourglass-end fa-spin" id="cr_order_icon"></i>
                     <div id='cr_order_body'>    
                         Please click here if you have already paid

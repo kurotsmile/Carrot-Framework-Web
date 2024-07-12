@@ -2,14 +2,16 @@
     width: 250px;
     height: 50px;
     position: fixed;
-    right: 20px;
-    bottom: 20px;
+    left: 50%;
+    bottom: 10px;
     background-color: black;
     z-index: 3000;
     border-radius: 8px;
     color: white;
     font-size: 10px;
+    transform: translateX(-50%);
 }
+
 #cr_order #cr_order_close{
     position: absolute;
     top: 9px;
