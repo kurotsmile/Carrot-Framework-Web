@@ -13,9 +13,15 @@ class Carrot{
     link_fb="https://www.facebook.com/kurotsmile";
     contact_phone="+840978651577";
 
+    data_order_cr=null;
+
     onLoad(){
         $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/style.css">');
         this.addHandlebars();
+        if(localStorage.getItem("data_order_cr")!=null) {
+            this.data_order_cr=JSON.parse(localStorage.getItem("data_order_cr"));
+            this.addOrder(this.data_order_cr);
+        }
     }
 
     setSiteName(name){
@@ -136,7 +142,10 @@ class Carrot{
                         text:'Successful order confirmation!\n You can use the purchased products!',
                         confirmButtonColor: cr.color_btn
                     });
-                    $("#cr_order").remove();
+                    setTimeout(()=>{
+                        if(cr.data_order_cr.type=="link") window.open(cr.data_order_cr.val, '_blank').focus();
+                        cr.deleteOrder();
+                    },2000);
                 }else{
                     Swal.fire({
                         icon:"error",
@@ -149,7 +158,15 @@ class Carrot{
         });
     }
 
-    addOrder(){
+    deleteOrder(){
+        this.data_order_cr=null;
+        localStorage.removeItem("data_order_cr");
+        $("#cr_order").remove();
+    }
+
+    addOrder(dataOrder){
+        this.data_order_cr=dataOrder;
+        localStorage.setItem("data_order_cr",JSON.stringify(this.data_order_cr));
         var itemShopCard=$(`
                 <div id='cr_order' role="button">
                     <i class="fas fa-hourglass-end fa-spin" id="cr_order_icon"></i>
@@ -160,7 +177,7 @@ class Carrot{
                 </div>
             `);
         $(itemShopCard).find("#cr_order_close").click(function (e) {
-            $("#cr_order").remove();
+            cr.deleteOrder();
             return false;
         });
 
@@ -170,8 +187,9 @@ class Carrot{
         $("body").append(itemShopCard);
     }
 
-    show_pay(name_item='Test item',tip='Please start paying to use the corresponding function',price_item='2.00'){
-        this.addOrder();
+    show_pay(name_item='Test item',tip='Please start paying to use the corresponding function',price_item='2.00',val='',type='link'){
+        var dataOrder={"type":type,"val":val,"name":name_item,"price":price_item,"date": Date.now()};
+        this.addOrder(dataOrder);
         Swal.fire({
             title: 'Order Item',
             html: `
