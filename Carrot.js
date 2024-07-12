@@ -17,7 +17,13 @@ class Carrot{
 
     ver="0.1";
 
+    dev=false;
+
     onLoad(){
+        if(localStorage.getItem("dev")!=null){
+            if(localStorage.getItem("dev")=="1") this.dev=true;
+        }
+
         $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/style.css">');
         this.addHandlebars();
         if(localStorage.getItem("data_order_cr")!=null) {
@@ -71,14 +77,20 @@ class Carrot{
         var html='';
         html+='<form>';
         html+='<div class="form-group">';
-            html+='<label for="exampleInputEmail1"><i class="fas fa-globe-asia"></i> Language</label>';
+            html+='<label for="exampleInputEmail1"><i onclick="cr.act_dev()" class="fas fa-globe-asia"></i> Language</label>';
             html+='<select class="form-control" id="dropdown_lang"><select>';
             html+='<small id="emailHelp" class="form-text text-muted">Select your country and language</small>';
         html+='</div>';
         html+='</form>';
         html+=html_extension;
+
+        var title='';
+        if(this.dev)
+            title="Settings for development mode";
+        else
+            title="Setting";
         Swal.fire({
-            title:"Setting",
+            title:title,
             html:html,
             showCancelButton: true,
             showCloseButton: true,
@@ -150,7 +162,10 @@ class Carrot{
                         confirmButtonColor: cr.color_btn
                     });
                     setTimeout(()=>{
-                        if(cr.data_order_cr.type=="link") window.open(cr.data_order_cr.val, '_blank').focus();
+                        if(cr.data_order_cr.type=="link") 
+                            window.open(cr.data_order_cr.val, '_blank').focus();
+                        else
+                            localStorage.setItem(cr.data_order_cr.type,cr.data_order_cr.val);
                         cr.deleteOrder();
                     },2000);
                 }else{
@@ -314,6 +329,26 @@ class Carrot{
             html:"<iframe id='kofiframe' src='https://ko-fi.com/thienthanhtran/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;background:#f9f9f9;' height='712' title='thienthanhtran'></iframe>",
             confirmButtonColor: cr.color_btn,
         });
+    }
+
+    act_dev(){
+        if(this.dev){
+            this.dev=false;
+            localStorage.setItem("dev","0");
+            Swal.fire({
+                icon:"success",
+                title:"Publishing mode",
+                text:"Enabled Publishing mode for web app"
+            });
+        }else{
+            this.dev=true;
+            localStorage.setItem("dev","1");
+            Swal.fire({
+                icon:"info",
+                title:"Development mode",
+                text:"Enabled development mode for web app"
+            });
+        }
     }
 }
 var cr=new Carrot();
