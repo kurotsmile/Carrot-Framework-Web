@@ -355,5 +355,10 @@ class Carrot{
             });
         }
     }
+
+    get_random(list){
+        var index_random = Math.floor(Math.random() * list.length);
+        return list[index_random];
+    }
 }
 var cr=new Carrot();

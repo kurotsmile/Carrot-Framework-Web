@@ -1,9 +1,17 @@
 class Carrot_Database_Json{
 
+    clear_value(obj){
+        var objBlank=obj;
+        $.each(objBlank,function(k,v){
+            objBlank[k]="";
+        });
+        return objBlank;
+    }
+
     add(data,act_done){
         this.edit(data,act_done);
     }
-    
+
     edit(data,act_done){
         var html='';
         html+='<form class="text-left">';
@@ -31,6 +39,19 @@ class Carrot_Database_Json{
                 if(act_done!=null) act_done(db);
             }
         });
+    }
+
+    getIconBykey(key){
+        var icon='';
+        switch (key) {
+            case 'name':
+                
+                break;
+        
+            default:
+                break;
+        }
+        return icon;
     }
 }
 var cr_data=new Carrot_Database_Json();
