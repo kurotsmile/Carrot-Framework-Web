@@ -369,6 +369,11 @@ class Carrot{
         return array;
     }
 
+    limitItem(array, length) {
+        var limitedArray = array.slice(0, length);
+        return limitedArray;
+    }
+
     share(url='',title='',tip='Get Now'){
         if(url=='') url=window.location.href;
         if(title=='') title=this.site_name;
