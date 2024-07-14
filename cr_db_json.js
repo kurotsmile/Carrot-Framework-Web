@@ -1,5 +1,9 @@
 class Carrot_Database_Json{
 
+    add(data,act_done){
+        this.edit(data,act_done);
+    }
+    
     edit(data,act_done){
         var html='';
         html+='<form class="text-left">';
