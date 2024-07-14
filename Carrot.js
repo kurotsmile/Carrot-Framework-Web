@@ -360,5 +360,27 @@ class Carrot{
         var index_random = Math.floor(Math.random() * list.length);
         return list[index_random];
     }
+
+    share(url='',title='',tip='Get Now'){
+        if(url=='') url=window.location.href;
+        if(title=='') title=this.site_name;
+        let shareData = {
+            title: title,
+            text: tip,
+            url: url,
+        }
+        navigator.share(shareData);
+    }
+
+    copy(emp) {
+        var $temp = $("<input>");$("body").append($temp);
+        var s_copy=$(emp).val();
+        $temp.val(s_copy).select();
+        document.execCommand("copy");$temp.remove();
+    }
+
+    paste(emp) {
+        navigator.clipboard.readText().then(text => {$(emp).val(text.trim());});
+    }
 }
 var cr=new Carrot();
