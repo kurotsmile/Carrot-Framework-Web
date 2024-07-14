@@ -361,6 +361,14 @@ class Carrot{
         return list[index_random];
     }
 
+    shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     share(url='',title='',tip='Get Now'){
         if(url=='') url=window.location.href;
         if(title=='') title=this.site_name;
