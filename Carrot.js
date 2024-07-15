@@ -12,6 +12,9 @@ class Carrot{
     link_linkedin="https://www.linkedin.com/in/tranthienthanh";
     link_fb="https://www.facebook.com/kurotsmile";
     contact_phone="+840978651577";
+    link_tiktok="https://www.tiktok.com/@kurotsmilethanh";
+    link_youtube="https://www.youtube.com/AuTri";
+    link_github="https://github.com/kurotsmile";
 
     data_order_cr=null;
 
@@ -120,15 +123,18 @@ class Carrot{
     show_contact(){
         var html='';
         html+='<div>I offer development services for Unity3D applications and games across various platforms. Additionally, I can develop web apps and web games. I am available for participation in large projects. Feel free to contact me via email:</div>';
-        html+='<ul class="text-left mt-3">';
-        if(this.contact_phone!="") html+="<li>Phone:<a href='tel:"+this.contact_phone+"'>"+this.contact_phone+"</a></li>";
-        if(this.email1!="") html+="<li>Mail:<a href='mailto:"+this.email1+"'>"+this.email1+"</a></li>";
-        if(this.email2!="") html+="<li>Mail:<a href='mailto:"+this.email2+"'>"+this.email2+"</a></li>";
-        if(this.link_fb!="") html+="<li>Facebook:<a href='"+this.link_fb+"' target='_blank'>"+this.link_fb+"</a></li>";
-        if(this.link_linkedin!="") html+="<li>Linkedin:<a href='"+this.link_linkedin+"' target='_blank'>"+this.link_linkedin+"</a></li>";
-        if(this.link_pinterest!="") html+="<li>Pinterest:<a href='"+this.link_pinterest+"' target='_blank'>"+this.link_pinterest+"</a></li>";
-        if(this.link_twitte!="") html+="<li>X:<a href='"+this.link_twitte+"' target='_blank'>"+this.link_twitte+"</a></li>";
-
+        html+='<ul class="text-left mt-3" style="list-style: none;">';
+        if(this.contact_phone!="") html+="<li><i class='fas fa-phone'></i> Phone: <a href='tel:"+this.contact_phone+"'>"+this.contact_phone+"</a></li>";
+        if(this.email1!="") html+="<li><i class='fas fa-envelope'></i> Mail: <a href='mailto:"+this.email1+"'>"+this.email1+"</a></li>";
+        if(this.email2!="") html+="<li><i class='fas fa-envelope'></i> Mail: <a href='mailto:"+this.email2+"'>"+this.email2+"</a></li>";
+        if(this.link_fb!="") html+="<li><i class='fab fa-facebook'></i> Facebook: <a href='"+this.link_fb+"' target='_blank'>"+this.link_fb+"</a></li>";
+        if(this.link_linkedin!="") html+="<li><i class='fab fa-linkedin'></i> Linkedin: <a href='"+this.link_linkedin+"' target='_blank'>"+this.link_linkedin+"</a></li>";
+        if(this.link_tiktok!="") html+="<li><i class='fab fa-tiktok'></i> TikTok: <a href='"+this.link_tiktok+"' target='_blank'>"+this.link_tiktok+"</a></li>";
+        if(this.link_youtube!="") html+="<li><i class='fab fa-youtube'></i> YouTube: <a href='"+this.link_youtube+"' target='_blank'>"+this.link_youtube+"</a></li>";
+        if(this.link_pinterest!="") html+="<li><i class='fab fa-pinterest'></i> Pinterest: <a href='"+this.link_pinterest+"' target='_blank'>"+this.link_pinterest+"</a></li>";
+        if(this.link_twitte!="") html+="<li><i class='fab fa-x-twitter'></i> X: <a href='"+this.link_twitte+"' target='_blank'>"+this.link_twitte+"</a></li>";
+        if(this.link_github!="") html+="<li><i class='fab fa-github'></i> Github: <a href='"+this.link_github+"' target='_blank'>"+this.link_github+"</a></li>";
+    
         html+='</ul>';
 
         Swal.fire({
@@ -136,7 +142,7 @@ class Carrot{
             icon:"info",
             html:html,
             iconColor: cr.color_btn,
-            confirmButtonColor: cr.color_btn,
+            confirmButtonColor: cr.color_btn
         })
     }
 
