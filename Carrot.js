@@ -283,14 +283,17 @@ class Carrot{
         });
     }
 
-
     top(act_start=null,act_done=null){
-        $('html, body').animate({ scrollTop: 0 }, "slow", function() {
+        this.go_to('html,body',act_start,act_done);
+    }
+
+    go_to(emp,act_start=null,act_done=null){
+        $(emp).animate({ scrollTop: 0 }, "slow", function() {
             if(act_start!=null) act_start();
             setTimeout(function() {
                 if(act_done!=null) act_done();
             }, 1000);
-        });
+        });       
     }
 
     arg(sParam) {
