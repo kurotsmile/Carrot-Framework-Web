@@ -377,6 +377,10 @@ class Carrot{
         return limitedArray;
     }
 
+    show_share(url='',title='',tip='Get Now'){
+        this.share(url,title,tip);
+    }
+
     share(url='',title='',tip='Get Now'){
         if(url=='') url=window.location.href;
         if(title=='') title=this.site_name;
