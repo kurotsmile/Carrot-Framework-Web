@@ -88,6 +88,9 @@ class Carrot_Database_Json{
                     }
                 html+='</datalist>';
                 break;
+            case 'lyrics':
+                html+='<textarea class="form-control inp_db" db-key="'+key+'" rows="3" id="inp_db_'+key+'"/>'+val_default+'<textarea>';
+                break;
             case 'date':
                 html+='<input type="date" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
                 break;
