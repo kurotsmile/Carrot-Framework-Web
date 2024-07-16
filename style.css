@@ -31,3 +31,13 @@
     left: 57px;
     right: 46px;
 }
+
+.fa-solid{
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+}
+
+.fa-brands{
+    font-family:"Font Awesome 5 Brands";
+    font-style: normal;
+}
