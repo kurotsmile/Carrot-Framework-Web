@@ -1,6 +1,8 @@
 class Carrot{
 
     lang="en";
+    list_lang=null;
+
     color_btn="#fa1675";
 
     site_name="Site Name";
@@ -23,7 +25,7 @@ class Carrot{
     dev=false;
 
     act_done_pay=null;
-
+    
     onLoad(){
         if(localStorage.getItem("dev")!=null){
             if(localStorage.getItem("dev")=="1") this.dev=true;
@@ -103,7 +105,8 @@ class Carrot{
             confirmButtonColor: cr.color_btn,
             didOpen:()=>{
                 $.getJSON('https://raw.githubusercontent.com/kurotsmile/Database-Store-Json/main/lang.json', function(data) {
-                    $.each(data.all_item,function(index,lang){
+                    cr.list_lang=data.all_item;
+                    $.each(cr.list_lang,function(index,lang){
                         if(lang.key==cr.lang)
                             $("#dropdown_lang").append($('<option>', { value: lang.key,text : lang.name,selected:true}));
                         else

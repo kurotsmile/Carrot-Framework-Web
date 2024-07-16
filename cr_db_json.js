@@ -23,7 +23,8 @@ class Carrot_Database_Json{
                         html+='<span class="input-group-text">'+cr_data.getIconBykey(k)+'</span>';
                     html+='</div>';
                     
-                    html+='<input class="form-control inp_db" db-key="'+k+'" value="'+v+'" id="inp_db_'+k+'"/>';
+                    html+=cr_data.getFieldTypeByKey(k,v);
+
                     html+='<div class="input-group-append">';
                         html+='<span role="button" class="input-group-text" onClick="cr.copy(\'#inp_db_'+k+'\');"><i class="fas fa-copy"></i></span>';
                         html+='<span role="button" class="input-group-text" onClick="cr.paste(\'#inp_db_'+k+'\');"><i class="fas fa-paste"></i></span>';
@@ -72,6 +73,59 @@ class Carrot_Database_Json{
                 break;
         }
         return icon;
+    }
+
+    getFieldTypeByKey(key,val_default=''){
+        var html='';
+        switch (key) {
+            case 'lang':
+                html+='<input list="inp_db_'+key+'_list" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                html+='<datalist id="inp_db_'+key+'_list">';
+                    if(cr.list_lang!=null){
+                        $.each(cr.list_lang,function(index,lang){
+                            html+='<option value="'+lang.key+'">'+lang.name+'</option>';
+                        });
+                    }
+                html+='</datalist>';
+                break;
+            case 'date':
+                html+='<input type="date" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                break;
+            case 'publishedAt':
+                html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
+                break;
+            default:
+                html+='<input class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                break;
+        }
+        return html;
+    }
+
+    convertISOToLocalDatetime(isoString) {
+        if (!isoString) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        const date = new Date(isoString);
+    
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    convertLocalDatetimeToISO(datetimeLocalString) {
+        const localDate = new Date(datetimeLocalString);
+        const isoString = localDate.toISOString();
+        return isoString;
     }
 }
 var cr_data=new Carrot_Database_Json();
