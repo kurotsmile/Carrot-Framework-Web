@@ -27,8 +27,12 @@ Dynamically loads a JavaScript file and executes a specified function.
 cr.loadJs('path/to/script.js', window, 'initialize');
 ```
 
-### cr.add_btn_top()
+### add_btn_top
 Adds a button at the top of the web app.
+
+```javascript
+    cr.add_btn_top();
+```
 
 ### cr.paste(emp)
 Pastes the content.
@@ -86,3 +90,6 @@ Sets the site URL.
 
 ### cr.setVer(ver)
 Sets the version to avoid cache memory issues.
+
+## Data Carrot
+Data for web
