@@ -4,6 +4,7 @@ class Carrot{
     list_lang=null;
 
     color_btn="#fa1675";
+    color_active="#FAFA04";
 
     site_name="Site Name";
     site_url="https://carrotstore.web.app";
@@ -25,13 +26,29 @@ class Carrot{
     dev=false;
 
     act_done_pay=null;
+    btnTop=null;
+
+    list_icon_top=[
+        '<i class="fas fa-arrow-circle-up"></i>',
+        '<i class="fas fa-chevron-circle-up"></i>',
+        '<i class="fas fa-chevron-up"></i>',
+        '<i class="fas fa-caret-square-up"></i>',
+        '<i class="far fa-arrow-alt-circle-up"></i>',
+        '<i class="fas fa-angle-double-up"></i>',
+        '<i class="fas fa-long-arrow-alt-up"></i>',
+        '<i class="fas fa-level-up-alt"></i>',
+        '<i class="fas fa-hand-point-up"></i>'
+    ];
+    index_cur_btn_top=0;
     
     onLoad(){
         if(localStorage.getItem("dev")!=null){
             if(localStorage.getItem("dev")=="1") this.dev=true;
         }
 
-        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/style.css">');
+        if(localStorage.getItem("index_cur_btn_top")!=null) this.index_cur_btn_top=parseInt(localStorage.getItem("index_cur_btn_top"));
+
+        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/carrot_style.css">');
         this.addHandlebars();
         if(localStorage.getItem("data_order_cr")!=null) {
             this.data_order_cr=JSON.parse(localStorage.getItem("data_order_cr"));
@@ -89,6 +106,13 @@ class Carrot{
             html+='<select class="form-control" id="dropdown_lang"><select>';
             html+='<small id="emailHelp" class="form-text text-muted">Select your country and language</small>';
         html+='</div>';
+
+        html+='<div class="form-group">';
+            html+='<label for="sel_btn_top"><i class="fas fa-scroll"></i> Scroll Top Button</label>';
+            html+='<div class="d-block mt-1 mb-1" id="list_btn_top_setting"><div>';
+            html+='<small id="emailHelp" class="form-text text-muted">Choose a style for the top scroll button that\'s right for you</small>';
+        html+='</div>';
+
         html+='</form>';
         html+=html_extension;
 
@@ -112,6 +136,25 @@ class Carrot{
                         else
                             $("#dropdown_lang").append($('<option>', { value: lang.key,text : lang.name}));
                     });
+                });
+
+                $.each(cr.list_icon_top,function(index,t){
+                    var empSettingBtnTop='';
+                    if(cr.index_cur_btn_top==index)
+                        empSettingBtnTop=$('<span index="'+index+'" style="background-color:black;color:'+cr.color_active+'" class="m-1 btn cr_btn_top setting_review">'+t+'</span>');
+                    else
+                        empSettingBtnTop=$('<span index="'+index+'" style="background-color:'+cr.color_btn+'" class="m-1 btn cr_btn_top setting_review">'+t+'</span>');
+                    $(empSettingBtnTop).click(function(){
+                        var index=$(this).attr("index");
+                        $(".cr_btn_top").attr("style","");
+                        $(".cr_btn_top").css("background-color",cr.color_btn);
+                        $(this).css("background-color","black");
+                        $(this).css("color",cr.color_active);
+                        cr.index_cur_btn_top=parseInt(index);
+                        $(cr.btnTop).html(t);
+                        localStorage.setItem("index_cur_btn_top",index);
+                    });
+                    $("#list_btn_top_setting").append(empSettingBtnTop);
                 });
             }
         }).then((result)=>{
@@ -410,6 +453,24 @@ class Carrot{
 
     paste(emp) {
         navigator.clipboard.readText().then(text => {$(emp).val(text.trim());});
+    }
+
+    add_btn_top(){
+        var empBtnTop=$(`<div id="cr_btn_top" style="background-color:${cr.color_btn}" onclick="cr.top();return false;">${this.list_icon_top[this.index_cur_btn_top]}</div>`);
+        $("body").append(empBtnTop);
+        this.btnTop=empBtnTop;
+        $(window).scroll(function() {
+            var windowHeight = $(window).height();
+            var scrollTop = $(window).scrollTop();
+    
+            if (scrollTop > windowHeight / 2) {
+                cr.btnTop.fadeIn();
+            } else {
+                cr.btnTop.fadeOut();
+            }
+       });
+       cr.btnTop.fadeOut();
+        return empBtnTop;
     }
 }
 var cr=new Carrot();

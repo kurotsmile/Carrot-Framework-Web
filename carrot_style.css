@@ -41,3 +41,37 @@
     font-family:"Font Awesome 5 Brands";
     font-style: normal;
 }
+
+#cr_btn_top,.cr_btn_top{
+    background-color: #2bb1e1;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 12px;
+    color: white;
+    border-radius: 8px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#cr_btn_top:hover,.cr_btn_top:hover,.cr_btn_top.setting_review:hover{
+    background-color: black !important;
+    color: white;
+}
+
+.cr_btn_top.setting_review {
+    position: unset;
+    bottom: unset;
+    top: unset;
+    color: white;
+    width: 35px;
+    height: 35px;
+    padding: 2px;
+    font-size: 19px;
+    text-align: center;
+};
+
+.cr_btn_top.setting_review.active{
+    background-color: black !important;
+    color: yellow !important;
+}
