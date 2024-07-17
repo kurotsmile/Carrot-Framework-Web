@@ -98,6 +98,10 @@ class Carrot{
         cr.color_btn=color;
     }
 
+    set_color_active(color){
+        cr.color_active=color;
+    }
+
     show_setting(act_done=null,html_extension=''){
         var html='';
         html+='<form>';
