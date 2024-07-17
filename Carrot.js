@@ -109,7 +109,7 @@ class Carrot{
 
         html+='<div class="form-group">';
             html+='<label for="sel_btn_top"><i class="fas fa-scroll"></i> Scroll Top Button</label>';
-            html+='<div class="d-block mt-1 mb-1" id="list_btn_top_setting"><div>';
+            html+='<div class="d-block mt-1 mb-1" id="list_btn_top_setting"></div>';
             html+='<small id="emailHelp" class="form-text text-muted">Choose a style for the top scroll button that\'s right for you</small>';
         html+='</div>';
 
