@@ -340,16 +340,18 @@ class Carrot{
     }
 
     top(act_start=null,act_done=null){
-        this.go_to('html,body',act_start,act_done);
-    }
-
-    go_to(emp,act_start=null,act_done=null){
-        $(emp).animate({ scrollTop: 0 }, "slow", function() {
+        $('html,body').animate({ scrollTop: 0 }, "slow", function() {
             if(act_start!=null) act_start();
             setTimeout(function() {
                 if(act_done!=null) act_done();
             }, 1000);
-        });       
+        }); 
+    }
+
+    go_to(emp,pos_top_exc=0){
+        $('html, body').animate({
+            scrollTop: $(emp).offset().top-pos_top_exc
+        }, 1000);
     }
 
     arg(sParam) {

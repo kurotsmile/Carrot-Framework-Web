@@ -49,31 +49,94 @@ Adds a button at the top of the web app.
 ### paste
 Pastes the content.
 
+> `cr`.**paset**(emp)
+
+- Parameters
+	- `emp` (string): The element from which the content will be paste.
+
 ```javascript
     var emp="#input_val";
     cr.paste(emp);
 ```
 
-### cr.copy(emp)
+### copy
+
 Copies the content.
 
-### cr.share(url='', title='', tip='Get Now')
+> `cr`.**copy**(emp)
+
+- Parameters
+	- `emp` (string): The element from which the content will be copied.
+
+```javascript
+    cr.copy("#input_va");
+```
+
+### share
+
 Shares the specified URL with an optional title and tip.
 
-### cr.limitItem(array, length)
+> `cr`.**share**(url='', title='', tip='Get Now')
+
+- Parameters
+	- `url` (string): The URL to share.
+	- `title` (string): The title of the share content.
+	- `tip` (string): The tip for the share action.
+
+```javascript
+//Share url current 
+cr.share(); 
+
+//Share link customer 
+cr.share('http://example.com');
+
+//Share link extended 
+cr.share('http://example.com','Web Example','Visit now');
+
+```
+
+
+### limitItem
+
 Limits the number of items in an array to the specified length.
 
-### cr.shuffle(array)
+> `cr`.**limitItem**(array, length)
+
+- Parameters
+	- `array` (Array):  The array to limit.
+	- `length` (number): The maximum number of items.
+
+### shuffle
+
 Shuffles the items in an array randomly.
 
-### cr.get_random(list)
-Returns a random item from the list.
+> `cr`.**shuffle*(array)
 
-### cr.showSearch(act_done=null)
+Parameters
+	- `array` (Array):  The array to zhuffles.
+
+### get_random
+
+Returns a random item from the array.
+
+> `cr`.**get_random**(array)
+
+Parameters
+	- `array` (Array):  The list from which to get a random item.
+
+### showSearch
+
 Displays the search bar and returns the search key.
+
+> `cr`.**showSearch*(act_done=null)
+
+- Parameters:
+	- `act_done` (function): The callback function when the search is done.
 
 ### cr.arg(sParam)
 Returns `false` if the specified URL parameter does not exist.
+
+>
 
 ### cr.go_to(emp, act_start=null, act_done=null)
 Navigates to the specified element with optional start and done actions.
