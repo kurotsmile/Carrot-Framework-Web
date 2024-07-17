@@ -4,7 +4,9 @@ Carrot Framework is a tool designed to support various functions for web applica
 
 ## Introduction
 
-Carrot.js is the main file of this framework. It initializes the framework and provides global access to its functionalities.
+Carrot-Framework-Web is a web application JavaScript support tool designed to enhance the development process by providing a variety of utility functions
+
+`Carrot.js` is the main file of this framework. It initializes the framework and provides global access to its functionalities.
 
 ### Initialization
 
