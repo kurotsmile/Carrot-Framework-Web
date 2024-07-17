@@ -133,16 +133,31 @@ Displays the search bar and returns the search key.
 - Parameters:
 	- `act_done` (function): The callback function when the search is done.
 
-### cr.arg(sParam)
+### arg
+
 Returns `false` if the specified URL parameter does not exist.
 
->
+> `cr`.**arg**(sParam)
 
-### cr.go_to(emp, act_start=null, act_done=null)
+- Parameters:
+	- `sParam` (string): The URL parameter to check.
+
+### go_to
+
 Navigates to the specified element with optional start and done actions.
 
-### cr.top(act_start=null, act_done=null)
+> `cr`.**go_to**(emp, act_start=null, act_done=null)
+
+- Parameters:
+	- `emp` (string): The element to navigate to.
+	- `act_start` (function): The callback function when the action starts.
+	- `act_done` (function): The callback function when the action is done.
+
+### top
+
 Similar to `cr.go_to`, but navigates to the top.
+
+> cr.top(act_start=null, act_done=null)
 
 ### cr.get(url, act_done=null, act_fail=null)
 Fetches HTML data from the specified URL with optional done and fail actions.
