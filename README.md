@@ -37,6 +37,10 @@ Adds a button at the top of the web app.
 ### cr.paste(emp)
 Pastes the content.
 
+```javascript
+    cr.paste(emp);
+```
+
 ### cr.copy(emp)
 Copies the content.
 
