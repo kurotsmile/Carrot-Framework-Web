@@ -6,16 +6,26 @@ Carrot Framework is a tool designed to support various functions for web applica
 
 Carrot.js is the main file of this framework. It initializes the framework and provides global access to its functionalities.
 
+### Initialization
+
+Clone the project into your project and pay attention to the path, you should not change the structure or name of the `Carrot-Framework-Web` folder
+
+```javascript
+<script src="Carrot-Framework-Web/Carrot.js"></script>
+```
+
 ### Global Variable
 ```javascript
-var cr;
 $(document).ready(function(){
-    cr=new Carrot();
+    cr.onLoad();
 });
 ```
 
 ## Methods
 
+Here is a list of key methods that can be quickly integrated into your web building process
+
+### loadJs
 `cr`.loadJs(path_js, obj_call, func_call = "show")
 
 Dynamically loads a JavaScript file and executes a specified function.
@@ -34,10 +44,11 @@ Adds a button at the top of the web app.
     cr.add_btn_top();
 ```
 
-### cr.paste(emp)
+### paste
 Pastes the content.
 
 ```javascript
+    var emp="#input_val";
     cr.paste(emp);
 ```
 
