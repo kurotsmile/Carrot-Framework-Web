@@ -52,6 +52,7 @@
     border-radius: 8px;
     font-size: 25px;
     cursor: pointer;
+    display: none;
 }
 
 #cr_btn_top:hover,.cr_btn_top:hover,.cr_btn_top.setting_review:hover{
@@ -69,6 +70,7 @@
     padding: 2px;
     font-size: 19px;
     text-align: center;
+    display: inline-block;
 };
 
 .cr_btn_top.setting_review.active{

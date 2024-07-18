@@ -477,7 +477,6 @@ class Carrot{
                 cr.btnTop.fadeOut();
             }
        });
-       cr.btnTop.fadeOut();
         return empBtnTop;
     }
 }
