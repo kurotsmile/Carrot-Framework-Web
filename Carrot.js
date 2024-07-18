@@ -28,6 +28,8 @@ class Carrot{
     act_done_pay=null;
     btnTop=null;
 
+    path="Carrot-Framework-Web";
+
     list_icon_top=[
         '<i class="fas fa-arrow-circle-up"></i>',
         '<i class="fas fa-chevron-circle-up"></i>',
@@ -55,6 +57,7 @@ class Carrot{
             this.addOrder(this.data_order_cr);
         }
         this.loadJs("Carrot-Framework-Web/cr_db_json.js");
+        this.register_serviceworker();
     }
 
     setSiteName(name){
@@ -477,6 +480,17 @@ class Carrot{
        });
        cr.btnTop.fadeOut();
         return empBtnTop;
+    }
+
+    register_serviceworker(){
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register(cr.path+'/service-worker.js')
+              .then((registration) => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+              }).catch((error) => {
+                console.log('ServiceWorker registration failed: ', error);
+              });
+        }
     }
 }
 var cr=new Carrot();

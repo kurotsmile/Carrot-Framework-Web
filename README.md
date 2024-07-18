@@ -188,3 +188,22 @@ Sets the version to avoid cache memory issues.
 
 ## Data Carrot
 Data for web
+
+## Register SSL For IIS
+
+- 1 Đăng ký SSL cho máy chủ IIS window
+
+Chạy file `Register SSL For IIS.ps1` ở trong dự án rồi nhập host name (ví dụ `abc.store.com`)
+
+- 2 Xuất bản file chứng chỉ 
+
+sau khi đã tạo chững chỉ bạn cần xuất file chứng chỉ từ Admin tool và nhập vào trình chứng chỉ của IIS
+
+Xuất bản chứng chỉ từ chương trình quảng lý chứng chỉ window
+
+Chạy chương trình từ cửa sổ run gõ 
+
+> certlm.msc
+
+- 3 Nhập và khởi chạy chổng 443 cho giao thức https từ IIS manager
+
