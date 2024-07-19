@@ -124,15 +124,6 @@ Returns a random item from the array.
 Parameters
 	- `array` (Array):  The list from which to get a random item.
 
-### showSearch
-
-Displays the search bar and returns the search key.
-
-> `cr`.**showSearch*(act_done=null)
-
-- Parameters:
-	- `act_done` (function): The callback function when the search is done.
-
 ### arg
 
 Returns `false` if the specified URL parameter does not exist.
@@ -157,25 +148,66 @@ Navigates to the specified element with optional start and done actions.
 
 Similar to `cr.go_to`, but navigates to the top.
 
-> cr.top(act_start=null, act_done=null)
+> `cr`.**top**(act_start=null, act_done=null)
+
+- Parameters:
+	- `act_start` (function): The callback function when the action starts.
+	- `act_done` (function): The callback function when the action is done.
+
+```javascript
+	//Basic
+	cr.top();
+
+	//Full
+	cr.top(()=>{
+		alert("Action Start");
+	},()=>{
+		alert("End Scroll Done");
+	});
+```
 
 ### cr.get(url, act_done=null, act_fail=null)
 Fetches HTML data from the specified URL with optional done and fail actions.
 
-### cr.show_pay(name_item='Test item', tip='Please start paying to use the corresponding function', price_item='2.00', val='', type='link')
-Displays a payment prompt with the specified item name, tip, price, value, and type.
+> `cr`.**get**(url, act_done=null, act_fail=null)
 
-### cr.show_setting(act_done=null, html_extension='')
-Displays settings with optional done action and HTML extension.
 
-### cr.set_color_active(color)
+
+### set_color_active
+
 Sets the active color.
 
-### cr.set_color_btn(color)
+> `cr`.**set_color_active**(color)
+
+- Parameters:
+	- `color` (string) ; Màu sắc cho các mục nỗi bật 
+
+```javascript
+	cr.set_color_active("#FFFFFF");
+```
+
+### set_color_btn
+
 Sets the button color.
 
-### cr.setColor(color)
+> `cr`.**set_color_btn**(color)
+
+ - Parameters:
+	- `color` (string) ; Màu sắc cho các nút và các công cụ điều khiển 
+
+```javascript
+	cr.set_color_btn("#00FF00");
+```
+### setColor
 Sets the color.
+
+> `cr`.**setColor**(color)
+
+Phương thức này tương tự `cr`.**set_color_btn**
+
+```javascript
+	cr.setColor("#00FFFF");
+```
 
 ### cr.setSiteName(name)
 Sets the site name.
@@ -187,7 +219,58 @@ Sets the site URL.
 Sets the version to avoid cache memory issues.
 
 ## Data Carrot
-Data for web
+Những phương thức sử lý và xây Dữ liệu cho web app
+
+## getYouTubeVideoId
+
+### UI Box
+Những phương thức tích hợp giao diện để người dùng tương tác
+
+## show_setting
+Phương thức hiện hộp thoại tùy chỉnh cài đặt web với trường ngôn ngữ , kiểu dáng nút trở về đầu trang và bạn có thể thêm các trường tùy biến vào tham số **html_extension**
+
+> `cr`.**show_setting**(act_done=null,html_extension='')
+
+- Parameters:
+	- `act_done` (function): Phương thức gọi lại khi bấm nút hoàn tất (ok) trong cửa sổ cài đặt 
+		- Giá trị trả về (json) : data.lang
+
+	- `html_extension` (string):Các trường html tùy biến thêm vào phần cài đặt
+
+### show_pay
+Displays a payment prompt with the specified item name, tip, price, value, and type.
+
+> `cr`.**show_pay**(name_item='Test item', tip='Please start paying to use the corresponding function', price_item='2.00', val='', type='link')
+
+- Parameters:
+	- `name_item` (string) : Tên sản phẩm hoặc dịch vụ đơn hàng
+	- `tip` (string) : Mô tả ngắn cho đơn hàng
+	- `price_item` (float srting) : giá
+	- `val` : tham số lưu lại giá trị đơn hàng thường dùng cho cách đơn hàng dịch vụ . Sau khi thanh toán thành công sẽ lưu lại dữ liệu cục bộ là `localStorage`.**setItem**(`type`,`val`)
+	- `type` : truyền vào tham số khác với *link* nếu bạn muốn thiết lập đơn hàng cho chức năng tải file
+
+```javascript
+	//Buy nomal download link
+	var name_file="lovestory.epub";
+	cr.show_pay("Buy Book","Pay for download ebook file("+name_file+")","3.00","path/"+name_file);
+
+	//Buy Service
+	cr.show_pay("Buy Vip","Unlock func download ebooks file","all_ebook","type_user");
+```
+
+## show_youtube
+
+## show_donation
+
+### showSearch
+
+Displays the search bar and returns the search key.
+
+> `cr`.**showSearch*(act_done=null)
+
+- Parameters:
+	- `act_done` (function): The callback function when the search is done.
+
 
 ## Register SSL For IIS
 
@@ -207,3 +290,4 @@ Chạy chương trình từ cửa sổ run gõ
 
 - 3 Nhập và khởi chạy chổng 443 cho giao thức https từ IIS manager
 
+ 

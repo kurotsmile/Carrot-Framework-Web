@@ -479,5 +479,25 @@ class Carrot{
        });
         return empBtnTop;
     }
+
+    show_youtube(link_ytb,html_extension="",act_done_show=null) {
+        m.song.box_info_menu_cur = "video";
+        var html = '<iframe width="100%" height="315" src="https://www.youtube.com/embed/' + cr.getYouTubeVideoId(link_ytb) + '?autoplay=0" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        html += html_extension;
+        Swal.fire({
+            title: data.name,
+            html: html,
+            confirmButtonColor: cr.color_btn,
+            didOpen: () => {
+                if(act_done_show!=null) act_done_show();
+            }
+        });
+    }
+
+    getYouTubeVideoId(url) {
+        var regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        var match = url.match(regex);
+        return (match && match[1]) ? match[1] : null;
+    }
 }
 var cr=new Carrot();
