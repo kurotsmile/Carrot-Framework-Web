@@ -197,7 +197,7 @@ Chạy file `Register SSL For IIS.ps1` ở trong dự án rồi nhập host
 
 - 2 Xuất bản file chứng chỉ 
 
-sau khi đã tạo chững chỉ bạn cần xuất file chứng chỉ từ Admin tool và nhập vào trình chứng chỉ của IIS
+sau khi đã tạo chững chỉ bạn cần xuất file chứng chỉ từ Management Console và nhập vào trình chứng chỉ của IIS
 
 Xuất bản chứng chỉ từ chương trình quảng lý chứng chỉ window
 
