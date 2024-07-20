@@ -130,6 +130,25 @@ class Carrot_Database_Json{
         const isoString = localDate.toISOString();
         return isoString;
     }
+
+    info(data){
+        var html='';
+        html+='<table class="table table-striped table-hover table-sm text-left">';
+        html+='<tbody>';
+        $.each(data,function(k,v){
+            html+='<tr class="animate__flipInX animate__animated">';
+                html+='<td>'+k+'</td>';
+                html+='<td>'+v+'</td>';
+            html+='</tr>';
+        });
+        html+='<tbody>';
+        html+='</table>';
+        Swal.fire({
+            title:'Info',
+            html:html,
+            confirmButtonColor: cr.color_btn
+        });
+    }
 }
 var cr_data=new Carrot_Database_Json();
 cr.data=cr_data;
