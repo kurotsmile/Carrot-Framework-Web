@@ -27,6 +27,16 @@ $(document).ready(function(){
 
 Here is a list of key methods that can be quickly integrated into your web building process
 
+- [loadJs](#loadJs)
+- [top](#top)
+- [add_btn_top](#add_btn_top)
+- [paste](#paste)
+- [copy](#copy)
+- [share](#share)
+- [limitItem](#limitItem)
+- [showSearch](#showSearch)
+- [shuffle](#shuffle)
+
 ### loadJs
 `cr`.loadJs(path_js, obj_call, func_call = "show")
 
@@ -106,13 +116,18 @@ Limits the number of items in an array to the specified length.
 	- `array` (Array):  The array to limit.
 	- `length` (number): The maximum number of items.
 
+```javascript
+	var code=["c#","javascript","java","c++","python","c"];
+	cr.limitItem(code,2); //return c#,javascript,java
+```
+
 ### shuffle
 
 Shuffles the items in an array randomly.
 
-> `cr`.**shuffle*(array)
+> `cr`.**shuffle**(array)
 
-Parameters
+- Parameters
 	- `array` (Array):  The array to zhuffles.
 
 ### get_random
@@ -121,7 +136,7 @@ Returns a random item from the array.
 
 > `cr`.**get_random**(array)
 
-Parameters
+- Parameters
 	- `array` (Array):  The list from which to get a random item.
 
 ### arg
@@ -166,13 +181,24 @@ Similar to `cr.go_to`, but navigates to the top.
 	});
 ```
 
-### cr.get(url, act_done=null, act_fail=null)
+### get
 Fetches HTML data from the specified URL with optional done and fail actions.
 
 > `cr`.**get**(url, act_done=null, act_fail=null)
 
+- Parameters:
+	- `url` (string) : Địa chỉ hoặt đường dẫn tới trang web , tệp html.
+	- `act_done` (function): Phương thức được gọi khi thành công và trả về dữ liệu của trang theo địa chỉ url
+		- Giá trị trả về (html) : Dữ liệu trả về là dạng string html
+	- `act_fail` (function): Phương thức được gọi khi quá trình tải gặp sự cố
 
-
+```javascript
+	cr.get("data/about.html",(data)=>{
+		$("#container").html(data);
+	},()=>{
+		alert("Không thể tải tệp");
+	});
+```
 ### set_color_active
 
 Sets the active color.
@@ -213,10 +239,25 @@ Phương thức này tương tự `cr`.**set_color_btn**
 Sets the site name.
 
 ### cr.setSiteUrl(url)
-Sets the site URL.
+Sets the site URL. giá trị này có thể áp dụng trong chức năng show_pp và show_tos
 
+- Tham số
+	- `url` (string) : url của website hoặt web app
+
+```javascript
+	cr.setSiteUrl("https://example.com");
+```
 ### cr.setVer(ver)
 Sets the version to avoid cache memory issues.
+
+> `cr`.***setVer***
+
+- Tham số 
+	- `ver` (stirng) : số phiên bản các file để tải lại các file trên trình duyện tránh sự lưu trữ tạm
+
+```javascript
+	cr.setVer("0.0.1");
+```
 
 ## Data Carrot
 Những phương thức sử lý và xây Dữ liệu cho web app
@@ -270,7 +311,13 @@ Displays the search bar and returns the search key.
 
 - Parameters:
 	- `act_done` (function): The callback function when the search is done.
+		- giả trị trả về (string) : là key tìm kiếm
 
+```javascript
+	cr.showSearch((key)=>{
+		alert("Xử lý từ khóa "+key);
+	});
+```
 
 ## Register SSL For IIS
 
