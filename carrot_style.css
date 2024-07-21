@@ -32,13 +32,13 @@
     right: 46px;
 }
 
-.fa-solid{
-    font-family: "Font Awesome 5 Free";
+.fa-solid {
+    font-family: "Font Awesome 5 Free","Font Awesome 6 Free";
     font-style: normal;
 }
 
 .fa-brands{
-    font-family:"Font Awesome 5 Brands";
+    font-family:"Font Awesome 5 Brands","Font Awesome 6 Brands";
     font-style: normal;
 }
 
