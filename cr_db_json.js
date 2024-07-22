@@ -14,25 +14,7 @@ class Carrot_Database_Json{
 
     edit(data,act_done){
         var html='';
-        html+='<form class="text-left">';
-        $.each(data,function(k,v){
-            html+='<div class="form-group">';
-                html+='<label>'+k+'</label>';
-                html+='<div class="input-group">';
-                    html+='<div class="input-group-prepend">';
-                        html+='<span class="input-group-text">'+cr_data.getIconBykey(k)+'</span>';
-                    html+='</div>';
-                    
-                    html+=cr_data.getFieldTypeByKey(k,v);
-
-                    html+='<div class="input-group-append">';
-                        html+='<span role="button" class="input-group-text" onClick="cr.copy(\'#inp_db_'+k+'\');"><i class="fas fa-copy"></i></span>';
-                        html+='<span role="button" class="input-group-text" onClick="cr.paste(\'#inp_db_'+k+'\');"><i class="fas fa-paste"></i></span>';
-                    html+='</div>';
-                html+='</div>';
-            html+='</div>';
-        });
-        html+='</form>';
+        html+='<form class="text-left" id="cr_data_from"></form>';
         html+='<div class="d-block" id="cr_data_dock_btn"></div>';
         Swal.fire({
             title:"Edit Database",
@@ -44,6 +26,10 @@ class Carrot_Database_Json{
                 cr_data.dockBtnForBox(data);
                 var btnAddField=$('<button class="btn btn-sm"><i class="far fa-plus-square"></i> Add Field</button>');
                 $("#cr_data_dock_btn").append(btnAddField);
+
+                $.each(data,function(k,v){
+                   $("#cr_data_from").append(cr_data.intemField(k,v));
+                });
             }
         }).then((result)=>{
             if(result.isConfirmed){
@@ -109,7 +95,11 @@ class Carrot_Database_Json{
                 html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
                 break;
             default:
-                html+='<input class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                if(Object.prototype.toString.call(val_default) === '[object Object]'){
+                    html+=`<button class="btn btn-sm btn-light" data-json="${encodeURIComponent(JSON.stringify(val_default))}" onClick="cr_data.showObj(this)"><i class="fas fa-box"></i> Object</button>`;
+                }else{
+                    html+='<input class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                }
                 break;
         }
         return html;
@@ -193,6 +183,31 @@ class Carrot_Database_Json{
             cr.download(db,"data.json");
         });
         $("#cr_data_dock_btn").append(btnDownload);
+    }
+
+    intemField(k,v){
+        var empObj=$(`
+            <div class="form-group">
+                <label>${k}</label>
+                <div class="input-group">
+                    <div class="input-group-prepend"><span class="input-group-text">${cr_data.getIconBykey(k)}</span></div>
+                    ${cr_data.getFieldTypeByKey(k,v)}
+                    <div class="input-group-append">
+                        <span role="button" class="input-group-text" onClick="cr.copy('#inp_db_${k}');"><i class="fas fa-copy"></i></span>
+                        <span role="button" class="input-group-text" onClick="cr.paste('#inp_db_${k}');"><i class="fas fa-paste"></i></span>
+                    </div>
+                </div>
+            </div>
+        `);
+        return empObj;
+    }
+
+    showObj(emp){
+        var datajson=$(emp).attr("data-json");
+        const jsonString = decodeURIComponent(datajson);
+        const data = JSON.parse(jsonString);
+        this.info(data);
+        return false;
     }
 }
 var cr_data=new Carrot_Database_Json();

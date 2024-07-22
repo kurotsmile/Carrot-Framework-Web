@@ -42,7 +42,8 @@ Here is a list of key methods that can be quickly integrated into your web build
 ### loadJs
 `cr`.loadJs(path_js, obj_call, func_call = "show")
 
-Dynamically loads a JavaScript file and executes a specified function.
+Dynamically loads a JavaScript file and executes a specified function. Phương thức này giúp thêm các thư viện , class, function javascript khi cần thiết để tránh quá trình tải lâu và dư thừa dữ liệu nạp lúc khởi tạo
+
 - `path_js`: Path to the JavaScript file.
 - `obj_call`: Object to call the function on.
 - `func_call`: Name of the function to call (default is "show").
@@ -140,6 +141,13 @@ Returns a random item from the array.
 
 - Parameters
 	- `array` (Array):  The list from which to get a random item.
+
+### sortKeys
+
+> `cr`.**sortKeys**(obj)
+
+- Tham số
+	- `obj` (Object) : Đối tượng hoặc một object json
 
 ### arg
 

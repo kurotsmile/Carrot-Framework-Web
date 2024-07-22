@@ -437,6 +437,12 @@ class Carrot{
         return limitedArray;
     }
 
+    sortKeys(jsonObject) {
+        const entries = Object.entries(jsonObject);
+        entries.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
+        return Object.fromEntries(entries);
+    }
+
     show_share(url='',title='',tip='Get Now'){
         this.share(url,title,tip);
     }
