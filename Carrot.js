@@ -27,8 +27,10 @@ class Carrot{
 
     act_done_pay=null;
     btnTop=null;
-
+    
     path="Carrot-Framework-Web";
+
+    box_cur=null;
 
     list_icon_top=[
         '<i class="fas fa-arrow-circle-up"></i>',
@@ -519,6 +521,77 @@ class Carrot{
         a.download = file_name;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    create_id(length=8) {
+        var result = '';
+        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        var timestamp = new Date().getTime();
+        return result + timestamp; 
+    }
+
+    box(title='Box Title',body='',show_done=null,act_done=null,act_close=null,footer=''){
+        if(this.box_cur==null){
+            var id_box="cr_box_"+cr.create_id();
+            var empBox=$(`
+                <div class="modal fade" id="${id_box}" role="dialog" aria-labelledby="cr_box_Label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">${title}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${body}
+                    </div>
+                    <div class="modal-footer">
+                        ${footer}
+                    </div>
+                    </div>
+                </div>
+                </div>
+            `);
+
+            this.box_cur=empBox;
+
+            $("body").append(cr.box_cur).ready(function() {
+                $(cr.box_cur).modal('show');
+                if(show_done!=null) show_done(cr.box_cur);
+            });
+        }else{
+            $(cr.box_cur).modal('show');
+            $(cr.box_cur).find(".modal-footer").html("");
+            $(cr.box_cur).find(".modal-title").html(title);
+            $(cr.box_cur).find(".modal-body").html(body).ready(function(){
+                if(show_done!=null) show_done(cr.box_cur);
+            });
+        }
+
+        if(act_done!=null){
+            var btn_done=$(`<button type="button" style="background:${cr.color_btn}" class="btn text-white btn_cr_ok">Ok</button>`);
+            $(btn_done).click(function(){
+                $(cr.box_cur).modal('hide');
+               if(act_done!=null) act_done();
+            });
+            $(cr.box_cur).find(".modal-footer").append(btn_done);
+        }
+
+        if(act_close!=null){
+            var btn_cancel=$(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>`); 
+            $(cr.box_cur).find(".modal-footer").append(btn_cancel);
+        }
+
+        $(this.box_cur).on('hidden.bs.modal', function () {
+            if(act_close!=null) act_close();
+        });
+
+        return this.box_cur;
     }
 }
 var cr=new Carrot();
