@@ -49,8 +49,17 @@ class Carrot_Database_Json{
             case 'id':
                 icon='<i class="fas fa-robot"></i>';
                 break;
+            case 'mp3':
+                icon='<i class="fas fa-file-audio"></i>';
+                break;
+            case 'link':
+                icon='<i class="fas fa-link"></i>';
+                break;
             case 'name':
                 icon='<i class="fas fa-file-signature"></i>';
+                break;
+            case 'user':
+                icon='<i class="fas fa-user"></i>';
                 break;
             case 'color':
                 icon='<i class="fas fa-paint-brush"></i>';
@@ -139,7 +148,7 @@ class Carrot_Database_Json{
             html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+v+'" db-key="'+k+'">';
                 html+='<td>'+cr_data.getIconBykey(k)+'</td>';
                 html+='<td>'+k+'</td>';
-                html+='<td><small>'+v+'</small></td>';
+                html+='<td>'+cr_data.itemValInfo(k,v)+'</td>';
             html+='</tr>';
         });
         html+='</tbody>';
@@ -196,6 +205,25 @@ class Carrot_Database_Json{
             </div>
         `);
         return empObj;
+    }
+
+    itemValInfo(k,v){
+        var val='';
+        switch (k) {
+            case 'color':
+                val='<i class="fas fa-palette" style="color:'+v+'"></i> '+v;
+                break;
+            case 'user':
+                val=v.name;
+                break;
+            default:
+                if(v=="")
+                    val='<i class="fas fa-border-none"></i> None';
+                else
+                    val='<small>'+v+'</small>';
+                break;
+        }
+        return val;
     }
 
     showObj(emp){
