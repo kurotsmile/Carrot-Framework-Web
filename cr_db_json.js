@@ -40,7 +40,11 @@ class Carrot_Database_Json{
             showCancelButton: true,
             showCloseButton: true,
             confirmButtonColor: cr.color_btn,
-            didOpen:()=>{cr_data.dockBtnForBox(data);}
+            didOpen:()=>{
+                cr_data.dockBtnForBox(data);
+                var btnAddField=$('<button class="btn btn-sm"><i class="far fa-plus-square"></i> Add Field</button>');
+                $("#cr_data_dock_btn").append(btnAddField);
+            }
         }).then((result)=>{
             if(result.isConfirmed){
                 var db={};
@@ -91,12 +95,16 @@ class Carrot_Database_Json{
                     }
                 html+='</datalist>';
                 break;
+            case 'color':
+                html+='<input type="color" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                break;
             case 'lyrics':
                 html+='<textarea class="form-control inp_db" db-key="'+key+'" rows="3" id="inp_db_'+key+'"/>'+val_default+'</textarea>';
                 break;
             case 'date':
                 html+='<input type="date" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
                 break;
+            case 'date_create':
             case 'publishedAt':
                 html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
                 break;
@@ -157,19 +165,19 @@ class Carrot_Database_Json{
     }
 
     dockBtnForBox(data){
-        var btnInfo=$('<button class="btn btn-sm">Info</button>');
+        var btnInfo=$('<button class="btn btn-sm"><i class="fas fa-info-circle"></i> Info</button>');
         $(btnInfo).click(function(){
             cr_data.info(data);
         });
         $("#cr_data_dock_btn").append(btnInfo);
 
-        var btnEdit=$('<button class="btn btn-sm">Edit</button>');
+        var btnEdit=$('<button class="btn btn-sm"><i class="fas fa-edit"></i> Edit</button>');
         $(btnEdit).click(function(){
             cr_data.edit(data);
         });
         $("#cr_data_dock_btn").append(btnEdit);
 
-        var btnDownload=$('<button class="btn btn-sm">Download</button>');
+        var btnDownload=$('<button class="btn btn-sm"><i class="fas fa-file-download"></i> Download</button>');
         $(btnDownload).click(function(){
             var db={};
                 $(".inp_db").each(function(index,emp){
