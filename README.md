@@ -36,6 +36,8 @@ Here is a list of key methods that can be quickly integrated into your web build
 - [limitItem](#limitItem)
 - [showSearch](#showSearch)
 - [shuffle](#shuffle)
+- [show_youtube](#show_youtube)
+- [download](#download)
 
 ### loadJs
 `cr`.loadJs(path_js, obj_call, func_call = "show")
@@ -236,7 +238,17 @@ Phương thức này tương tự `cr`.**set_color_btn**
 ```
 
 ### cr.setSiteName(name)
+
 Sets the site name.
+
+> `cr`.**setSiteName**(name)
+
+- Tham số
+	- `name` (string) : Tên của web app, tham số này được áp dụng trong các trang pp và tos
+
+```javascript
+	cr.setSiteName("Music Store");
+```
 
 ### cr.setSiteUrl(url)
 Sets the site URL. giá trị này có thể áp dụng trong chức năng show_pp và show_tos
@@ -247,10 +259,10 @@ Sets the site URL. giá trị này có thể áp dụng trong chức năng
 ```javascript
 	cr.setSiteUrl("https://example.com");
 ```
-### cr.setVer(ver)
+### setVer
 Sets the version to avoid cache memory issues.
 
-> `cr`.***setVer***
+> `cr`.***setVer***(ver)
 
 - Tham số 
 	- `ver` (stirng) : số phiên bản các file để tải lại các file trên trình duyện tránh sự lưu trữ tạm
@@ -259,12 +271,52 @@ Sets the version to avoid cache memory issues.
 	cr.setVer("0.0.1");
 ```
 
+### download
+
+> `cr`.***download**(data,file_name,type_file='application/json');
+
+- Tham số
+	- `data` (string) : Dữ liệu cho file tải xuống. dữ liệu này sẽ được tự động chuyển đổi định dạng cho phù hợp với tham số `type_file`
+	- `file_name` (string) : Tên tệp tải xuống
+	- `type_file` (string) : Loại định dạng của file tải xuống
+		- Text Media Types:
+			- text/plain: Văn bản thuần (plain text)
+			- text/html: HTML
+			- text/css: CSS
+			- text/javascript: JavaScript (có thể dùng application/javascript)
+		- Image Media Types:
+
+			- image/jpeg: JPEG hình ảnh
+			- image/png: PNG hình ảnh
+			- image/gif: GIF hình ảnh
+			- image/webp: WebP hình ảnh
+			- image/svg+xml: SVG hình ảnh
+		- Audio Media Types:
+			- audio/mpeg: MP3 âm thanh
+			- audio/wav: WAV âm thanh
+			- audio/ogg: Ogg âm thanh
+			- audio/aac: AAC âm thanh
+		- Video Media Types:
+			- video/mp4: MP4 video
+			- video/webm: WebM video
+			- video/ogg: Ogg video
+		- Application Media Types:
+			- application/json: JSON dữ liệu
+			- application/xml: XML dữ liệu
+			- application/x-www-form-urlencoded: Dữ liệu biểu mẫu URL-encoded
+			- application/octet-stream: Dữ liệu nhị phân
+			- application/pdf: PDF tài liệu
+			- application/zip: ZIP tập tin
+		- Font Media Types:
+			- font/woff: Web Open Font Format (WOFF)
+			- font/woff2: Web Open Font Format 2 (WOFF2)
+			- font/ttf: TrueType Font (TTF)
+			- font/otf: OpenType Font (OTF)
+
 ## Data Carrot
 Những phương thức sử lý và xây Dữ liệu cho web app
 
-## getYouTubeVideoId
-
-### UI Box
+# UI Box
 Những phương thức tích hợp giao diện để người dùng tương tác
 
 ## show_setting
@@ -300,6 +352,29 @@ Displays a payment prompt with the specified item name, tip, price, value, and t
 ```
 
 ## show_youtube
+
+Hiện hộp thoại xem video youtube
+
+> `cr`.**show_youtube**(link_ytb,html_extension="",act_done_show=null)
+
+- tham số 
+	- `link_ytb` (url) : url link youtube 
+	-  `html_extension` : html chèn mở rộng thêm các tính năng cho hộp thoại
+	-  `act_done_show` : phương thức được gọi để xử lý khi hộp thoại được bật
+
+```javascript
+	//Basic
+	cr.show_youtube("https://youtu.be/lj9lCUGAQBY");
+
+	//full
+	var html_btn='<div id="all_btn"></div>';
+	cr.show_youtube("https://youtu.be/lj9lCUGAQBY",html_btn,()=>{
+		$("#all_btn").append('<button>Info</button>');
+	});
+```
+## getYouTubeVideoId
+
+Phương thức lấy ID của liên kết video youtube
 
 ## show_donation
 

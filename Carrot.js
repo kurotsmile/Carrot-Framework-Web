@@ -499,5 +499,20 @@ class Carrot{
         var match = url.match(regex);
         return (match && match[1]) ? match[1] : null;
     }
+
+    download(data,file_name,type_file='application/json'){
+        var dataString = '';
+        if(type_file=='application/json') dataString = JSON.stringify(data);
+        else dataString=data;
+        var blob = new Blob([dataString], { type:type_file});
+    
+        var url = URL.createObjectURL(blob);
+        
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = file_name;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 }
 var cr=new Carrot();

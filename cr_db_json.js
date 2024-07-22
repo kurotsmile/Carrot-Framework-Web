@@ -33,12 +33,14 @@ class Carrot_Database_Json{
             html+='</div>';
         });
         html+='</form>';
+        html+='<div class="d-block" id="cr_data_dock_btn"></div>';
         Swal.fire({
             title:"Edit Database",
             html:html,
             showCancelButton: true,
             showCloseButton: true,
-            confirmButtonColor: cr.color_btn
+            confirmButtonColor: cr.color_btn,
+            didOpen:()=>{cr_data.dockBtnForBox(data);}
         }).then((result)=>{
             if(result.isConfirmed){
                 var db={};
@@ -64,6 +66,7 @@ class Carrot_Database_Json{
             case 'name':
                 icon='<i class="fas fa-file-signature"></i>';
                 break;
+            case 'date_create':
             case 'date':
             case 'publishedAt':
                 icon='<i class="fas fa-calendar"></i>';
@@ -133,21 +136,55 @@ class Carrot_Database_Json{
 
     info(data){
         var html='';
-        html+='<table class="table table-striped table-hover table-sm text-left">';
+        html+='<table class="table table-striped table-hover table-sm text-left  table-responsive">';
         html+='<tbody>';
         $.each(data,function(k,v){
-            html+='<tr class="animate__flipInX animate__animated">';
+            html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+v+'" db-key="'+k+'">';
+                html+='<td>'+cr_data.getIconBykey(k)+'</td>';
                 html+='<td>'+k+'</td>';
-                html+='<td>'+v+'</td>';
+                html+='<td><small>'+v+'</small></td>';
             html+='</tr>';
         });
-        html+='<tbody>';
+        html+='</tbody>';
         html+='</table>';
+        html+='<div class="d-block" id="cr_data_dock_btn"></div>';
         Swal.fire({
             title:'Info',
             html:html,
-            confirmButtonColor: cr.color_btn
+            confirmButtonColor: cr.color_btn,
+            didOpen:()=>{cr_data.dockBtnForBox(data);}
         });
+    }
+
+    dockBtnForBox(data){
+        var btnInfo=$('<button class="btn btn-sm">Info</button>');
+        $(btnInfo).click(function(){
+            cr_data.info(data);
+        });
+        $("#cr_data_dock_btn").append(btnInfo);
+
+        var btnEdit=$('<button class="btn btn-sm">Edit</button>');
+        $(btnEdit).click(function(){
+            cr_data.edit(data);
+        });
+        $("#cr_data_dock_btn").append(btnEdit);
+
+        var btnDownload=$('<button class="btn btn-sm">Download</button>');
+        $(btnDownload).click(function(){
+            var db={};
+                $(".inp_db").each(function(index,emp){
+                    var db_key=$(emp).attr("db-key");
+                    var db_val='';
+                    if ($(emp).attr('db-val') !== undefined) {
+                        db_val=$(emp).attr('db-val');
+                    } else {
+                        db_val=$(emp).val();
+                    }
+                    db[db_key]=db_val;
+                });
+            cr.download(db,"data.json");
+        });
+        $("#cr_data_dock_btn").append(btnDownload);
     }
 }
 var cr_data=new Carrot_Database_Json();
