@@ -112,14 +112,24 @@ class Carrot{
         html+='<div class="form-group">';
             html+='<label for="dropdown_lang"><i onclick="cr.act_dev()" class="fas fa-globe-asia"></i> Language</label>';
             html+='<select class="form-control" id="dropdown_lang"><select>';
-            html+='<small id="emailHelp" class="form-text text-muted">Select your country and language</small>';
+            html+='<small id="dropdown_lang_tip" class="form-text text-muted">Select your country and language</small>';
         html+='</div>';
 
         html+='<div class="form-group">';
             html+='<label for="sel_btn_top"><i class="fas fa-scroll"></i> Scroll Top Button</label>';
             html+='<div class="d-block mt-1 mb-1" id="list_btn_top_setting"></div>';
-            html+='<small id="emailHelp" class="form-text text-muted">Choose a style for the top scroll button that\'s right for you</small>';
+            html+='<small id="list_btn_top_setting_tip" class="form-text text-muted">Choose a style for the top scroll button that\'s right for you</small>';
         html+='</div>';
+
+        if(cr.dev){
+            html+='<div class="form-group">';
+                html+='<label for="dev_tool"><i class="fab fa-dev"></i> Programming support tools</label>';
+                html+='<div class="d-block mt-1 mb-1" id="dev_tool">';
+                    html+='<button class="btn btn-sm btn-dark" onclick="cr.get_google_drive_link();return false;"><i class="fab fa-google-drive"></i> Get Link Download From Google Drive</button>';
+                html+='</div>';
+                html+='<small id="dev_tool_tip" class="form-text text-muted">These are programming support functions</small>';
+            html+='</div>';
+        }
 
         html+='</form>';
         html+=html_extension;
@@ -172,6 +182,51 @@ class Carrot{
                 if(act_done!=null) act_done({"lang":cr.lang});
             }
         });
+    }
+
+    get_google_drive_link(){
+        this.input("Get Link Download","Get Link Download from Google Drive",(val)=>{
+            Swal.fire({
+                icon:"success",
+                title:"Link create success",
+                confirmButtonColor: cr.color_btn,
+                iconColor: cr.color_btn,
+                text:cr.replaceDriveUrl(val)
+            });
+        });
+    }
+
+    input(title='Enter data',txt='Please enter your data here',act_done=null){
+        Swal.fire({
+            title:title,
+            input: "text",
+            inputLabel:txt,
+            confirmButtonColor: cr.color_btn,
+            preConfirm:(val)=>{
+                if(val.trim()==""){
+                    Swal.fire({
+                        icon:"error",
+                        text:"Input data cannot be empty!",
+                        confirmButtonColor: cr.color_btn
+                    });
+                }else{
+                    if(act_done) act_done(val);
+                }
+            }
+        });
+    }
+
+    replaceDriveUrl(driveUrl) {
+        const regex = /https:\/\/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)\/view/;
+        const match = driveUrl.match(regex);
+
+        if (match && match[1]) {
+            const fileId = match[1];
+            const newUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&key=AIzaSyDKcjH_bDJz3EcqPdV5i62IZNVQ6EkyOFg`;
+            return newUrl;
+        } else {
+            throw new Error('URL không hợp lệ hoặc không phải là Google Drive URL.');
+        }
     }
 
     show_contact(){
@@ -412,7 +467,9 @@ class Carrot{
             Swal.fire({
                 icon:"success",
                 title:"Publishing mode",
-                text:"Enabled Publishing mode for web app"
+                text:"Enabled Publishing mode for web app",
+                iconColor: cr.color_btn,
+                confirmButtonColor: cr.color_btn
             });
         }else{
             this.dev=true;
@@ -420,7 +477,9 @@ class Carrot{
             Swal.fire({
                 icon:"info",
                 title:"Development mode",
-                text:"Enabled development mode for web app"
+                text:"Enabled development mode for web app",
+                iconColor: cr.color_btn,
+                confirmButtonColor: cr.color_btn
             });
         }
     }
@@ -601,5 +660,26 @@ class Carrot{
 
         return this.box_cur;
     }
+
+    get_json(url, act_done, act_fail = null) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                act_done(data);
+            })
+            .catch(error => {
+                if (act_fail) {
+                    act_fail(error);
+                } else {
+                    console.error('Error:', error);
+                }
+        });
+    }
+    
 }
 var cr=new Carrot();
