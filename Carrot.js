@@ -59,6 +59,14 @@ class Carrot{
             this.addOrder(this.data_order_cr);
         }
         this.loadJs("Carrot-Framework-Web/cr_db_json.js");
+        /*
+        this.get_json("lang/"+this.lang+".json",(data)=>{
+            $(".lang").each(function(index,emp){
+                var key_lang=$(emp).attr("key_lang");
+                $(emp).html(data[key_lang]);
+            });
+        });
+        */
     }
 
     setSiteName(name){
@@ -129,6 +137,17 @@ class Carrot{
                 html+='</div>';
                 html+='<small id="dev_tool_tip" class="form-text text-muted">These are programming support functions</small>';
             html+='</div>';
+
+            html+='<div class="form-group">';
+                html+='<label for="dev_json"><i class="fas fa-file-invoice"></i> Json Editor</label>';
+                html+='<div class="input-group">';
+                    html+='<div class="custom-file">';
+                        html+='<input type="file" class="form-control custom-file-input" id="dev_json_fileInput" aria-describedby="dev_json_fileInput" aria-label="Upload">';
+                        html+='<label class="custom-file-label" for="customFile">Choose file</label>';
+                    html+='</div>';
+                html+='</div>';
+                html+='<small id="dev_json_tip" class="form-text text-muted">These are programming support functions</small>';
+            html+='</div>';
         }
 
         html+='</form>';
@@ -174,6 +193,30 @@ class Carrot{
                     });
                     $("#list_btn_top_setting").append(empSettingBtnTop);
                 });
+
+                if(cr.dev){
+                    $('#dev_json_fileInput').on('change', function(event) {
+                        var file = event.target.files[0];
+                        if (file) {
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                try {
+                                    var jsonContent = JSON.parse(e.target.result);
+                                    cr_data.info(jsonContent);
+                                    Swal.close();
+                                } catch (error) {
+                                    Swal.fire({
+                                        icon:"error",
+                                        text:error,
+                                        title:"Error",
+                                        confirmButtonColor: cr.color_btn
+                                    })
+                                }
+                            };
+                            reader.readAsText(file);
+                        }
+                    });
+                }
             }
         }).then((result)=>{
             if(result.isConfirmed){

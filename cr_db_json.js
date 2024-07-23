@@ -275,20 +275,31 @@ class Carrot_Database_Json{
     }
 
     itemValInfo(k,v){
+        var checkVal=this.dbVal(v);
         var val='';
-        switch (k) {
-            case 'color':
-                val='<i class="fas fa-palette" style="color:'+v+'"></i> '+v;
-                break;
-            case 'user':
-                val=v.name;
-                break;
-            default:
-                if(v=="")
-                    val='<i class="fas fa-border-none"></i> None';
-                else
-                    val='<small>'+v+'</small>';
-                break;
+        if(checkVal.type=="array"){
+            $.each(v,function(index,obj){
+                val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
+            });
+        }else if(checkVal.type=="object"){
+            $.each(v,function(o_k,o_v){
+                val+=cr_data.itemValInfo(o_k,o_v);
+            });
+        }else{
+            switch (k) {
+                case 'color':
+                    val='<i class="fas fa-palette" style="color:'+v+'"></i> '+v;
+                    break;
+                case 'user':
+                    val=v.name;
+                    break;
+                default:
+                    if(v=="")
+                        val='<i class="fas fa-border-none"></i> None';
+                    else
+                        val='<small>'+v+'</small>';
+                    break;
+            }
         }
         return val;
     }
