@@ -105,7 +105,7 @@ class Carrot_Database_Json{
         var html='';
         switch (key) {
             case 'lang':
-                html+='<input list="inp_db_'+key+'_list" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                html+='<input list="inp_db_'+key+'_list" class="form-control inp_db" db-key="'+key+'" db-type="string"  value="'+val_default+'" id="inp_db_'+key+'"/>';
                 html+='<datalist id="inp_db_'+key+'_list">';
                     if(cr.list_lang!=null){
                         $.each(cr.list_lang,function(index,lang){
@@ -115,23 +115,24 @@ class Carrot_Database_Json{
                 html+='</datalist>';
                 break;
             case 'color':
-                html+='<input type="color" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                html+='<input type="color" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
                 break;
             case 'lyrics':
-                html+='<textarea class="form-control inp_db" db-key="'+key+'" rows="3" id="inp_db_'+key+'"/>'+val_default+'</textarea>';
+                html+='<textarea class="form-control inp_db" db-key="'+key+'" db-type="string" rows="3" id="inp_db_'+key+'"/>'+val_default+'</textarea>';
                 break;
             case 'date':
-                html+='<input type="date" class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                html+='<input type="date" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
                 break;
             case 'date_create':
             case 'publishedAt':
-                html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
+                html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" db-type="string" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
                 break;
             default:
-                if(Object.prototype.toString.call(val_default) === '[object Object]'){
-                    html+=`<button class="btn btn-sm btn-light" data-json="${encodeURIComponent(JSON.stringify(val_default))}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object</button>`;
+                var db_val_filed=cr_data.dbVal(val_default);
+                if(db_val_filed.type=="object"){
+                    html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object</button>`;
                 }else{
-                    html+='<input class="form-control inp_db" db-key="'+key+'" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                    html+='<input class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
                 }
                 break;
         }
@@ -170,7 +171,8 @@ class Carrot_Database_Json{
         html+='<table class="table table-striped table-hover table-sm text-left table-responsive">';
         html+='<tbody>';
         $.each(data,function(k,v){
-            html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+v+'" db-key="'+k+'">';
+            var db_v=cr_data.dbVal(v);
+            html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+db_v.val+'" db-type="'+db_v.type+'" db-key="'+k+'">';
                 html+='<td>'+cr_data.getIconBykey(k)+'</td>';
                 html+='<td>'+k+'</td>';
                 html+='<td>'+cr_data.itemValInfo(k,v)+'</td>';
@@ -184,6 +186,47 @@ class Carrot_Database_Json{
         });
     }
 
+    dbVal(v) {
+        let type;
+        let value;
+    
+        if (typeof v === 'object') {
+            if (Array.isArray(v)) {
+                type = 'array';
+            } else if (v === null) {
+                type = 'null';
+            } else {
+                type = 'object';
+            }
+        } else {
+            type = typeof v;
+        }
+        value = (type === 'object' || type === 'array') ? JSON.stringify(v) : String(v);
+        value = encodeURIComponent(value);
+        return { val: value, type: type };
+    }
+
+    dbGetVal(v, type) {
+        let decodedValue;
+        decodedValue = decodeURIComponent(v);
+        switch (type) {
+            case 'object':
+            case 'array':
+                try {
+                    return JSON.parse(decodedValue);
+                } catch (e) {
+                    console.error('JSON parsing error:', e);
+                    return null;
+                }
+            case 'string':
+            case 'number':
+            case 'boolean':
+                return decodedValue;
+            default:
+                return decodedValue;
+        }
+    }
+    
     dockBtnForBox(data,emp_add){
         var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i> Info</button>');
         $(btnInfo).click(function(){
@@ -203,11 +246,10 @@ class Carrot_Database_Json{
                 $(".inp_db").each(function(index,emp){
                     var db_key=$(emp).attr("db-key");
                     var db_val='';
-                    if ($(emp).attr('db-val') !== undefined) {
-                        db_val=$(emp).attr('db-val');
-                    } else {
-                        db_val=$(emp).val();
-                    }
+                    if($(emp).attr("db-val"))
+                        db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
+                    else
+                        db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
                     db[db_key]=db_val;
                 });
             cr.download(db,"data.json");
@@ -252,7 +294,7 @@ class Carrot_Database_Json{
     }
 
     showObj(emp){
-        var datajson=$(emp).attr("data-json");
+        var datajson=$(emp).attr("db-val");
         const jsonString = decodeURIComponent(datajson);
         const data = JSON.parse(jsonString);
         var data_object_main=this.obj_temp;
