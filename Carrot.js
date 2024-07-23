@@ -49,7 +49,7 @@ class Carrot{
         if(localStorage.getItem("dev")!=null){
             if(localStorage.getItem("dev")=="1") this.dev=true;
         }
-
+        if(localStorage.getItem("lang")!=null) this.lang=localStorage.getItem("lang");
         if(localStorage.getItem("index_cur_btn_top")!=null) this.index_cur_btn_top=parseInt(localStorage.getItem("index_cur_btn_top"));
 
         $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/carrot_style.css">');
