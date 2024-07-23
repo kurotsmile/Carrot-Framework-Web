@@ -52,6 +52,12 @@ class Carrot_Database_Json{
             case 'mp3':
                 icon='<i class="fas fa-file-audio"></i>';
                 break;
+            case 'album':
+                icon='<i class="fas fa-compact-disc"></i>';
+                break;
+            case 'genre':
+                icon='<i class="fas fa-theater-masks"></i>';
+                break;
             case 'link':
                 icon='<i class="fas fa-link"></i>';
                 break;
@@ -61,13 +67,28 @@ class Carrot_Database_Json{
             case 'user':
                 icon='<i class="fas fa-user"></i>';
                 break;
+            case 'artist':
+                icon='<i class="fas fa-user-tie"></i>';
+                break;
             case 'color':
                 icon='<i class="fas fa-paint-brush"></i>';
                 break;
             case 'date_create':
             case 'date':
             case 'publishedAt':
-                icon='<i class="fas fa-calendar"></i>';
+                icon='<i class="fas fa-calendar-day"></i>';
+                break;
+            case 'link_ytb':
+                icon='<i class="fab fa-youtube"></i>';
+                break;
+            case 'avatar':
+                icon='<i class="fas fa-portrait"></i>';
+                break;
+            case 'year':
+                icon='<i class="fas fa-calendar-week"></i>';
+                break;
+            case 'id_import':
+                icon='<i class="fas fa-satellite"></i>';
                 break;
             default:
                 icon='<i class="fas fa-database"></i>';
