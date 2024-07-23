@@ -40,6 +40,10 @@ class Carrot_Database_Json{
         });
     }
 
+    icon(key){
+        return this.getIconBykey(key);
+    }
+
     getIconBykey(key){
         var icon='';
         switch (key) {
@@ -56,7 +60,7 @@ class Carrot_Database_Json{
                 icon='<i class="fas fa-compact-disc"></i>';
                 break;
             case 'genre':
-                icon='<i class="fas fa-theater-masks"></i>';
+                icon='<i class="fas fa-guitar"></i>';
                 break;
             case 'link':
                 icon='<i class="fas fa-link"></i>';

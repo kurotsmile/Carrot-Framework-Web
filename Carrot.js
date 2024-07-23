@@ -352,6 +352,10 @@ class Carrot{
         }); 
     }
 
+    goto(emp,pos_top_exc=0){
+        this.go_to(emp,pos_top_exc);
+    }
+
     go_to(emp,pos_top_exc=0){
         $('html, body').animate({
             scrollTop: $(emp).offset().top-pos_top_exc
@@ -419,6 +423,10 @@ class Carrot{
                 text:"Enabled development mode for web app"
             });
         }
+    }
+
+    random(list){
+        return this.get_random(list);
     }
 
     get_random(list){

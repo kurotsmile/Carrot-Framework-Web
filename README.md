@@ -26,18 +26,28 @@ $(document).ready(function(){
 ## Methods
 
 Here is a list of key methods that can be quickly integrated into your web building process
-
-- [loadJs](#loadJs)
-- [top](#top)
-- [add_btn_top](#add_btn_top)
-- [paste](#paste)
-- [copy](#copy)
-- [share](#share)
-- [limitItem](#limitItem)
-- [showSearch](#showSearch)
-- [shuffle](#shuffle)
-- [show_youtube](#show_youtube)
-- [download](#download)
+- Programming support
+	- [loadJs](#loadJs)
+	- [arg](#arg)
+	- [goto](#go_to)
+	- [top](#top)
+	- [paste](#paste)
+	- [copy](#copy)
+	- [limitItem](#limitItem)
+	- [shuffle](#shuffle)
+	- [random](#get_random)
+	- [download](#download)
+	- [sortKeys](#sortKeys)
+	- [setVer](#setVer)
+- Methods of interaction interface with user
+	- [add_btn_top](#add_btn_top)
+	- [share](#share)
+	- [showSearch](#showSearch)
+	- [show_youtube](#show_youtube)
+- The method used to process and display data
+	- [icon](#icon)
+	- [convertISOToLocalDatetime](#convertISOToLocalDatetime)
+	- [convertLocalDatetimeToISO](#convertLocalDatetimeToISO)
 
 ### loadJs
 `cr`.loadJs(path_js, obj_call, func_call = "show")
@@ -139,6 +149,8 @@ Returns a random item from the array.
 
 > `cr`.**get_random**(array)
 
+> `cr`.**random**(array)
+
 - Parameters
 	- `array` (Array):  The list from which to get a random item.
 
@@ -163,6 +175,8 @@ Returns `false` if the specified URL parameter does not exist.
 Navigates to the specified element with optional start and done actions.
 
 > `cr`.**go_to**(emp, act_start=null, act_done=null)
+
+> `cr`.**goto**(emp, act_start=null, act_done=null)
 
 - Parameters:
 	- `emp` (string): The element to navigate to.
@@ -322,12 +336,52 @@ Sets the version to avoid cache memory issues.
 			- font/otf: OpenType Font (OTF)
 
 ## Data Carrot
-Những phương thức sử lý và xây Dữ liệu cho web app
+Những phương thức xử lý và xây Dữ liệu cho web app bạn có thể gọi các phương thức liên quan để việc xử lý,xây dựng các biểu mẫu dữ liệu và hiển thị dữ liệu ở hai biến toàn cục này:
 
-# UI Box
+ > `cr_data` or `cr.data`
+
+### icon
+
+Trả về biểu tượng tương ứng liên quan với từ tham số từ khóa
+
+> `cr_data`.**icon**(key);
+
+> `cr_data`.**getIconBykey**(key);
+
+- Tham số 
+	- `key` (string) : tên từ khóa hoặc tên trường dữ liệu
+
+```javascript
+	var icon_file_mp3=cr_data.icon('mp3');
+	$("#title").append(icon_file_mp3+" Love You");
+```
+### convertISOToLocalDatetime
+
+Dùng để chuyển đổi thời gian ISO thành định dạng thời giang phù hợp với kiểu DateTime javascript
+
+> `cr_data`.**convertISOToLocalDatetime**(isoString)
+
+```javascript
+	var date_loca=cr_data.convertISOToLocalDatetime('2022-12-12T13:00:09Z');
+	console.loger(date_loca);
+	//out: 12/12/2022 00:09PM
+```
+### convertLocalDatetimeToISO
+
+> `cr_data`.**convertLocalDatetimeToISO**(datetimeLocalString)
+
+Trái ngược với phương thức convertISOToLocalDatetime dùng để chuyển đổi định dạng thời giang dữ liệu cục bộ thành định dạng thời gian theo chứng chỉ ISO quốc tế
+
+```javascript
+var date_pub=cr_data.convertLocalDatetimeToISO('12/12/2022 00:09PM');
+	console.loger(date_pub);
+	//out: 2022-12-12T13:00:09Z
+```
+
+## UI Box
 Những phương thức tích hợp giao diện để người dùng tương tác
 
-## show_setting
+### show_setting
 Phương thức hiện hộp thoại tùy chỉnh cài đặt web với trường ngôn ngữ , kiểu dáng nút trở về đầu trang và bạn có thể thêm các trường tùy biến vào tham số **html_extension**
 
 > `cr`.**show_setting**(act_done=null,html_extension='')
@@ -359,7 +413,7 @@ Displays a payment prompt with the specified item name, tip, price, value, and t
 	cr.show_pay("Buy Vip","Unlock func download ebooks file","all_ebook","type_user");
 ```
 
-## show_youtube
+### show_youtube
 
 Hiện hộp thoại xem video youtube
 
@@ -380,11 +434,11 @@ Hiện hộp thoại xem video youtube
 		$("#all_btn").append('<button>Info</button>');
 	});
 ```
-## getYouTubeVideoId
+### getYouTubeVideoId
 
 Phương thức lấy ID của liên kết video youtube
 
-## show_donation
+### show_donation
 
 ### showSearch
 
