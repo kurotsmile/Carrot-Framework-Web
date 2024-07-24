@@ -93,11 +93,7 @@ class Carrot{
                 if(obj_call!=null) window[obj_call][func_call]();
             })
             .fail(function(jqxhr, settings, exception) {
-                Swal.fire({
-                    title:"Error",
-                    icon:"error",
-                    text:"Script loading failed: " + exception
-                })
+                cr.msg("Script loading failed: " + exception,"Error","error");
             });
         }
     }
@@ -205,12 +201,7 @@ class Carrot{
                                     cr_data.info(jsonContent);
                                     Swal.close();
                                 } catch (error) {
-                                    Swal.fire({
-                                        icon:"error",
-                                        text:error,
-                                        title:"Error",
-                                        confirmButtonColor: cr.color_btn
-                                    })
+                                    cr.msg(error,"Error","error");
                                 }
                             };
                             reader.readAsText(file);
@@ -288,14 +279,7 @@ class Carrot{
         if(this.link_github!="") html+="<li><i class='fab fa-github'></i> Github: <a href='"+this.link_github+"' target='_blank'>"+this.link_github+"</a></li>";
     
         html+='</ul>';
-
-        Swal.fire({
-            title:"Contacts",
-            icon:"info",
-            html:html,
-            iconColor: cr.color_btn,
-            confirmButtonColor: cr.color_btn
-        })
+        this.msg(html,"Contacys","info");
     }
 
     createCodeOrder(){
@@ -431,12 +415,7 @@ class Carrot{
         .done(function(data) {
             if(act_done!=null) act_done(data);
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            Swal.fire({
-                icon:"error",
-                title:"Error",
-                text:"Unable to download data from ("+url+"). Please try again later!",
-                confirmButtonColor: cr.color_btn
-            });
+            cr.msg("Unable to download data from ("+url+"). Please try again later!","Error","error");
             if(act_fail!=null) act_fail();
         });
     }
@@ -507,23 +486,11 @@ class Carrot{
         if(this.dev){
             this.dev=false;
             localStorage.setItem("dev","0");
-            Swal.fire({
-                icon:"success",
-                title:"Publishing mode",
-                text:"Enabled Publishing mode for web app",
-                iconColor: cr.color_btn,
-                confirmButtonColor: cr.color_btn
-            });
+            this.msg("Enabled Publishing mode for web app","Publishing mode","success");
         }else{
             this.dev=true;
             localStorage.setItem("dev","1");
-            Swal.fire({
-                icon:"info",
-                title:"Development mode",
-                text:"Enabled development mode for web app",
-                iconColor: cr.color_btn,
-                confirmButtonColor: cr.color_btn
-            });
+            this.msg("Enabled development mode for web app","Development mode","info");
         }
     }
 
@@ -724,5 +691,24 @@ class Carrot{
         });
     }
     
+    msg(msg='',title='',icon=''){
+        var obj_msg={
+            title:title,
+            iconColor: cr.color_btn,
+            confirmButtonColor: cr.color_btn
+        }
+        if(title!='') obj_msg["title"]=title;
+        if(icon!='') obj_msg["icon"]=icon;
+        if(this.containsHTMLTags(msg))
+            obj_msg["html"]=msg;
+        else
+            obj_msg["text"]=msg;
+        Swal.fire(obj_msg);
+    }
+
+    containsHTMLTags(str) {
+        const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
+        return htmlTagPattern.test(str);
+    }
 }
 var cr=new Carrot();

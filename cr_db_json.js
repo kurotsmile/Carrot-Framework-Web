@@ -3,7 +3,7 @@ class Carrot_Database_Json{
     obj_temp=null;
 
     clear_value(obj){
-        var objBlank=obj;
+        var objBlank= Object.assign({}, obj);
         $.each(objBlank,function(k,v){
             objBlank[k]="";
         });
