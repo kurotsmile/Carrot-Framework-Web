@@ -10,11 +10,11 @@ class Carrot_Database_Json{
         return objBlank;
     }
 
-    add(data,act_done){
-        this.edit(data,act_done);
+    add(data,act_done,fieldCustomer=null){
+        this.edit(data,act_done,fieldCustomer);
     }
 
-    edit(data,act_done){
+    edit(data,act_done,fieldCustomer=null){
         this.obj_temp=data;
         cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
             var empDock=emp.find(".modal-footer");
@@ -27,7 +27,10 @@ class Carrot_Database_Json{
             $(empDock).append(btnAddField);
 
             $.each(data,function(k,v){
-               $(empForm).append(cr_data.itemField(k,v));
+                if(fieldCustomer!=null)
+                    $(empForm).append(cr_data.itemField(k,v,fieldCustomer[k]));
+                else
+                    $(empForm).append(cr_data.itemField(k,v));
             });
         },()=>{
             var db={};
@@ -101,40 +104,59 @@ class Carrot_Database_Json{
         return icon;
     }
 
-    getFieldTypeByKey(key,val_default=''){
+    getFieldTypeByKey(key,val_default='',fieldCustomer=null){
         var html='';
-        switch (key) {
-            case 'lang':
-                html+='<input list="inp_db_'+key+'_list" class="form-control inp_db" db-key="'+key+'" db-type="string"  value="'+val_default+'" id="inp_db_'+key+'"/>';
-                html+='<datalist id="inp_db_'+key+'_list">';
-                    if(cr.list_lang!=null){
-                        $.each(cr.list_lang,function(index,lang){
-                            html+='<option value="'+lang.key+'">'+lang.name+'</option>';
-                        });
+        if(fieldCustomer!=null){
+            switch (fieldCustomer.type) {
+                case "list":
+                case "select":
+                case "dropdown":
+                    html+='<select class="form-select custom-select"  db-key="'+key+'"  db-type="string"  id="inp_db_'+key+'">';
+                    $.each(fieldCustomer.datas,function(index,d){
+                        if(d.value==val_default)
+                            html+='<option value="'+d.value+'" selected="true">'+d.label+'</option>';
+                        else
+                            html+='<option value="'+d.value+'">'+d.label+'</option>';
+                    });
+                    html+='</select>';
+                    break;
+                default:
+                    break;
+            }
+        }else{
+            switch (key) {
+                case 'lang':
+                    html+='<input list="inp_db_'+key+'_list" class="form-control inp_db" db-key="'+key+'" db-type="string"  value="'+val_default+'" id="inp_db_'+key+'"/>';
+                    html+='<datalist id="inp_db_'+key+'_list">';
+                        if(cr.list_lang!=null){
+                            $.each(cr.list_lang,function(index,lang){
+                                html+='<option value="'+lang.key+'">'+lang.name+'</option>';
+                            });
+                        }
+                    html+='</datalist>';
+                    break;
+                case 'color':
+                    html+='<input type="color" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                    break;
+                case 'lyrics':
+                    html+='<textarea class="form-control inp_db" db-key="'+key+'" db-type="string" rows="3" id="inp_db_'+key+'"/>'+val_default+'</textarea>';
+                    break;
+                case 'date':
+                    html+='<input type="date" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
+                    break;
+                case 'date_create':
+                case 'publishedAt':
+                    html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" db-type="string" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
+                    break;
+                default:
+                    var db_val_filed=cr_data.dbVal(val_default);
+                    if(db_val_filed.type=="object"){
+                        html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object</button>`;
+                    }else{
+                        html+='<input class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
                     }
-                html+='</datalist>';
-                break;
-            case 'color':
-                html+='<input type="color" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
-                break;
-            case 'lyrics':
-                html+='<textarea class="form-control inp_db" db-key="'+key+'" db-type="string" rows="3" id="inp_db_'+key+'"/>'+val_default+'</textarea>';
-                break;
-            case 'date':
-                html+='<input type="date" class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
-                break;
-            case 'date_create':
-            case 'publishedAt':
-                html+='<input class="form-control inp_db"  type="datetime-local" db-key="'+key+'" db-type="string" value="'+this.convertISOToLocalDatetime(val_default)+'" id="inp_db_'+key+'"/>';
-                break;
-            default:
-                var db_val_filed=cr_data.dbVal(val_default);
-                if(db_val_filed.type=="object"){
-                    html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object</button>`;
-                }else{
-                    html+='<input class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
-                }
-                break;
+                    break;
+            }
         }
         return html;
     }
@@ -257,13 +279,13 @@ class Carrot_Database_Json{
         $(emp_add).append(btnDownload);
     }
 
-    itemField(k,v){
+    itemField(k,v,fieldCustomer=null){
         var empObj=$(`
             <div class="form-group">
                 <label>${k}</label>
                 <div class="input-group">
                     <div class="input-group-prepend"><span class="input-group-text">${cr_data.getIconBykey(k)}</span></div>
-                    ${cr_data.getFieldTypeByKey(k,v)}
+                    ${cr_data.getFieldTypeByKey(k,v,fieldCustomer)}
                     <div class="input-group-append">
                         <span role="button" class="input-group-text" onClick="cr.copy('#inp_db_${k}');"><i class="fas fa-copy"></i></span>
                         <span role="button" class="input-group-text" onClick="cr.paste('#inp_db_${k}');"><i class="fas fa-paste"></i></span>
@@ -337,6 +359,15 @@ class Carrot_Database_Json{
                 }             
             }
         });
+    }
+
+    /*
+        var fileds={};
+        fields["action"]=customr_field("select",{"thanh","rot","nhung","tho"});
+    */
+
+    fieldCustomer(type,list_option=nul){
+        return {type:type,datas:list_option};
     }
 }
 var cr_data=new Carrot_Database_Json();
