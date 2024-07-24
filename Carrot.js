@@ -32,6 +32,9 @@ class Carrot{
 
     box_cur=null;
 
+    multi_language=false;
+    lang_data=null;
+
     list_icon_top=[
         '<i class="fas fa-arrow-circle-up"></i>',
         '<i class="fas fa-chevron-circle-up"></i>',
@@ -45,7 +48,7 @@ class Carrot{
     ];
     index_cur_btn_top=0;
     
-    onLoad(){
+    onLoad(is_langs=false){
         if(localStorage.getItem("dev")!=null){
             if(localStorage.getItem("dev")=="1") this.dev=true;
         }
@@ -59,14 +62,27 @@ class Carrot{
             this.addOrder(this.data_order_cr);
         }
         this.loadJs("Carrot-Framework-Web/cr_db_json.js");
-        /*
-        this.get_json("lang/"+this.lang+".json",(data)=>{
+        
+        this.multi_language=is_langs;
+        this.load_multi_language();
+    }
+
+    load_multi_language(){
+        if(this.multi_language){
+            this.get_json("lang/"+this.lang+".json",(data)=>{
+                cr.lang_data=data;
+                cr.update_lang();
+            });
+        }
+    }
+
+    update_lang(){
+        if(this.lang_data!=null){
             $(".lang").each(function(index,emp){
                 var key_lang=$(emp).attr("key_lang");
-                $(emp).html(data[key_lang]);
+                if(cr.lang_data[key_lang]) $(emp).html(cr.lang_data[key_lang]);
             });
-        });
-        */
+        }
     }
 
     setSiteName(name){
@@ -108,6 +124,21 @@ class Carrot{
 
     set_color_active(color){
         cr.color_active=color;
+    }
+
+    l(key,key_default=''){
+        var label='';
+        if(this.lang_data!=null){
+            if(this.lang_data[key]!=null)
+                label=this.lang_data[key];
+            else
+                label=key_default;    
+        }else{
+            label=key_default;
+        }
+
+        if(label=="") label=key;
+        return label;
     }
 
     show_setting(act_done=null,html_extension=''){
@@ -153,7 +184,7 @@ class Carrot{
         if(this.dev)
             title="Settings for development mode";
         else
-            title="Setting";
+            title=this.l("setting","Setting");
         Swal.fire({
             title:title,
             html:html,
@@ -213,6 +244,7 @@ class Carrot{
             if(result.isConfirmed){
                 cr.lang=$("#dropdown_lang").val();
                 localStorage.setItem("lang",cr.lang);
+                cr.load_multi_language();
                 if(act_done!=null) act_done({"lang":cr.lang});
             }
         });
@@ -279,7 +311,7 @@ class Carrot{
         if(this.link_github!="") html+="<li><i class='fab fa-github'></i> Github: <a href='"+this.link_github+"' target='_blank'>"+this.link_github+"</a></li>";
     
         html+='</ul>';
-        this.msg(html,"Contacys","info");
+        this.msg(html,cr.l("contact","Contact"),"info");
     }
 
     createCodeOrder(){
