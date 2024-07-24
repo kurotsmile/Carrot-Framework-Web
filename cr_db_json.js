@@ -19,7 +19,7 @@ class Carrot_Database_Json{
         cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
             var empDock=emp.find(".modal-footer");
             var empForm=$(emp).find(".cr_data_from");
-            cr_data.dockBtnForBox(data,empDock);
+            cr_data.dockBtnForBox(data,empDock,fieldCustomer);
             var btnAddField=$('<button class="btn btn-light btn-sm"><i class="far fa-plus-square"></i> Add Field</button>');
             $(btnAddField).click(function(){
                 cr_data.show_add_field();
@@ -188,7 +188,7 @@ class Carrot_Database_Json{
         return isoString;
     }
 
-    info(data){
+    info(data,fieldCustomer=null){
         var html='';
         html+='<table class="table table-striped table-hover table-sm text-left table-responsive">';
         html+='<tbody>';
@@ -197,14 +197,17 @@ class Carrot_Database_Json{
             html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+db_v.val+'" db-type="'+db_v.type+'" db-key="'+k+'">';
                 html+='<td>'+cr_data.getIconBykey(k)+'</td>';
                 html+='<td>'+k+'</td>';
-                html+='<td>'+cr_data.itemValInfo(k,v)+'</td>';
+                if(fieldCustomer!=null)
+                    html+='<td>'+cr_data.itemValInfo(k,v,fieldCustomer[k])+'</td>';
+                else
+                    html+='<td>'+cr_data.itemValInfo(k,v)+'</td>';
             html+='</tr>';
         });
         html+='</tbody>';
         html+='</table>';
         cr.box("Info",html,(emp)=>{
             var emp_dock=$(emp).find(".modal-footer");
-            cr_data.dockBtnForBox(data,emp_dock);
+            cr_data.dockBtnForBox(data,emp_dock,fieldCustomer);
         });
     }
 
@@ -249,16 +252,16 @@ class Carrot_Database_Json{
         }
     }
     
-    dockBtnForBox(data,emp_add){
+    dockBtnForBox(data,emp_add,fieldCustomer=null){
         var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i> Info</button>');
         $(btnInfo).click(function(){
-            cr_data.info(data);
+            cr_data.info(data,fieldCustomer);
         });
         $(emp_add).append(btnInfo);
 
         var btnEdit=$('<button class="btn btn-light"><i class="fas fa-edit"></i> Edit</button>');
         $(btnEdit).click(function(){
-            cr_data.edit(data);
+            cr_data.edit(data,null,fieldCustomer);
         });
         $(emp_add).append(btnEdit);
 
@@ -296,31 +299,40 @@ class Carrot_Database_Json{
         return empObj;
     }
 
-    itemValInfo(k,v){
+    itemValInfo(k,v,fieldCustomer=null){
         var checkVal=this.dbVal(v);
         var val='';
-        if(checkVal.type=="array"){
-            $.each(v,function(index,obj){
-                val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
-            });
-        }else if(checkVal.type=="object"){
-            $.each(v,function(o_k,o_v){
-                val+=cr_data.itemValInfo(o_k,o_v);
+        if(fieldCustomer!=null){
+            $.each(fieldCustomer.datas,function(index,d){
+                if(d.value==v){
+                    val=d.label;
+                    return false;
+                }
             });
         }else{
-            switch (k) {
-                case 'color':
-                    val='<i class="fas fa-palette" style="color:'+v+'"></i> '+v;
-                    break;
-                case 'user':
-                    val=v.name;
-                    break;
-                default:
-                    if(v=="")
-                        val='<i class="fas fa-border-none"></i> None';
-                    else
-                        val='<small>'+v+'</small>';
-                    break;
+            if(checkVal.type=="array"){
+                $.each(v,function(index,obj){
+                    val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
+                });
+            }else if(checkVal.type=="object"){
+                $.each(v,function(o_k,o_v){
+                    val+=cr_data.itemValInfo(o_k,o_v);
+                });
+            }else{
+                switch (k) {
+                    case 'color':
+                        val='<i class="fas fa-palette" style="color:'+v+'"></i> '+v;
+                        break;
+                    case 'user':
+                        val=v.name;
+                        break;
+                    default:
+                        if(v=="")
+                            val='<i class="fas fa-border-none"></i> None';
+                        else
+                            val='<small>'+v+'</small>';
+                        break;
+                }
             }
         }
         return val;
