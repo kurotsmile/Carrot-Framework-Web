@@ -145,15 +145,15 @@ class Carrot{
         var html='';
         html+='<form>';
         html+='<div class="form-group">';
-            html+='<label for="dropdown_lang"><i onclick="cr.act_dev()" class="fas fa-globe-asia"></i> Language</label>';
+            html+='<label for="dropdown_lang"><i onclick="cr.act_dev()" class="fas fa-globe-asia"></i> '+this.l("language","Language")+'</label>';
             html+='<select class="form-control" id="dropdown_lang"><select>';
-            html+='<small id="dropdown_lang_tip" class="form-text text-muted">Select your country and language</small>';
+            html+='<small id="dropdown_lang_tip" class="form-text text-muted">'+this.l("language_tip","Select your country and language")+'</small>';
         html+='</div>';
 
         html+='<div class="form-group">';
-            html+='<label for="sel_btn_top"><i class="fas fa-scroll"></i> Scroll Top Button</label>';
+            html+='<label for="sel_btn_top"><i class="fas fa-scroll"></i> '+this.l("top_btn","Scroll Top Button")+'</label>';
             html+='<div class="d-block mt-1 mb-1" id="list_btn_top_setting"></div>';
-            html+='<small id="list_btn_top_setting_tip" class="form-text text-muted">Choose a style for the top scroll button that\'s right for you</small>';
+            html+='<small id="list_btn_top_setting_tip" class="form-text text-muted">'+this.l("top_btn_tip",'Choose a style for the top scroll button that\'s right for you')+'</small>';
         html+='</div>';
 
         if(cr.dev){
@@ -190,6 +190,7 @@ class Carrot{
             html:html,
             showCancelButton: true,
             showCloseButton: true,
+            cancelButtonText: cr.l("cancel","Cancel"),
             confirmButtonColor: cr.color_btn,
             didOpen:()=>{
                 $.getJSON('https://raw.githubusercontent.com/kurotsmile/Database-Store-Json/main/lang.json', function(data) {
