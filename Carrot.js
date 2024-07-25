@@ -581,7 +581,7 @@ class Carrot{
     }
 
     add_btn_top(){
-        var empBtnTop=$(`<div id="cr_btn_top" style="background-color:${cr.color_btn}" onclick="cr.top();return false;">${this.list_icon_top[this.index_cur_btn_top]}</div>`);
+        var empBtnTop=$(`<div id="cr_btn_top" style="background-color:${cr.color_btn};display:none;" onclick="cr.top();return false;">${this.list_icon_top[this.index_cur_btn_top]}</div>`);
         $("body").append(empBtnTop);
         this.btnTop=empBtnTop;
         $(window).scroll(function() {
@@ -594,7 +594,7 @@ class Carrot{
                 cr.btnTop.fadeOut();
             }
        });
-        return empBtnTop;
+       return empBtnTop;
     }
 
     show_youtube(link_ytb,html_extension="",act_done_show=null) {
