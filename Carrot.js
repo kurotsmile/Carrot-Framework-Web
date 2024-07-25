@@ -742,5 +742,30 @@ class Carrot{
         const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
         return htmlTagPattern.test(str);
     }
+
+    
+    download_sitemap(list_link){
+            
+        function getCurrentDateFormatted(){
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        var xml='<?xml version="1.0" encoding="UTF-8"?>';
+        xml+='<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+            $(list_link).each(function(index,l){
+                xml+='<url>';
+                xml+='<loc>'+l+'</loc>';
+                xml+='<lastmod>'+getCurrentDateFormatted()+'</lastmod>';
+                xml+='<changefreq>monthly</changefreq>';
+                xml+='<priority>0.8</priority>';
+                xml+='</url>';
+            })
+        xml+='</urlset>';
+        cr.download(xml,'sitemap.xml','application/xml');
+    }
 }
 var cr=new Carrot();
