@@ -644,6 +644,10 @@ class Carrot{
         return result + timestamp; 
     }
 
+    box_title(s_title){
+        $(this.box_cur).find(".modal-title").html(s_title);
+    }
+
     box(title='Box Title',body='',show_done=null,act_done=null,act_close=null,footer=''){
         if(this.box_cur==null){
             var id_box="cr_box_"+cr.create_id();

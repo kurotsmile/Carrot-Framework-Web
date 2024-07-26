@@ -2,6 +2,8 @@ class Carrot_Database_Json{
 
     obj_temp=null;
 
+    ui_type_show="add";
+    
     clear_value(obj){
         var objBlank= Object.assign({}, obj);
         $.each(objBlank,function(k,v){
@@ -11,12 +13,13 @@ class Carrot_Database_Json{
     }
 
     add(data,act_done,fieldCustomer=null){
-        this.edit(data,act_done,fieldCustomer);
+        return this.edit(data,act_done,fieldCustomer);
     }
 
     edit(data,act_done,fieldCustomer=null){
+        this.ui_type_show="edit";
         this.obj_temp=data;
-        cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
+        return cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
             var empDock=emp.find(".modal-footer");
             var empForm=$(emp).find(".cr_data_from");
             cr_data.dockBtnForBox(data,empDock,fieldCustomer);
@@ -189,6 +192,7 @@ class Carrot_Database_Json{
     }
 
     info(data,fieldCustomer=null){
+        this.ui_type_show="info";
         var html='';
         html+='<table class="table table-striped table-hover table-sm text-left table-responsive">';
         html+='<tbody>';
@@ -253,17 +257,20 @@ class Carrot_Database_Json{
     }
     
     dockBtnForBox(data,emp_add,fieldCustomer=null){
-        var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i> Info</button>');
-        $(btnInfo).click(function(){
-            cr_data.info(data,fieldCustomer);
-        });
-        $(emp_add).append(btnInfo);
 
-        var btnEdit=$('<button class="btn btn-light"><i class="fas fa-edit"></i> Edit</button>');
-        $(btnEdit).click(function(){
-            cr_data.edit(data,null,fieldCustomer);
-        });
-        $(emp_add).append(btnEdit);
+        if(this.ui_type_show=="info"){
+            var btnEdit=$('<button class="btn btn-light"><i class="fas fa-edit"></i> Edit</button>');
+            $(btnEdit).click(function(){
+                cr_data.edit(data,null,fieldCustomer);
+            });
+            $(emp_add).append(btnEdit);
+        }else{
+            var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i> Info</button>');
+            $(btnInfo).click(function(){
+                cr_data.info(data,fieldCustomer);
+            });
+            $(emp_add).append(btnInfo);
+        }
 
         var btnDownload=$('<button class="btn btn-light"><i class="fas fa-file-download"></i> Download</button>');
         $(btnDownload).click(function(){
