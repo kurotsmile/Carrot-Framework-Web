@@ -577,8 +577,11 @@ class Carrot{
         document.execCommand("copy");$temp.remove();
     }
 
-    paste(emp) {
-        navigator.clipboard.readText().then(text => {$(emp).val(text.trim());});
+    paste(emp=null,act_done=null) {
+        navigator.clipboard.readText().then(text => {
+            if(emp) $(emp).val(text.trim());
+            if(act_done) act_done(text.trim());
+        });
     }
 
     add_btn_top(){
