@@ -107,6 +107,11 @@ class Carrot_Database_Json{
         return icon;
     }
 
+    tip_field(tip){
+        if(tip!=null) return '<small class="form-text text-muted">'+tip+'</small>';
+        else return '';
+    }
+
     getFieldTypeByKey(key,val_default='',fieldCustomer=null){
         var html='';
         if(fieldCustomer!=null){
@@ -289,7 +294,7 @@ class Carrot_Database_Json{
         $(emp_add).append(btnDownload);
     }
 
-    itemField(k,v,fieldCustomer=null){
+    itemField(k,v,fieldCustomer=null,tip=null){
         var empObj=$(`
             <div class="form-group">
                 <label>${k}</label>
@@ -299,8 +304,10 @@ class Carrot_Database_Json{
                     <div class="input-group-append">
                         <span role="button" class="input-group-text" onClick="cr.copy('#inp_db_${k}');"><i class="fas fa-copy"></i></span>
                         <span role="button" class="input-group-text" onClick="cr.paste('#inp_db_${k}');"><i class="fas fa-paste"></i></span>
+                        <span role="button" class="input-group-text" onClick="$(this).parent().parent().parent().remove()"><i class="fas fa-backspace"></i></span>
                     </div>
                 </div>
+                ${cr_data.tip_field(tip)}
             </div>
         `);
         return empObj;
