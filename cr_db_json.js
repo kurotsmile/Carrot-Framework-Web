@@ -322,9 +322,7 @@ class Carrot_Database_Json{
                     val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
                 });
             }else if(checkVal.type=="object"){
-                $.each(v,function(o_k,o_v){
-                    val+=cr_data.itemValInfo(o_k,o_v);
-                });
+                val+='<i class="fas fa-object-group"></i> Object ('+Object.keys(v).length+')';
             }else{
                 switch (k) {
                     case 'color':
