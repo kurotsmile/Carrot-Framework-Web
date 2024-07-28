@@ -36,13 +36,7 @@ class Carrot_Database_Json{
                     $(empForm).append(cr_data.itemField(k,v));
             });
         },()=>{
-            var db={};
-            $(".inp_db").each(function(index,emp){
-                var db_key=$(emp).attr("db-key");
-                var db_val=$(emp).val();
-                db[db_key]=db_val;
-            });
-            if(act_done!=null) act_done(db);
+            if(act_done!=null) act_done(cr_data.get_data_box());
         });
     }
 
@@ -279,17 +273,7 @@ class Carrot_Database_Json{
 
         var btnDownload=$('<button class="btn btn-light"><i class="fas fa-file-download"></i> Download</button>');
         $(btnDownload).click(function(){
-            var db={};
-                $(".inp_db").each(function(index,emp){
-                    var db_key=$(emp).attr("db-key");
-                    var db_val='';
-                    if($(emp).attr("db-val"))
-                        db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
-                    else
-                        db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
-                    db[db_key]=db_val;
-                });
-            cr.download(db,"data.json");
+            cr.download(cr_data.get_data_box(),"data.json");
         });
         $(emp_add).append(btnDownload);
     }
@@ -392,6 +376,20 @@ class Carrot_Database_Json{
 
     fieldCustomer(type,list_option=nul){
         return {type:type,datas:list_option};
+    }
+
+    get_data_box(){
+        var db={};
+        $(".inp_db").each(function(index,emp){
+            var db_key=$(emp).attr("db-key");
+            var db_val='';
+            if($(emp).attr("db-val"))
+                db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
+            else
+                db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
+            db[db_key]=db_val;
+        });
+        return db;
     }
 }
 var cr_data=new Carrot_Database_Json();
