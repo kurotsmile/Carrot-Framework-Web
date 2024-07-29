@@ -29,14 +29,25 @@ class Carrot_Database_Json{
             });
             $(empDock).append(btnAddField);
 
+            let list_key_field_customer=[];
+
             $.each(data,function(k,v){
                 if(fieldCustomer!=null){
                     $(empForm).append(cr_data.itemField(k,v,fieldCustomer[k]));
                 }else{
                     $(empForm).append(cr_data.itemField(k,v));
                 }
+
+                if(fieldCustomer[k]!=null) list_key_field_customer.push(k);
             });
 
+            if(fieldCustomer!=null){
+                $.each(fieldCustomer,function(k,v){
+                    if(list_key_field_customer.includes(k)) return true;
+                    var itemField=fieldCustomer[k];
+                    $(empForm).append(cr_data.itemField(itemField.name,"",itemField));
+                });
+            }
 
         },()=>{
             if(act_done!=null) act_done(cr_data.get_data_box());
@@ -116,7 +127,7 @@ class Carrot_Database_Json{
                 case "list":
                 case "select":
                 case "dropdown":
-                    html+='<select class="form-select custom-select"  db-key="'+key+'"  db-type="string"  id="inp_db_'+key+'">';
+                    html+='<select class="form-select custom-select inp_db"  db-key="'+key+'"  db-type="string"  id="inp_db_'+key+'">';
                     $.each(fieldCustomer.datas,function(index,d){
                         if(d.value==val_default)
                             html+='<option value="'+d.value+'" selected="true">'+d.label+'</option>';
@@ -374,12 +385,13 @@ class Carrot_Database_Json{
     }
 
     fieldCustomer_data(type,list_option=nul){
-        return {type:type,datas:list_option};
+        return {"type":type,"datas":list_option};
     }
 
     fieldCustomer(name,type,list_option=nul){
         let fieldC={};
         fieldC[name]=this.fieldCustomer_data(type,list_option);
+        fieldC.name=name;
         return fieldC;
     }
 
