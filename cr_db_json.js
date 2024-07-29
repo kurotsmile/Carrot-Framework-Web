@@ -152,11 +152,12 @@ class Carrot_Database_Json{
                     break;
                 default:
                     var db_val_filed=cr_data.dbVal(val_default);
-                    if(db_val_filed.type=="object"){
-                        html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object</button>`;
-                    }else{
+                    if(db_val_filed.type=="object")
+                        html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object (${Object.keys(val_default).length})</button>`;
+                    else if(db_val_filed.type=="array")
+                        html+=`<button class="btn btn-sm btn-light inp_db" db-key="${key}" db-val="${db_val_filed.val}" db-type="${db_val_filed.type}" onClick="cr_data.showObj(this);return false;"><i class="fas fa-layer-group"></i> Array (${Object.keys(val_default).length})</button>`;
+                    else
                         html+='<input class="form-control inp_db" db-key="'+key+'" db-type="string" value="'+val_default+'" id="inp_db_'+key+'"/>';
-                    }
                     break;
             }
         }
@@ -313,7 +314,7 @@ class Carrot_Database_Json{
                     val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
                 });
             }else if(checkVal.type=="object"){
-                val+='<i class="fas fa-object-group"></i> Object ('+Object.keys(v).length+')';
+                val+='<button class="btn btn-sm btn-light inp_db" db-key="'+k+'" db-val="'+checkVal.val+'" db-type="'+checkVal.type+'" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object ('+Object.keys(v).length+')</button>';
             }else{
                 switch (k) {
                     case 'color':
@@ -369,13 +370,14 @@ class Carrot_Database_Json{
         });
     }
 
-    /*
-        var fileds={};
-        fields["action"]=customr_field("select",{"thanh","rot","nhung","tho"});
-    */
-
-    fieldCustomer(type,list_option=nul){
+    fieldCustomer_data(type,list_option=nul){
         return {type:type,datas:list_option};
+    }
+
+    fieldCustomer(name,type,list_option=nul){
+        let fieldC={};
+        fieldC[name]=this.fieldCustomer_data(type,list_option);
+        return fieldC;
     }
 
     get_data_box(){
