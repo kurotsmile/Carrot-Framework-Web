@@ -30,11 +30,14 @@ class Carrot_Database_Json{
             $(empDock).append(btnAddField);
 
             $.each(data,function(k,v){
-                if(fieldCustomer!=null)
+                if(fieldCustomer!=null){
                     $(empForm).append(cr_data.itemField(k,v,fieldCustomer[k]));
-                else
+                }else{
                     $(empForm).append(cr_data.itemField(k,v));
+                }
             });
+
+
         },()=>{
             if(act_done!=null) act_done(cr_data.get_data_box());
         });

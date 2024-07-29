@@ -647,6 +647,15 @@ class Carrot{
         return result + timestamp; 
     }
 
+    btn(label='',icon='<i class="fas fa-bullseye"></i>'){
+        var btn=$(`<button class="btn">${icon} ${label}</button>`);
+        return btn;
+    }
+
+    add_btn_box(emp_btn){
+        $(this.box_cur).find(".modal-footer").append(emp_btn);
+    }
+
     box_title(s_title){
         $(this.box_cur).find(".modal-title").html(s_title);
     }
