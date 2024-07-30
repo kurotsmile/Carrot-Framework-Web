@@ -20,6 +20,7 @@ class Carrot_Database_Json{
         this.ui_type_show="edit";
         this.obj_temp=data;
         return cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
+            var valObject=cr_data.dbVal(data);
             var empDock=emp.find(".modal-footer");
             var empForm=$(emp).find(".cr_data_from");
             cr_data.dockBtnForBox(data,empDock,fieldCustomer);
@@ -29,23 +30,28 @@ class Carrot_Database_Json{
             });
             $(empDock).append(btnAddField);
 
-            let list_key_field_customer=[];
+            if(valObject.type=="object"){
+                let list_key_field_customer=[];
 
-            $.each(data,function(k,v){
+                $.each(data,function(k,v){
+                    if(fieldCustomer!=null){
+                        $(empForm).append(cr_data.itemField(k,v,fieldCustomer[k]));
+                        if(fieldCustomer[k]!=null) list_key_field_customer.push(k);
+                    }else{
+                        $(empForm).append(cr_data.itemField(k,v));
+                    }
+                });
+
                 if(fieldCustomer!=null){
-                    $(empForm).append(cr_data.itemField(k,v,fieldCustomer[k]));
-                }else{
-                    $(empForm).append(cr_data.itemField(k,v));
+                    $.each(fieldCustomer,function(k,v){
+                        if(list_key_field_customer.includes(k)) return true;
+                        var itemField=fieldCustomer[k];
+                        $(empForm).append(cr_data.itemField(itemField.name,"",itemField));
+                    });
                 }
-
-                if(fieldCustomer[k]!=null) list_key_field_customer.push(k);
-            });
-
-            if(fieldCustomer!=null){
-                $.each(fieldCustomer,function(k,v){
-                    if(list_key_field_customer.includes(k)) return true;
-                    var itemField=fieldCustomer[k];
-                    $(empForm).append(cr_data.itemField(itemField.name,"",itemField));
+            }else{
+                $.each(data,function(index,item_data){
+                    $(empForm).append(cr_data.itemArray(index,item_data,"Array item "+index));
                 });
             }
 
@@ -313,6 +319,28 @@ class Carrot_Database_Json{
         return empObj;
     }
 
+    itemArray(indexArray,v,tip=null){
+        var empObj='';
+        if(cr_data.ui_type_show=="edit"){
+            empObj=$(`
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-layer-group"></i>  &nbsp; ${indexArray}</span></div>
+                        ${cr_data.getFieldTypeByKey(indexArray,v)}
+                        <div class="input-group-append"></div>
+                    </div>
+                    ${cr_data.tip_field(tip,"arr_"+indexArray+"_tip")}
+                </div>
+            `);
+
+            var btn_del=$('<span role="button" class="input-group-text" onClick="$(this).parent().parent().parent().remove()"><i class="fas fa-backspace"></i></span>');
+            $(empObj).find(".input-group-append").append(btn_del);
+        }else{
+            empObj=$(`<i class="fas fa-layer-group"></i>  &nbsp; ${indexArray}</span> ${cr_data.getFieldTypeByKey(indexArray,v)}`);
+        }
+        return empObj;
+    }
+
     itemValInfo(k,v,fieldCustomer=null){
         var checkVal=this.dbVal(v);
         var val='';
@@ -325,8 +353,9 @@ class Carrot_Database_Json{
             });
         }else{
             if(checkVal.type=="array"){
+                if(cr_data.ui_type_show=="add") val+='<button class="btn btn-sm btn-dark m-1"><i class="fas fa-plus-square"></i> Add item</button>';
                 $.each(v,function(index,obj){
-                    val+='<button class="btn btn-sm btn-light m-1">'+cr_data.itemValInfo("Item "+index,obj)+'</button>';
+                    val+=cr_data.itemArray(index,obj,"Array item "+index).html();
                 });
             }else if(checkVal.type=="object"){
                 val+='<button class="btn btn-sm btn-light inp_db" db-key="'+k+'" db-val="'+checkVal.val+'" db-type="'+checkVal.type+'" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object ('+Object.keys(v).length+')</button>';
@@ -355,7 +384,10 @@ class Carrot_Database_Json{
         const jsonString = decodeURIComponent(datajson);
         const data = JSON.parse(jsonString);
         var data_object_main=this.obj_temp;
-        this.info(data);
+        if(this.ui_type_show=="info")
+            this.info(data);
+        else
+            this.edit(data);
         
         var btn_back_object_main=$(`<button class="btn btn-light float-right"><i class="fas fa-dice-d6"></i> Back Object Main</button>`);
         $(btn_back_object_main).click(()=>{
