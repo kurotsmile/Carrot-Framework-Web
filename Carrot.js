@@ -34,6 +34,7 @@ class Carrot{
 
     multi_language=false;
     lang_data=null;
+    key_api_google_translate="";
 
     list_icon_top=[
         '<i class="fas fa-arrow-circle-up"></i>',
@@ -783,6 +784,24 @@ class Carrot{
             })
         xml+='</urlset>';
         cr.download(xml,'sitemap.xml','application/xml');
+    }
+
+    tr(val_tr,emp_tr,targetLanguage){
+        if(this.key_api_google_translate!=""){
+            var apiUrl = "https://translation.googleapis.com/language/translate/v2?key="+this.key_api_google_translate;
+            var msgData = {
+                q:val_tr,
+                target: targetLanguage
+            };
+            $.when(
+                $.post(apiUrl, msgData)
+            ).done(function(msgResponse) {
+                var msg=msgResponse.data.translations[0].translatedText;
+                $(emp_tr).val(msg);
+            });
+        }else{
+            window.open("https://translate.google.com/?sl=en&tl="+targetLanguage+"&text="+encodeURIComponent(val_tr)+"&op=translate","blank");
+        }
     }
 }
 var cr=new Carrot();

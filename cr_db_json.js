@@ -115,8 +115,9 @@ class Carrot_Database_Json{
         return icon;
     }
 
-    tip_field(tip){
-        if(tip!=null) return '<small class="form-text text-muted">'+tip+'</small>';
+    tip_field(tip,id_emp=""){
+        if(id_emp!="") id_emp='id="'+id_emp+'"';
+        if(tip!=null) return '<small class="form-text text-muted" '+id_emp+'>'+tip+'</small>';
         else return '';
     }
 
@@ -306,7 +307,7 @@ class Carrot_Database_Json{
                         <span role="button" class="input-group-text" onClick="$(this).parent().parent().parent().remove()"><i class="fas fa-backspace"></i></span>
                     </div>
                 </div>
-                ${cr_data.tip_field(tip)}
+                ${cr_data.tip_field(tip,k+"_tip")}
             </div>
         `);
         return empObj;
