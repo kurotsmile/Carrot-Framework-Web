@@ -1,9 +1,8 @@
 class Carrot_Database_Json{
 
     obj_temp=null;
-
     ui_type_show="add";
-    
+
     clear_value(obj){
         var objBlank= Object.assign({}, obj);
         $.each(objBlank,function(k,v){
@@ -54,7 +53,6 @@ class Carrot_Database_Json{
                     $(empForm).append(cr_data.itemArray(index,item_data,"Array item "+index));
                 });
             }
-
         },()=>{
             if(act_done!=null) act_done(cr_data.get_data_box());
         });
@@ -215,12 +213,18 @@ class Carrot_Database_Json{
     info(data,fieldCustomer=null){
         this.ui_type_show="info";
         var html='';
-        html+='<table class="table table-striped table-hover table-sm text-left table-responsive">';
+        html+='<div class="table-responsive">';
+        html+='<table class="table table-striped table-hover table-sm text-left">';
         html+='<tbody>';
         $.each(data,function(k,v){
             var db_v=cr_data.dbVal(v);
             html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+db_v.val+'" db-type="'+db_v.type+'" db-key="'+k+'">';
-                html+='<td>'+cr_data.getIconBykey(k)+'</td>';
+                if(db_v.type=="array")
+                    html+='<td><i class="fas fa-layer-group"></i></td>';
+                else if(db_v.type=="object")
+                    html+='<td><i class="fas fa-object-group"></i></td>';
+                else
+                    html+='<td>'+cr_data.getIconBykey(k)+'</td>';
                 html+='<td>'+k+'</td>';
                 if(fieldCustomer!=null)
                     html+='<td>'+cr_data.itemValInfo(k,v,fieldCustomer[k])+'</td>';
@@ -230,6 +234,7 @@ class Carrot_Database_Json{
         });
         html+='</tbody>';
         html+='</table>';
+        html+='</div>';
         cr.box("Info",html,(emp)=>{
             var emp_dock=$(emp).find(".modal-footer");
             cr_data.dockBtnForBox(data,emp_dock,fieldCustomer);
@@ -380,6 +385,7 @@ class Carrot_Database_Json{
     }
 
     showObj(emp){
+        var key=$(emp).attr("db-key");
         var datajson=$(emp).attr("db-val");
         const jsonString = decodeURIComponent(datajson);
         const data = JSON.parse(jsonString);
@@ -387,7 +393,12 @@ class Carrot_Database_Json{
         if(this.ui_type_show=="info")
             this.info(data);
         else
-            this.edit(data);
+            this.edit(data,(data_sub)=>{
+                data_object_main[key]=data_sub;
+                setTimeout(()=>{
+                    cr_data.edit(data_object_main);
+                },500);
+            });
         
         var btn_back_object_main=$(`<button class="btn btn-light float-right"><i class="fas fa-dice-d6"></i> Back Object Main</button>`);
         $(btn_back_object_main).click(()=>{
