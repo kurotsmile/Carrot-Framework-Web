@@ -337,24 +337,19 @@ class Carrot_Database_Json{
     }
 
     itemArray(indexArray,v,tip=null){
-        var empObj='';
-        if(cr_data.ui_type_show=="edit"){
-            empObj=$(`
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-layer-group"></i>  &nbsp; ${indexArray}</span></div>
-                        ${cr_data.getFieldTypeByKey(indexArray,v)}
-                        <div class="input-group-append"></div>
-                    </div>
-                    ${cr_data.tip_field(tip,"arr_"+indexArray+"_tip")}
+        var empObj=$(`
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-layer-group"></i>  &nbsp; ${indexArray}</span></div>
+                    ${cr_data.getFieldTypeByKey(indexArray,v)}
+                    <div class="input-group-append"></div>
                 </div>
-            `);
+                ${cr_data.tip_field(tip,"arr_"+indexArray+"_tip")}
+            </div>
+        `);
 
-            var btn_del=$('<span role="button" class="input-group-text" onClick="$(this).parent().parent().parent().remove()"><i class="fas fa-backspace"></i></span>');
-            $(empObj).find(".input-group-append").append(btn_del);
-        }else{
-            empObj=$(`<i class="fas fa-layer-group"></i>  &nbsp; ${indexArray}</span> ${cr_data.getFieldTypeByKey(indexArray,v)}`);
-        }
+        var btn_del=$('<span role="button" class="input-group-text" onClick="$(this).parent().parent().parent().remove()"><i class="fas fa-backspace"></i></span>');
+        $(empObj).find(".input-group-append").append(btn_del);
         return empObj;
     }
 
@@ -372,7 +367,7 @@ class Carrot_Database_Json{
             if(checkVal.type=="array"){
                 if(cr_data.ui_type_show=="add") val+='<button class="btn btn-sm btn-dark m-1"><i class="fas fa-plus-square"></i> Add item</button>';
                 $.each(v,function(index,obj){
-                    val+=cr_data.itemArray(index,obj,"Array item "+index).html();
+                    val+=cr_data.itemValInfo(index,obj);
                 });
             }else if(checkVal.type=="object"){
                 val+='<button class="btn btn-sm btn-light inp_db" db-key="'+k+'" db-val="'+checkVal.val+'" db-type="'+checkVal.type+'" onClick="cr_data.showObj(this);return false;"><i class="fas fa-box"></i> Object ('+Object.keys(v).length+')</button>';
@@ -388,7 +383,7 @@ class Carrot_Database_Json{
                         if(v=="")
                             val='<i class="fas fa-border-none"></i> None';
                         else
-                            val='<small>'+v+'</small>';
+                            val='<small class="d-block w-100">'+v+'</small>';
                         break;
                 }
             }
@@ -411,7 +406,7 @@ class Carrot_Database_Json{
                     cr_data.edit(data_object_main);
                 },500);
             });
-        
+        cr.box_title("Edit "+key);
         var btn_back_object_main=$(`<button class="btn btn-light float-right"><i class="fas fa-dice-d6"></i> Back</button>`);
         $(btn_back_object_main).click(()=>{
             cr_data.edit(data_object_main);
