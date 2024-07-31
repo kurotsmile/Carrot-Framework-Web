@@ -803,5 +803,29 @@ class Carrot{
             }
         });
     }
+
+    checkLinkDownload(linkArray) {
+        var index = 0;
+
+        function checkNextLink() {
+            if (index >= linkArray.length) {
+                console.log('Tất cả các liên kết đã được kiểm tra.');
+                return;
+            }
+            
+            var link = linkArray[index];
+            
+            $.ajax({
+                url: link,
+                type: 'HEAD',
+                success: function() {window.open(link, '_blank');},
+                error: function() {
+                    index++;
+                    checkNextLink();
+                }
+            });
+        }
+        checkNextLink();
+    }
 }
 var cr=new Carrot();
