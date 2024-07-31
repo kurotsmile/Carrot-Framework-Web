@@ -1,6 +1,7 @@
 class Carrot_Database_Json{
 
-    obj_temp=null;
+    obj_main=null;
+    obj_view=null;
     ui_type_show="add";
 
     clear_value(obj){
@@ -17,7 +18,8 @@ class Carrot_Database_Json{
 
     edit(data,act_done,fieldCustomer=null){
         this.ui_type_show="edit";
-        this.obj_temp=data;
+        this.obj_main=data;
+        this.obj_view=data;
         return cr.box("Edit",'<form class="text-left cr_data_from"></form>',(emp)=>{
             var valObject=cr_data.dbVal(data);
             var empDock=emp.find(".modal-footer");
@@ -54,6 +56,14 @@ class Carrot_Database_Json{
                 $.each(data,function(index,item_data){
                     $(empForm).append(cr_data.itemArray(index,item_data,"Array item "+index));
                 });
+
+                var btnAddArrayItem=$('<button class="btn btn-light btn-sm"><i class="far fa-plus-square"></i> Item</button>');
+                $(btnAddArrayItem).click(function(){
+                    cr.input("Add Array Item","Value Array Item",(val)=>{
+                        $(cr.box_cur).find(".modal-body").append(cr_data.itemArray("New",val,"New Array Item"));
+                    });
+                });
+                $(empDock).append(btnAddArrayItem);
             }
         },()=>{
             if(act_done!=null) act_done(cr_data.get_data_box());
@@ -220,7 +230,7 @@ class Carrot_Database_Json{
         html+='<tbody>';
         $.each(data,function(k,v){
             var db_v=cr_data.dbVal(v);
-            html+='<tr class="animate__flipInX animate__animated inp_db" db-val="'+db_v.val+'" db-type="'+db_v.type+'" db-key="'+k+'">';
+            html+='<tr class="inp_db" db-val="'+db_v.val+'" db-type="'+db_v.type+'" db-key="'+k+'">';
                 if(db_v.type=="array")
                     html+='<td><i class="fas fa-layer-group"></i></td>';
                 else if(db_v.type=="object")
@@ -391,7 +401,7 @@ class Carrot_Database_Json{
         var datajson=$(emp).attr("db-val");
         const jsonString = decodeURIComponent(datajson);
         const data = JSON.parse(jsonString);
-        var data_object_main=this.obj_temp;
+        var data_object_main=this.obj_main;
         if(this.ui_type_show=="info")
             this.info(data);
         else
@@ -402,7 +412,7 @@ class Carrot_Database_Json{
                 },500);
             });
         
-        var btn_back_object_main=$(`<button class="btn btn-light float-right"><i class="fas fa-dice-d6"></i> Back Object Main</button>`);
+        var btn_back_object_main=$(`<button class="btn btn-light float-right"><i class="fas fa-dice-d6"></i> Back</button>`);
         $(btn_back_object_main).click(()=>{
             cr_data.edit(data_object_main);
         });
@@ -434,17 +444,31 @@ class Carrot_Database_Json{
     }
 
     get_data_box(){
-        var db={};
-        $(".inp_db").each(function(index,emp){
-            var db_key=$(emp).attr("db-key");
-            var db_val='';
-            if($(emp).attr("db-val"))
-                db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
-            else
-                db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
-            db[db_key]=db_val;
-        });
-        return db;
+        var valObject=cr_data.dbVal(this.obj_view);
+        if(valObject.type=="object"){
+            var db={};
+            $(".inp_db").each(function(index,emp){
+                var db_key=$(emp).attr("db-key");
+                var db_val='';
+                if($(emp).attr("db-val"))
+                    db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
+                else
+                    db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
+                db[db_key]=db_val;
+            });
+            return db;
+        }else{
+            var arr=[];
+            $(".inp_db").each(function(index,emp){
+                var db_val='';
+                if($(emp).attr("db-val"))
+                    db_val=cr_data.dbGetVal($(emp).attr("db-val"),$(emp).attr("db-type"));
+                else
+                    db_val=cr_data.dbGetVal($(emp).val(),$(emp).attr("db-type"));
+                arr.push(db_val);
+            });
+            return arr;
+        }
     }
 }
 var cr_data=new Carrot_Database_Json();
