@@ -230,7 +230,9 @@ class Carrot{
                             reader.onload = function(e) {
                                 try {
                                     var jsonContent = JSON.parse(e.target.result);
-                                    cr_data.info(jsonContent);
+                                    cr_data.edit(jsonContent,(datajson)=>{
+                                        cr.download(datajson,"datajson.json");
+                                    });
                                     Swal.close();
                                 } catch (error) {
                                     cr.msg(error,"Error","error");

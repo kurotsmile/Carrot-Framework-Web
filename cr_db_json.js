@@ -23,11 +23,13 @@ class Carrot_Database_Json{
             var empDock=emp.find(".modal-footer");
             var empForm=$(emp).find(".cr_data_from");
             cr_data.dockBtnForBox(data,empDock,fieldCustomer);
-            var btnAddField=$('<button class="btn btn-light btn-sm"><i class="far fa-plus-square"></i> Add Field</button>');
-            $(btnAddField).click(function(){
-                cr_data.show_add_field();
-            });
+            var btnAddField=$('<button class="btn btn-light btn-sm"><i class="far fa-plus-square"></i> Field</button>');
+            $(btnAddField).click(function(){cr_data.show_add_field();});
             $(empDock).append(btnAddField);
+
+            var btnAddArray=$('<button class="btn btn-light btn-sm"><i class="far fa-plus-square"></i> Array</button>');
+            $(btnAddArray).click(function(){cr_data.show_add_array();});
+            $(empDock).append(btnAddArray);
 
             if(valObject.type=="object"){
                 let list_key_field_customer=[];
@@ -291,14 +293,14 @@ class Carrot_Database_Json{
             });
             $(emp_add).append(btnEdit);
         }else{
-            var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i> Info</button>');
+            var btnInfo=$('<button class="btn btn-light"><i class="fas fa-info-circle"></i></button>');
             $(btnInfo).click(function(){
                 cr_data.info(data,fieldCustomer);
             });
             $(emp_add).append(btnInfo);
         }
 
-        var btnDownload=$('<button class="btn btn-light"><i class="fas fa-file-download"></i> Download</button>');
+        var btnDownload=$('<button class="btn btn-light"><i class="fas fa-file-download"></i></button>');
         $(btnDownload).click(function(){
             cr.download(cr_data.get_data_box(),"data.json");
         });
@@ -409,22 +411,14 @@ class Carrot_Database_Json{
     }
 
     show_add_field(){
-        Swal.fire({
-            title:"Add Field",
-            input: "text",
-            inputLabel:"Enter Name Field",
-            confirmButtonColor: cr.color_btn,
-            preConfirm:(val)=>{
-                if(val.trim()==""){
-                    Swal.fire({
-                        icon:"error",
-                        text:"Name field cannot be empty!",
-                        confirmButtonColor: cr.color_btn
-                    });
-                }else{
-                    $(cr.box_cur).find(".modal-body").append(cr_data.itemField(val,""));
-                }             
-            }
+        cr.input("Add Field","Enter Name Field",(val)=>{
+            $(cr.box_cur).find(".modal-body").append(cr_data.itemField(val,""));
+        });
+    }
+
+    show_add_array(){
+        cr.input("Add Array","Enter Name Array",(val)=>{
+            $(cr.box_cur).find(".modal-body").append(cr_data.itemField(val,Array()));
         });
     }
 
