@@ -300,7 +300,7 @@ class Carrot{
 
     show_contact(){
         var html='';
-        html+='<div>I offer development services for Unity3D applications and games across various platforms. Additionally, I can develop web apps and web games. I am available for participation in large projects. Feel free to contact me via email:</div>';
+        html+='<div>'+cr.l("contact_tip","I offer development services for Unity3D applications and games across various platforms. Additionally, I can develop web apps and web games. I am available for participation in large projects. Feel free to contact me via email:")+'</div>';
         html+='<ul class="text-left mt-3" style="list-style: none;">';
         if(this.contact_phone!="") html+="<li><i class='fas fa-phone'></i> Phone: <a href='tel:"+this.contact_phone+"'>"+this.contact_phone+"</a></li>";
         if(this.email1!="") html+="<li><i class='fas fa-envelope'></i> Mail: <a href='mailto:"+this.email1+"'>"+this.email1+"</a></li>";
@@ -491,15 +491,16 @@ class Carrot{
 
     showSearch(act_done=null){
         Swal.fire({
-            title:"Search",
+            title:cr.l("search","Search"),
             input: "text",
-            inputLabel:"Search Content",
+            inputLabel:cr.l("search_tip","Search Content"),
             confirmButtonColor: cr.color_btn,
             preConfirm:(val)=>{
                 if(val.trim()==""){
                     Swal.fire({
                         icon:"error",
-                        text:"Search keywords cannot be empty!",
+                        title:cr.l("search","Search"),
+                        text:cr.l("search_error","Search keywords cannot be empty!"),
                         confirmButtonColor: cr.color_btn
                     });
                 }else{
