@@ -23,7 +23,7 @@ class Post{
         $.each(fields,function(index,field){
             html+='<div class="mb-3">';
             html+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
-            html+='<input type="email" class="form-control inp_cmd_field" id="'+field.id+'" placeholder="Enter data">';
+            html+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" placeholder="Enter data">';
             html+='</div>';
         });
         html+='<a href="#" class="btn btn-primary" id="btn_frm_add"><span data-feather="plus-circle"></span> Add</a>';
@@ -31,12 +31,54 @@ class Post{
         html+='</form>';
         var emp_form=$(html);
         var collection=this.id_collection;
+        var post_cur=this;
         $(emp_form).find("#btn_frm_add").click(function(){
             cr.msg("Add success");
-            cr_firestore.add({},collection);
+            var data={};
+            $(".inp_cmd_field").each(function(index,emp){
+                var v=$(emp).val();
+                var k=$(emp).attr("field-key");
+                data[k]=v;
+            });
+            cr_firestore.add(data,collection);
+            post_cur.load_data_for_list();
             return false;
         });
         return emp_form;
+    }
+
+    show_list(){
+        var html='';
+        html+='<h2 class="h3 mt-3">List</h2>';
+        html+='<table class="table table-striped table-sm">';
+        html+='<tbody id="list_post_table"></tbody>';
+        html+='</table>';
+        return html;
+    }
+
+    load_data_for_list(){
+        $("#list_post_table").html('');
+        cr_firestore.list(this.id_collection,(data)=>{
+            $.each(data,function(index,item_p){
+                var htm_tr='<tr>';
+                $.each(item_p,function(k,v){
+                    htm_tr+='<td>'+v+'</td>';
+                });
+                htm_tr+='<td>';
+                htm_tr+='<button class="btn btn-sm btn-info">Edit</button>';
+                htm_tr+='</td>';
+                htm_tr+='</tr>';
+
+                let emp_tr=$(htm_tr);
+                $("#list_post_table").append(emp_tr);
+            })
+        });
+    }
+
+    show(){
+        $("#main_contain").html(this.show_form_add());
+        $("#main_contain").append(this.show_list());
+        this.load_data_for_list();
     }
 }
 
@@ -79,7 +121,7 @@ class CMS{
 
     show_post_object(index){
         this.show_list_menu_sidebar();
-        $("#main_contain").html(this.list_post[index].show_form_add());
+        this.list_post[index].show();
         feather.replace();
     }
 
@@ -89,6 +131,10 @@ class CMS{
         data_field["name"]=name;
         data_field["type"]=type;
         return data_field;
+    }
+
+    show_setting(){
+        cr.show_setting();
     }
 }
 var cms=new CMS();
