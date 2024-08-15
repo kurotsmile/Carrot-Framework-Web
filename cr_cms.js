@@ -49,10 +49,12 @@ class Post{
 
     show_list(){
         var html='';
+        html+='<div class="w-100">';
         html+='<h2 class="h3 mt-3">List</h2>';
         html+='<table class="table table-striped table-sm">';
         html+='<tbody id="list_post_table"></tbody>';
         html+='</table>';
+        html+='</div>';
         return html;
     }
 
@@ -65,7 +67,8 @@ class Post{
                     htm_tr+='<td>'+v+'</td>';
                 });
                 htm_tr+='<td>';
-                htm_tr+='<button class="btn btn-sm btn-info">Edit</button>';
+                htm_tr+='<button class="btn btn-sm btn-info m-1">Edit</button>';
+                htm_tr+='<button class="btn btn-sm btn-info m-1">Delete</button>';
                 htm_tr+='</td>';
                 htm_tr+='</tr>';
 
