@@ -201,7 +201,7 @@ class CR_FireStore{
                       success: function(response) {
                           console.log('Upload successful', response);
                           if(act_done) act_done(response);
-                          cr_firestore.add('file',response);
+                          cr_firestore.add(response,'file');
                           cr.msg('Upload successful',"Upload File","success");
                       },
                       error: function(jqXHR, textStatus, errorThrown) {

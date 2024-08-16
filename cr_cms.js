@@ -9,6 +9,8 @@ class Post{
     label="Post new";
     data_form_add={};
     id_document_edit="";
+    icon='<i class="fas fa-database"></i>';
+    list_fields_table=null;//Array
 
     constructor(){
         this.data_form_add["fields"]=[];
@@ -116,7 +118,12 @@ class Post{
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
 
-            var keys = Object.keys(data[0]);
+            var keys=[];
+            if(p.list_fields_table==null)
+                keys= Object.keys(data[0]);
+            else
+                keys= p.list_fields_table;
+
             keys.forEach(function(key) {
                 $("#list_head").append("<th>" + key + "</th>");
             });
@@ -124,12 +131,19 @@ class Post{
 
             $.each(data,function(index,item_p){
                 var htm_tr='<tr>';
-                keys.forEach(function(key) {
-                    htm_tr += "<td>" + item_p[key] + "</td>";
-                });
+
+                if(p.list_fields_table!=null){
+                    p.list_fields_table.forEach(function(key) {
+                        htm_tr += "<td>" + item_p[key] + "</td>";
+                    });
+                }else{
+                    keys.forEach(function(key) {
+                        htm_tr += "<td>" + item_p[key] + "</td>";
+                    });
+                }
 
                 htm_tr+='<td>';
-                htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
+                if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                 htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                 htm_tr+='</td>';
                 htm_tr+='</tr>';
@@ -138,6 +152,7 @@ class Post{
                 $(emp_tr).find(".btn_edit").click(function(){
                     let id_doc=$(this).attr("id-doc");
                     cr_firestore.get(p.id_collection,id_doc,(data_doc)=>{
+                        cr.top();
                         p.id_document_edit=id_doc;
                         p.show_edit(data_doc);
                     })
@@ -164,10 +179,10 @@ class Post{
     show(){
         var html='';
         html+='<div class="d-block w-100" id="frm_cms_act"></div>';
-        html+='<div class="d-block w-100" id="list_cms_data"></div>';
+        html+='<div class="d-block w-100 mb-5" id="list_cms_data"></div>';
         $("#main_contain").html('');
         $("#main_contain").html(html);
-        $("#frm_cms_act").html(this.show_form_add());
+        if(this.data_form_add!=null) $("#frm_cms_act").html(this.show_form_add());
         $("#list_cms_data").html(this.show_list());
         this.load_data_for_list();
     }
@@ -188,7 +203,10 @@ class CMS{
         
         var p_file=new Post();
         p_file.id_collection="file";
+        p_file.data_form_add=null;
         p_file.label="File";
+        p_file.icon='<i class="fas fa-file"></i>';
+        p_file.list_fields_table=["name","updated","contentType"];
         this.add(p_file);
 
         this.show_list_menu_sidebar();
@@ -220,7 +238,7 @@ class CMS{
     show_list_menu_sidebar(){
         $("#list_post").html('');
         $.each(this.list_post,function(index,p){
-            var emp_post=$('<li class="nav-item"><a class="nav-link '+(cms.index_post_cur===index ? "active":"")+'" aria-current="page" href="#"><span data-feather="database"></span> '+p.label+'</a></li>');
+            var emp_post=$('<li class="nav-item"><a class="nav-link '+(cms.index_post_cur===index ? "active":"")+'" aria-current="page" href="#">'+p.icon+' '+p.label+'</a></li>');
             $(emp_post).click(function(){
                 cms.index_post_cur=index;
                 cms.show_post_object(index);
