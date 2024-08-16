@@ -102,6 +102,9 @@ class CMS{
         $("#list_info").html("");
         $("#list_info").append(this.sidebar_item_info("ID:"+cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Key:"+cr_firestore.api_key));
+        $("#inp_cms_search").change(function(){
+            cms.act_search();
+        });
     }
 
     sidebar_item_info(name){
@@ -138,6 +141,10 @@ class CMS{
 
     show_setting(){
         cr.show_setting();
+    }
+
+    act_search(){
+        $("#main_contain").html('<div><h3 class="h3">Search Result</h3></div>');
     }
 }
 var cms=new CMS();
