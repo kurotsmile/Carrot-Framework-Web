@@ -185,6 +185,12 @@ class CMS{
 
     onLoad(){
         this.home_url= window.location.origin;
+        
+        var p_file=new Post();
+        p_file.id_collection="file";
+        p_file.label="File";
+        this.add(p_file);
+
         this.show_list_menu_sidebar();
         this.show_post_object(this.index_post_cur);
 
