@@ -116,7 +116,7 @@ class Post{
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
 
-            var keys = Object.keys(data[1]);
+            var keys = Object.keys(data[0]);
             keys.forEach(function(key) {
                 $("#list_head").append("<th>" + key + "</th>");
             });
