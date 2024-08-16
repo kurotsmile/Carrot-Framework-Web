@@ -24,29 +24,41 @@ class Post{
             html+=' <h5 class="card-title">Add Data</h5>';
         else
             html+=' <h5 class="card-title">Edit ('+this.id_document_edit+')</h5>';
-        $.each(fields,function(index,field){
-            html+='<div class="mb-3">';
-            html+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
-            html+='<div class="input-group mb-3">';
-            html+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
-            if(field.type=="file")
-                html+='<button onclick="cr_firestore.upload_file();return false;" class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
-            else
-                html+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-clipboard"></i> Paste</button>';
-            html+='</div>';
-            html+='</div>';
-        });
+
+        html+='<div class="w-100" id="list_cms_field"></div>';
 
         if(this.id_document_edit==""){
             html+='<a href="#" class="btn btn-success" id="btn_frm_add"><i class="fas fa-plus-square"></i> Add</a>';
         }else{
             html+='<a href="#" class="btn btn-success m-1" id="btn_frm_add" ><i class="fas fa-check-square"></i> Done Update</a>';
             html+='<a href="#" class="btn btn-info m-1" id="btn_frm_back"><i class="fas fa-caret-square-left"></i> Back Add</a>';
-        }
-        
+        }        
         html+='</div>';
         html+='</form>';
         var emp_form=$(html);
+
+        $.each(fields,function(index,field){
+            let html_field='<div class="mb-3">';
+            html_field+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
+            html_field+='<div class="input-group mb-3">';
+            html_field+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+            if(field.type=="file")
+                html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
+            else
+            html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+            html_field+='</div>';
+            html_field+='</div>';
+            let emp_field=$(html_field);
+            $(emp_field).find(".btn_upload_file").click(()=>{
+                cr_firestore.upload_file((data)=>{
+                    var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID.appspot.com/o/' + data.name + '?alt=media&token=' + data.downloadTokens;
+                    $(emp_field).find(".inp_cmd_field").val(downloadUrl);
+                });
+                return false;
+            });
+            emp_form.find("#list_cms_field").append(emp_field);
+        });
+
         var collection=this.id_collection;
         var post_cur=this;
         $(emp_form).find("#btn_frm_add").click(function(){
@@ -90,7 +102,8 @@ class Post{
         html+='<div class="w-100">';
         html+='<h2 class="h3 mt-3">List</h2>';
         html+='<div class="w-100 table-responsive">';
-        html+='<table class="table table-striped table-sm">';
+        html+='<table class="table table-striped table-sm" id="table_list_post">';
+        html+='<thead><tr id="list_head"><tr/></thead>';
         html+='<tbody id="list_post_table"></tbody>';
         html+='</table>';
         html+='</div>';
@@ -102,11 +115,19 @@ class Post{
         $("#list_post_table").html('');
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
+
+            var keys = Object.keys(data[1]);
+            keys.forEach(function(key) {
+                $("#list_head").append("<th>" + key + "</th>");
+            });
+            $("#list_head").append("<th>Action</th>");
+
             $.each(data,function(index,item_p){
                 var htm_tr='<tr>';
-                $.each(item_p,function(k,v){
-                    htm_tr+='<td>'+v+'</td>';
+                keys.forEach(function(key) {
+                    htm_tr += "<td>" + item_p[key] + "</td>";
                 });
+
                 htm_tr+='<td>';
                 htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                 htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
