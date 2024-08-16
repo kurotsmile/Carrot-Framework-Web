@@ -27,7 +27,10 @@ class Post{
         $.each(fields,function(index,field){
             html+='<div class="mb-3">';
             html+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
+            html+='<div class="input-group mb-3">';
             html+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+            html+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button" id="button-addon2"><i class="fas fa-clipboard"></i> Paste</button>';
+            html+='</div>';
             html+='</div>';
         });
 
