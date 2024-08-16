@@ -743,7 +743,7 @@ class Carrot{
         });
     }
     
-    msg(msg='',title='',icon=''){
+    msg(msg='',title='',icon='',act_show=null){
         var obj_msg={
             title:title,
             iconColor: cr.color_btn,
@@ -755,6 +755,7 @@ class Carrot{
             obj_msg["html"]=msg;
         else
             obj_msg["text"]=msg;
+        if(act_show) obj_msg["didOpen"]=act_show;
         Swal.fire(obj_msg);
     }
 

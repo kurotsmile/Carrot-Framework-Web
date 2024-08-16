@@ -171,6 +171,51 @@ class CR_FireStore{
         return data;
     }
 
+    upload_file(act_done=null){
+        var html='<form id="uploadForm"><input type="file" id="fileInput" /><button type="submit" class="btn btn-success" id="act_upload_btn">Upload</button></form>';
+        var html='';
+        html+='<div class="input-group mb-3">';
+        html+='<button class="btn btn-outline-secondary" type="button" id="act_upload_btn"><i class="fas fa-cloud-upload-alt"></i> Start Upload</button>';
+        html+='<input type="file" class="form-control" id="fileInput" aria-describedby="act_upload_btn" aria-label="Upload">'
+        html+='</div>';
+        
+        cr.msg(html,"Upload File",'',()=>{
+            $("#act_upload_btn").click(()=>{
+                var fileInput = $('#fileInput')[0];
+                var file = fileInput.files[0];
+                if(file) {
+                  var storageUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o?uploadType=multipart&name=' + encodeURIComponent(file.name);
+        
+                  var formData = new FormData();
+                  formData.append('file', file);
+        
+                  $.ajax({
+                      url: storageUrl,
+                      type: 'POST',
+                      data: formData,
+                      contentType: false,
+                      processData: false,
+                      headers: {
+                          'Authorization': 'Bearer '+cr_firestore.api_key
+                      },
+                      success: function(response) {
+                          console.log('Upload successful', response);
+                          if(act_done) act_done(response);
+                          cr.msg('Upload successful',"Upload File","success");
+                      },
+                      error: function(jqXHR, textStatus, errorThrown) {
+                          console.error('Upload failed', textStatus, errorThrown);
+                          cr.msg("Upload Faield","Upload File","error");
+                      }
+                  });
+              }else{
+                cr.msg("Please Select File","None File","info");
+              }
+              return false;
+            });
+        });
+        
+    }
 }
 
 var cr_firestore=new CR_FireStore();
