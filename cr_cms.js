@@ -35,7 +35,7 @@ class Post{
             html+='<a href="#" class="btn btn-success" id="btn_frm_add"><i class="fas fa-plus-square"></i> Add</a>';
         }else{
             html+='<a href="#" class="btn btn-success m-1" id="btn_frm_add" ><i class="fas fa-check-square"></i> Done Update</a>';
-            html+='<a href="#" class="btn btn-info m-1" id="btn_frm_back"><i class="fas fa-check-square"></i> Back Add</a>';
+            html+='<a href="#" class="btn btn-info m-1" id="btn_frm_back"><i class="fas fa-caret-square-left"></i> Back Add</a>';
         }
         
         html+='</div>';
@@ -83,9 +83,11 @@ class Post{
         var html='';
         html+='<div class="w-100">';
         html+='<h2 class="h3 mt-3">List</h2>';
+        html+='<div class="w-100 table-responsive">';
         html+='<table class="table table-striped table-sm">';
         html+='<tbody id="list_post_table"></tbody>';
         html+='</table>';
+        html+='</div>';
         html+='</div>';
         return html;
     }
@@ -155,19 +157,30 @@ class CMS{
     }
 
     onLoad(){
+        this.home_url= window.location.origin;
         this.show_list_menu_sidebar();
         this.show_post_object(this.index_post_cur);
 
         $("#list_info").html("");
-        $("#list_info").append(this.sidebar_item_info("ID:"+cr_firestore.id_project));
-        $("#list_info").append(this.sidebar_item_info("Key:"+cr_firestore.api_key));
+        var item_home_page=this.sidebar_item_info("Home Page",'<i class="fas fa-home"></i>');
+        $(item_home_page).click(function(){
+            window.open(cms.home_url,"_blank");
+        });
+        $("#list_info").append(item_home_page);
+        $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
+        $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
         $("#inp_cms_search").change(function(){
             cms.act_search();
         });
     }
 
-    sidebar_item_info(name){
-        var item_info=$('<li class="nav-item"><a class="nav-link text-break"><span data-feather="file-text"></span> <small>'+name+'</small></a></li>');
+    sidebar_item_info(name,icon='',val=''){
+        var s_val='';
+        let s_icon='';
+        if(icon=='') s_icon='<i class="fas fa-leaf"></i>';
+        else s_icon=icon;
+        if(val!='') s_val='<small class="text-break text-muted">'+val+'</small>';
+        var item_info=$('<li class="nav-item" role="button"><a class="nav-link">'+s_icon+' '+name+' '+s_val+'</a></li>');
         return item_info;
     }
 
