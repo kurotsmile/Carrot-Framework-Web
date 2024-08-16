@@ -245,11 +245,13 @@ class CMS{
         this.show_post_object(this.index_post_cur);
 
         $("#list_info").html("");
-        var item_home_page=this.sidebar_item_info("Home Page",'<i class="fas fa-home"></i>');
-        $(item_home_page).click(function(){
-            window.open(cms.home_url,"_blank");
-        });
+        var item_home_page=this.sidebar_item_info("Home Page (Mẫu)",'<i class="fas fa-home"></i>');
+        $(item_home_page).click(function(){window.open(cms.home_url,"_blank");});
         $("#list_info").append(item_home_page);
+        var item_home_dev=this.sidebar_item_info("Home Dev (Đã kết nối dữ liệu)",'<i class="fas fa-home"></i>');
+        $(item_home_dev).click(function(){window.open(cms.home_url+"/index2.html","_blank");});
+        $("#list_info").append(item_home_dev);
+        
         $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
         $("#inp_cms_search").change(function(){
