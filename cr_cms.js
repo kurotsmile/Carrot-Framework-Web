@@ -49,16 +49,31 @@ class Post{
             let html_field='<div class="mb-3">';
             html_field+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
             html_field+='<div class="input-group mb-3">';
-            html_field+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+
+            html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+            
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
-                html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fa-solid fa-folder-open"></i> Select</button>';
+                html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
             }
             else
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
             html_field+='</div>';
             let emp_field=$(html_field);
+
+            if(field.type=="collection"){
+                cr_firestore.list("network",(data)=>{
+                    var html_list='';
+                    html_list+='<datalist id="'+field.id+'_list">';
+                    $.each(data,function(index,l){
+                        html_list+='<option value="'+l.name+'">';
+                    });
+                    html_list+='</datalist>';
+                    $(emp_field).after(html_list);
+                });    
+            }
+
             $(emp_field).find(".btn_upload_file").click(()=>{
                 cr_firestore.upload_file((data)=>{
                     var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o/' + data.name + '?alt=media&token=' + data.downloadTokens;
@@ -135,10 +150,10 @@ class Post{
     }
 
     load_data_for_list(){
-        $("#list_post_table").html('');
+        $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
-
+            $("#list_post_table").html('');
             var keys=[];
             if(p.list_fields_table==null)
                 keys= Object.keys(data[0]);
@@ -288,11 +303,12 @@ class CMS{
         feather.replace();
     }
 
-    field(id,name,type){
+    field(id,name,type,data=''){
         var data_field={};
         data_field["id"]=id;
         data_field["name"]=name;
         data_field["type"]=type;
+        data_field["data"]=data;
         return data_field;
     }
 
