@@ -215,7 +215,6 @@ class CR_FireStore{
               return false;
             });
         });
-        
     }
 }
 

@@ -759,6 +759,10 @@ class Carrot{
         Swal.fire(obj_msg);
     }
 
+    msg_loading(){
+        Swal.showLoading();
+    }
+
     containsHTMLTags(str) {
         const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
         return htmlTagPattern.test(str);

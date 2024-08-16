@@ -1,9 +1,3 @@
-class Post_Field{
-    label="Field Name";
-    id="field_id";
-    value="";
-}
-
 class Post{
     id_collection="";
     label="Post new";
@@ -11,6 +5,7 @@ class Post{
     id_document_edit="";
     icon='<i class="fas fa-database"></i>';
     list_fields_table=null;//Array
+    type="list";
 
     constructor(){
         this.data_form_add["fields"]=[];
@@ -20,7 +15,13 @@ class Post{
         var html='';
         let fields=this.data_form_add.fields;
         html+='<form class="card mt-3">';
-        html+='<div class="card-header">Form Add Data</div>';
+        if(this.type=="list"){
+            html+='<div class="card-header">'+this.label+'</div>';
+        }
+        else{
+            html+='<div class="card-header">Setting ('+this.label+')</div>';
+        }
+
         html+='<div class="card-body">';
         if(this.id_document_edit=="")
             html+=' <h5 class="card-title">Add Data</h5>';
@@ -29,12 +30,17 @@ class Post{
 
         html+='<div class="w-100" id="list_cms_field"></div>';
 
-        if(this.id_document_edit==""){
-            html+='<a href="#" class="btn btn-success" id="btn_frm_add"><i class="fas fa-plus-square"></i> Add</a>';
+        if(this.type=='list'){
+            if(this.id_document_edit==""){
+                html+='<a href="#" class="btn btn-success" id="btn_frm_add"><i class="fas fa-plus-square"></i> Add</a>';
+            }else{
+                html+='<a href="#" class="btn btn-success m-1" id="btn_frm_add" ><i class="fas fa-check-square"></i> Done Update</a>';
+                html+='<a href="#" class="btn btn-info m-1" id="btn_frm_back"><i class="fas fa-caret-square-left"></i> Back Add</a>';
+            }
         }else{
-            html+='<a href="#" class="btn btn-success m-1" id="btn_frm_add" ><i class="fas fa-check-square"></i> Done Update</a>';
-            html+='<a href="#" class="btn btn-info m-1" id="btn_frm_back"><i class="fas fa-caret-square-left"></i> Back Add</a>';
-        }        
+            html+='<a href="#" class="btn btn-info" id="btn_frm_add"><i class="fas fa-save"></i> Save</a>';
+        }
+     
         html+='</div>';
         html+='</form>';
         var emp_form=$(html);
@@ -44,19 +50,27 @@ class Post{
             html_field+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
             html_field+='<div class="input-group mb-3">';
             html_field+='<input type="email" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
-            if(field.type=="file")
+            if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
+                html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fa-solid fa-folder-open"></i> Select</button>';
+            }
             else
-            html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+                html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
             html_field+='</div>';
             let emp_field=$(html_field);
             $(emp_field).find(".btn_upload_file").click(()=>{
                 cr_firestore.upload_file((data)=>{
-                    var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/YOUR_PROJECT_ID.appspot.com/o/' + data.name + '?alt=media&token=' + data.downloadTokens;
+                    var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o/' + data.name + '?alt=media&token=' + data.downloadTokens;
                     $(emp_field).find(".inp_cmd_field").val(downloadUrl);
                 });
                 return false;
+            });
+
+            $(emp_field).find(".btn_select_file").click(()=>{
+                cms.show_select_file((l)=>{
+                    $(emp_field).find(".inp_cmd_field").val(l);
+                });
             });
             emp_form.find("#list_cms_field").append(emp_field);
         });
@@ -71,20 +85,27 @@ class Post{
                 data[k]=v;
             });
 
-            if(post_cur.id_document_edit==""){
-                cr_firestore.add(data,collection,()=>{
-                    cr.msg("Add success","Add item success!","success");
-                    $("#frm_cms_act").html(post_cur.show_form_add());
-                    post_cur.reload_list();
-                });
+            if(post_cur.type=="list"){
+                if(post_cur.id_document_edit==""){
+                    cr_firestore.add(data,collection,()=>{
+                        cr.msg("Add success","Add item success!","success");
+                        $("#frm_cms_act").html(post_cur.show_form_add());
+                        post_cur.reload_list();
+                    });
+                }else{
+                    cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
+                        cr.msg("Update success","Update item success!","success");
+                        post_cur.id_document_edit="";
+                        $("#frm_cms_act").html(post_cur.show_form_add());
+                        post_cur.reload_list();
+                    });
+                }
             }else{
-                cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
-                    cr.msg("Update success","Update item success!","success");
-                    post_cur.id_document_edit="";
-                    $("#frm_cms_act").html(post_cur.show_form_add());
-                    post_cur.reload_list();
-                });
+                cr_firestore.set(data,"setting",collection,()=>{
+                    cr.msg("Setting","Update success!","success");
+                })
             }
+   
             return false;
         });
 
@@ -182,9 +203,20 @@ class Post{
         html+='<div class="d-block w-100 mb-5" id="list_cms_data"></div>';
         $("#main_contain").html('');
         $("#main_contain").html(html);
-        if(this.data_form_add!=null) $("#frm_cms_act").html(this.show_form_add());
-        $("#list_cms_data").html(this.show_list());
-        this.load_data_for_list();
+        
+        if(this.type=="list"){
+            if(this.data_form_add!=null) $("#frm_cms_act").html(this.show_form_add());
+            $("#list_cms_data").html(this.show_list());
+            this.load_data_for_list();
+        }
+
+        if(this.type=="setting"){
+            cr_firestore.get("setting",this.id_collection,(data_setting)=>{
+                $("#frm_cms_act").html(this.show_form_add(data_setting));
+            },()=>{
+                $("#frm_cms_act").html(this.show_form_add());
+            });
+        }
     }
 }
 
@@ -268,6 +300,25 @@ class CMS{
 
     act_search(){
         $("#main_contain").html('<div><h2 class="">Search Result</h2></div>');
+    }
+
+    show_select_file(act_done=null){
+        cr.msg_loading();
+        cr_firestore.list("file",(data)=>{
+            var html='';
+            html+='<div class="d-block w-100 text-left" ><table class="table table-sm text-left"><tbody id="list_cms_file"></tbody></table></div>';
+            cr.msg(html,"Select File",'',()=>{
+                $.each(data,function(index,f){
+                    var f_item=$('<tr><td><i class="fa-solid fa-file"></i> <b>'+f.name+'</b></td><td>'+f.contentType+'</td><td><span class="btn btn-sm btn-info"><i class="fas fa-check"></i></span></td></tr>');
+                    $(f_item).click(function(){
+                        var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o/' + f.name + '?alt=media&token=' + f.downloadTokens;
+                        swal.close();
+                        if(act_done) act_done(downloadUrl);
+                    });
+                    $("#list_cms_file").append(f_item);
+                });
+            });
+        });
     }
 }
 var cms=new CMS();
