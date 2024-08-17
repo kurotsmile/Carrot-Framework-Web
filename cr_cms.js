@@ -50,11 +50,16 @@ class Post{
             html_field+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
             html_field+='<div class="input-group mb-3">';
 
-            html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+            if(field.type=="textarea")
+                html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+(data_document!==null ? data_document[field.id]:"")+'</textarea>';
+            else
+                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
             
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
                 html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
+            }else if(field.type=="textarea"){
+
             }
             else
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
@@ -72,6 +77,12 @@ class Post{
                     html_list+='</datalist>';
                     $(emp_field).after(html_list);
                 });    
+            }
+
+            if(field.type=="textarea"){
+                setTimeout(()=>{
+                    $('#'+field.id).summernote();
+                },200);
             }
 
             $(emp_field).find(".btn_upload_file").click(()=>{
@@ -272,6 +283,9 @@ class CMS{
         $("#inp_cms_search").change(function(){
             cms.act_search();
         });
+
+        cr.loadJs("Carrot-Framework-Web/summernote/summernote-bs4.min.js");
+        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/summernote/summernote-bs4.min.css">');
     }
 
     sidebar_item_info(name,icon='',val=''){
