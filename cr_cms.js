@@ -408,5 +408,57 @@ class CMS{
             return false;
         });
     }
+
+    /*
+    show(){
+        var html='';
+        html+='<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">';
+        html+='<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Manager Data</a>';
+    
+        html+='<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"';
+            html+='data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"';
+            html+='aria-label="Toggle navigation">';
+            html+='<span class="navbar-toggler-icon"></span>';
+        html+='</button>';
+        html+='<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="inp_cms_search">';
+        html+='<div class="navbar-nav">';
+            html+='<div class="nav-item text-nowrap"> ';
+                html+='<a class="nav-link px-3" href="#" onclick="cr.show_setting();return false;"><i class="fas fa-cog"></i> Setting</a>';
+            html+='</div>
+        html+='</div>
+    html+='</header>
+
+    html+='<div class="container-fluid">
+        html+='<div class="row">
+            html+='<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                html+='<div class="position-sticky pt-3">
+                    html+='<ul class="nav flex-column" id="list_post"></ul>
+                    html+='<h6
+                        html+='class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        html+='<span>Info Database Cloud</span>
+                        html+='<a class="link-secondary" href="#" aria-label="Add a new report">
+                            html+='<span data-feather="plus-circle"></span>
+                        html+='</a>
+                    html+='</h6>
+                    html+='<ul class="nav flex-column mb-2" id="list_info">
+                        html+='<li class="nav-item">
+                            html+='<a class="nav-link" href="#">
+                                html+='<span data-feather="file-text"></span> Info Database Cloud
+                            html+='</a>
+                        html+='</li>
+                    html+='</ul>
+                html+='</div>
+                html+='<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    html+='<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>
+                    html+='<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                html+='</div>
+            </nav>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>
+        </div>
+    </div>'
+        $("body").html(html);
+        $("body").removeClass("body_login text-center");
+    }
+    */
 }
 var cms=new CMS();
