@@ -219,3 +219,83 @@ class CR_FireStore{
 }
 
 var cr_firestore=new CR_FireStore();
+
+
+class Firestore_Query{
+    
+    collections=[];
+    select_fields=[];
+    filters_search=[];
+    limit=-1;
+    orderBy=[];
+
+    constructor(collection){
+        var coll={};
+        coll["collectionId"]=collection;
+        this.collections.push(coll);
+    }
+
+    add_select(name_field){
+        var field={};
+        field["fieldPath"]=name_field;
+        this.select_fields.push(field);
+    }
+
+    add_where(field_name,searchValue,op="EQUAL"){
+        var Filter={};
+        var fieldFilter={};
+        var f={};
+        var v={};
+        f["fieldPath"]=field_name;
+        v["stringValue"]=searchValue;
+        fieldFilter["field"]=f;
+        fieldFilter["op"]=op;
+        fieldFilter["value"]=v;
+        Filter["fieldFilter"]=fieldFilter;
+        this.filters_search.push(Filter);
+    }
+
+    set_order(field_name,direction_val='ASCENDING'){ //'DESCENDING'
+      this.orderBy=[{ field: { fieldPath: field_name }, direction: direction_val }];
+    } 
+
+    set_limit(count){
+        this.limit=count;
+    }
+
+    toJson(){
+        var query={};
+        var structuredQuery={};
+        if(this.select_fields.length>0) structuredQuery["select"]={fields: this.select_fields};
+        structuredQuery["from"]=this.collections;
+        structuredQuery["where"]={compositeFilter: {op: 'AND',filters: this.filters_search}};
+        if(this.limit!=-1) structuredQuery["limit"]=this.limit;
+        if(this.orderBy.length>0) structuredQuery["orderBy"]=this.orderBy;
+        query["structuredQuery"]=structuredQuery;
+        return JSON.stringify(query);
+    }
+
+    get_data(act_done,act_fail=null){
+        fetch('https://firestore.googleapis.com/v1/projects/'+cr_firestore.id_project+'/databases/(default)/documents:runQuery', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: this.toJson()
+        }).then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+        }).then(data => {
+            var list=[];
+            for(var i=0;i<data.length;i++){
+                var obj_data=cr_firestore.convertFromFirestoreFormat(data[i].document.fields);
+                obj_data["id_doc"]=data[i].document.name.split("/").pop();
+                list.push(obj_data);
+            }
+            act_done(list);
+        }).catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+            if(act_fail!=null) act_fail();
+        });
+    }
+}

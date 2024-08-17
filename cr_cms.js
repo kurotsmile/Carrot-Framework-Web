@@ -110,7 +110,7 @@ class Post{
                 var k=$(emp).attr("field-key");
                 data[k]=v;
             });
-
+            cr.msg_loading();
             if(post_cur.type=="list"){
                 if(post_cur.id_document_edit==""){
                     cr_firestore.add(data,collection,()=>{
@@ -252,6 +252,8 @@ class CMS{
     list_post=[];
     index_post_cur=0;
 
+    mode="dev";
+
     add(p){
         this.list_post.push(p);
     }
@@ -267,6 +269,16 @@ class CMS{
         p_file.list_fields_table=["name","updated","contentType"];
         this.add(p_file);
 
+        var p_user=new Post();
+        p_user.id_collection="user";
+        p_user.label="User";
+        p_user.icon='<i class="fas fa-user"></i>';
+        p_user.data_form_add.fields.push(cms.field('full_name', "Tên đầy đủ"));
+        p_user.data_form_add.fields.push(cms.field('role', "Vai trò"));
+        p_user.data_form_add.fields.push(cms.field('username', "Tên đăng nhập(username)"));
+        p_user.data_form_add.fields.push(cms.field('password', "Mật khẩu (Password)"));
+        this.add(p_user);
+
         this.show_list_menu_sidebar();
         this.show_post_object(this.index_post_cur);
 
@@ -277,6 +289,10 @@ class CMS{
         var item_home_dev=this.sidebar_item_info("Home Dev (Đã kết nối dữ liệu)",'<i class="fas fa-home"></i>');
         $(item_home_dev).click(function(){window.open(cms.home_url+"/index2.html","_blank");});
         $("#list_info").append(item_home_dev);
+
+        var item_login=this.sidebar_item_info("Đăng Nhập",'<i class="fas fa-sign-in-alt"></i>');
+        $(item_login).click(cms.show_login);
+        $("#list_info").append(item_login);
         
         $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
@@ -350,6 +366,46 @@ class CMS{
                     $("#list_cms_file").append(f_item);
                 });
             });
+        });
+    }
+
+    show_login(){
+        var html = '';
+        html += '<main class="form-signin">';
+
+            html += '<img class="mb-4" src="Carrot-Framework-Web/icon.ico" alt="" width="72" height="72">';
+            html += '<h1 class="h3 mb-3 fw-normal">Please sign in</h1>';
+
+            html += '<div class="form-floating">';
+            html += '<input type="email" class="form-control" id="cms_username" placeholder="name@example.com">';
+            html += '<label for="cms_username">Email address</label>';
+            html += '</div>';
+            html += '<div class="form-floating">';
+            html += '<input type="password" class="form-control" id="cms_password" placeholder="Password">';
+            html += '<label for="cms_password">Password</label>';
+            html += '</div>';
+
+            html += '<button id="btn_login_cms" class="w-100 btn btn-lg btn-primary" style="background-color:'+cr.color_btn+'">Sign in</button>';
+            html += '<p class="mt-5 mb-3 text-muted">© CMS - 2024</p>';
+
+        html += '</main>';
+        $("body").html(html);
+        $("body").addClass("body_login text-center");
+        $("#btn_login_cms").click(function(){
+            cr.msg_loading();
+            var cms_password=$("#cms_password").val();
+            var cms_username=$("#cms_username").val();
+            var q=new Firestore_Query("user");
+            q.add_where("username",cms_username);
+            q.add_where("password",cms_password);
+            q.set_limit(1);
+            q.get_data((data)=>{
+                localStorage.setItem("user_login",JSON.stringify(data));
+                alert("Dang nhap thanh cong");
+            },()=>{
+                cr.msg("Đăng nhập không thành công!","Đăng Nhập","error");
+            });
+            return false;
         });
     }
 }
