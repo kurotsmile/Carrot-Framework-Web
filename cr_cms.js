@@ -4,7 +4,7 @@ class Post{
     data_form_add={};
     id_document_edit="";
     icon='<i class="fas fa-database"></i>';
-    list_fields_table=null;//Array
+    list_fields_table=null;
     type="list";
 
     constructor(){
@@ -260,7 +260,19 @@ class CMS{
 
     onLoad(){
         this.home_url= window.location.origin;
-        
+        cr.loadJs("Carrot-Framework-Web/summernote/summernote-bs4.min.js");
+        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/summernote/summernote-bs4.min.css">');
+
+        if(this.mode=="dev"){
+            this.load_list_post();
+            this.show_post_object(this.index_post_cur);
+            this.load_list_action();
+        }else{
+            this.show_login();
+        }
+    }
+
+    load_list_post(){
         var p_file=new Post();
         p_file.id_collection="file";
         p_file.data_form_add=null;
@@ -280,8 +292,9 @@ class CMS{
         this.add(p_user);
 
         this.show_list_menu_sidebar();
-        this.show_post_object(this.index_post_cur);
+    }
 
+    load_list_action(){
         $("#list_info").html("");
         var item_home_page=this.sidebar_item_info("Home Page (Mẫu)",'<i class="fas fa-home"></i>');
         $(item_home_page).click(function(){window.open(cms.home_url,"_blank");});
@@ -299,9 +312,6 @@ class CMS{
         $("#inp_cms_search").change(function(){
             cms.act_search();
         });
-
-        cr.loadJs("Carrot-Framework-Web/summernote/summernote-bs4.min.js");
-        $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/summernote/summernote-bs4.min.css">');
     }
 
     sidebar_item_info(name,icon='',val=''){
@@ -400,65 +410,59 @@ class CMS{
             q.add_where("password",cms_password);
             q.set_limit(1);
             q.get_data((data)=>{
-                localStorage.setItem("user_login",JSON.stringify(data));
-                alert("Dang nhap thanh cong");
+                localStorage.setItem("user_login",JSON.stringify(data[0]));
+                cms.show();
+                return false;
             },()=>{
                 cr.msg("Đăng nhập không thành công!","Đăng Nhập","error");
+                return false;
             });
             return false;
         });
     }
 
-    /*
     show(){
-        var html='';
-        html+='<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">';
-        html+='<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Manager Data</a>';
-    
-        html+='<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"';
-            html+='data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"';
-            html+='aria-label="Toggle navigation">';
-            html+='<span class="navbar-toggler-icon"></span>';
-        html+='</button>';
-        html+='<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="inp_cms_search">';
-        html+='<div class="navbar-nav">';
-            html+='<div class="nav-item text-nowrap"> ';
-                html+='<a class="nav-link px-3" href="#" onclick="cr.show_setting();return false;"><i class="fas fa-cog"></i> Setting</a>';
-            html+='</div>
-        html+='</div>
-    html+='</header>
+        var html = '';
+        html += '<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">';
+            html += '<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Manager Data</a>';
+            html += '<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>';
+            html += '<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="inp_cms_search">';
+            html += '<div class="navbar-nav">';
+            html += '<div class="nav-item text-nowrap"> ';
+            html += '<a class="nav-link px-3" href="#" onclick="cr.show_setting();return false;"><i class="fas fa-cog"></i> Setting</a>';
+            html += '</div>';
+            html += '</div>';
+        html += '</header>';
 
-    html+='<div class="container-fluid">
-        html+='<div class="row">
-            html+='<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                html+='<div class="position-sticky pt-3">
-                    html+='<ul class="nav flex-column" id="list_post"></ul>
-                    html+='<h6
-                        html+='class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        html+='<span>Info Database Cloud</span>
-                        html+='<a class="link-secondary" href="#" aria-label="Add a new report">
-                            html+='<span data-feather="plus-circle"></span>
-                        html+='</a>
-                    html+='</h6>
-                    html+='<ul class="nav flex-column mb-2" id="list_info">
-                        html+='<li class="nav-item">
-                            html+='<a class="nav-link" href="#">
-                                html+='<span data-feather="file-text"></span> Info Database Cloud
-                            html+='</a>
-                        html+='</li>
-                    html+='</ul>
-                html+='</div>
-                html+='<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    html+='<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>
-                    html+='<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                html+='</div>
-            </nav>
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>
-        </div>
-    </div>'
+        html += '<div class="container-fluid">';
+            html += '<div class="row">';
+            html += '<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">';
+            html += '<div class="position-sticky pt-3">';
+            html += '<ul class="nav flex-column" id="list_post"></ul>';
+            html += '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">';
+                html += '<span>Info Database Cloud</span>';
+                html += '<a class="link-secondary" href="#" aria-label="Add a new report"><span data-feather="plus-circle"></span></a>';
+            html += '</h6>';
+            html += '<ul class="nav flex-column mb-2" id="list_info">';
+                html += '<li class="nav-item"><a class="nav-link" href="#"><span data-feather="file-text"></span> Info Database Cloud</a></li>';
+            html += '</ul>';
+            html += '</div>';
+            if(cms.mode=="dev"){
+                html += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+                    html += '<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>';
+                    html += '<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+                html += '</div>';
+            }
+            html += '</nav>';
+            html += '<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>';
+            html += '</div>';
+        html += '</div>';
+
         $("body").html(html);
         $("body").removeClass("body_login text-center");
+        this.show_list_menu_sidebar();
+        this.show_post_object(this.index_post_cur);
+        this.load_list_action();
     }
-    */
 }
 var cms=new CMS();
