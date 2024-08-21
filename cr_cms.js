@@ -165,6 +165,10 @@ class Post{
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
             $("#list_post_table").html('');
+
+            if(data.length==0){
+                $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
+            }
             var keys=[];
             if(p.list_fields_table==null)
                 keys= Object.keys(data[0]);
@@ -215,6 +219,8 @@ class Post{
                 });
                 $("#list_post_table").append(emp_tr);
             })
+        },()=>{
+            cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
         });
     }
 
@@ -307,10 +313,6 @@ class CMS{
         var item_home_dev=this.sidebar_item_info("Home Dev (Đã kết nối dữ liệu)",'<i class="fas fa-home"></i>');
         $(item_home_dev).click(function(){window.open(cms.home_url+"/index2.html","_blank");});
         $("#list_info").append(item_home_dev);
-
-        var item_login=this.sidebar_item_info("Đăng Nhập",'<i class="fas fa-sign-in-alt"></i>');
-        $(item_login).click(cms.show_login);
-        $("#list_info").append(item_login);
 
         $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));

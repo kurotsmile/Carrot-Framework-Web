@@ -85,10 +85,12 @@ class CR_FireStore{
             type: 'GET',
             success: function(data) {
                 var list=[];
-                for(var i=0;i<data.documents.length;i++){
-                    var obj_data=cr_firestore.convertFromFirestoreFormat(data.documents[i].fields);
-                    obj_data["id_doc"]=data.documents[i].name.split("/").pop();
-                    list.push(obj_data);
+                if(data.documents){
+                    for(var i=0;i<data.documents.length;i++){
+                        var obj_data=cr_firestore.convertFromFirestoreFormat(data.documents[i].fields);
+                        obj_data["id_doc"]=data.documents[i].name.split("/").pop();
+                        list.push(obj_data);
+                    }
                 }
                 if(act_done) act_done(list);
             },
