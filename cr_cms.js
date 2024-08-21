@@ -254,11 +254,16 @@ class CMS{
 
     mode="dev";
 
+    data_user_login=null;
+
     add(p){
         this.list_post.push(p);
     }
 
     onLoad(){
+
+        if(localStorage.getItem("user_login")) cms.data_user_login=JSON.parse(localStorage.getItem("user_login"));
+
         this.home_url= window.location.origin;
         cr.loadJs("Carrot-Framework-Web/summernote/summernote-bs4.min.js");
         $('head').append('<link rel="stylesheet" type="text/css" href="Carrot-Framework-Web/summernote/summernote-bs4.min.css">');
@@ -306,9 +311,20 @@ class CMS{
         var item_login=this.sidebar_item_info("Đăng Nhập",'<i class="fas fa-sign-in-alt"></i>');
         $(item_login).click(cms.show_login);
         $("#list_info").append(item_login);
-        
+
         $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
+        if(cms.data_user_login!=null){
+            console.log(cms.data_user_login);
+            $("#list_info").append(this.sidebar_item_info(cms.data_user_login.full_name,'<i class="fas fa-user-circle"></i>','User Login ('+cms.data_user_login.role+')'));
+            var item_user_logout=this.sidebar_item_info("Đăng Xuất",'<i class="fas fa-sign-out-alt"></i>');
+            $(item_user_logout).click(function(){
+                localStorage.removeItem("user_login");
+                cms.data_user_login=null;
+                cms.show_login();
+            });
+            $("#list_info").append(item_user_logout);
+        }
         $("#inp_cms_search").change(function(){
             cms.act_search();
         });
@@ -411,6 +427,7 @@ class CMS{
             q.set_limit(1);
             q.get_data((data)=>{
                 localStorage.setItem("user_login",JSON.stringify(data[0]));
+                cms.data_user_login=data[0];
                 cms.show();
                 return false;
             },()=>{
@@ -447,6 +464,7 @@ class CMS{
                 html += '<li class="nav-item"><a class="nav-link" href="#"><span data-feather="file-text"></span> Info Database Cloud</a></li>';
             html += '</ul>';
             html += '</div>';
+
             if(cms.mode=="dev"){
                 html += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
                     html += '<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>';
@@ -466,14 +484,10 @@ class CMS{
     }
 
     processString(input) {
-        // Biểu thức chính quy để kiểm tra định dạng URL
         var urlPattern = /^(https?:\/\/)?([\w\-\.]+\.[a-zA-Z]{2,})(\/[\w\-\.\?&=%]*)*$/;
-        // Biểu thức chính quy để kiểm tra nếu URL là hình ảnh
         var imagePattern = /\.(jpg|jpeg|png|gif|bmp|webp)$/i;
     
-        // Kiểm tra nếu input là một URL hợp lệ
         if (urlPattern.test(input)) {
-            // Kiểm tra nếu URL là hình ảnh
             if (imagePattern.test(input)) {
                 return `<img src="${input}" alt="Image" style="max-width: 100%; height: auto;">`;
             } else {
