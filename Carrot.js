@@ -6,18 +6,19 @@ class Carrot{
     color_btn="#fa1675";
     color_active="#FAFA04";
 
+    //Info
     site_name="Site Name";
-    site_url="https://carrotstore.web.app";
-    email1="tranthienthanh93@gmail.com";
-    email2="kurotsmile@gmail.com";
-    link_twitte="https://twitter.com/carrotstore1";
-    link_pinterest="https://br.pinterest.com/tranrot93";
-    link_linkedin="https://www.linkedin.com/in/tranthienthanh";
-    link_fb="https://www.facebook.com/kurotsmile";
-    contact_phone="+840978651577";
-    link_tiktok="https://www.tiktok.com/@kurotsmilethanh";
-    link_youtube="https://www.youtube.com/AuTri";
-    link_github="https://github.com/kurotsmile";
+    site_url="";
+    email1="";
+    email2="";
+    link_twitte="";
+    link_pinterest="";
+    link_linkedin="";
+    link_fb="";
+    contact_phone="";
+    link_tiktok="";
+    link_youtube="";
+    link_github="";
 
     data_order_cr=null;
 
@@ -474,19 +475,28 @@ class Carrot{
         }, 1000);
     }
 
-    arg(sParam) {
-        var sPageURL = window.location.search.substring(1);
-        var sURLVariables = sPageURL.split('&');
-        var sParameterName;
-    
-        for (var i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-            
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+    arg(sParam='') {
+        if(sParam==''){
+            var currentURL = window.location.href;
+            var parts = currentURL.split('/').filter(function(part) {
+                return part.length > 0;
+            });
+            var params = parts.slice(3);
+            return params;
+        }else{
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            var sParameterName;
+        
+            for (var i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+                
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
             }
+            return false;
         }
-        return false;
     }
 
     showSearch(act_done=null){
@@ -835,5 +845,18 @@ class Carrot{
         }
         checkNextLink();
     }
+
+    setTile(newTitle,arg_tag_and_val=''){
+        var newURL='';
+        if(arg_tag_and_val!='') newURL=cr.site_url+"?"+arg_tag_and_val;
+        document.title = newTitle;
+        window.history.pushState({}, newTitle, newURL);
+    }
+
+    setTitleAndURL(newTitle, newURL) {
+        document.title = newTitle;
+        window.history.pushState({}, newTitle, newURL);
+    }
+    
 }
 var cr=new Carrot();

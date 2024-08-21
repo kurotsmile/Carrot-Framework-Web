@@ -181,11 +181,11 @@ class Post{
 
                 if(p.list_fields_table!=null){
                     p.list_fields_table.forEach(function(key) {
-                        htm_tr += "<td>" + item_p[key] + "</td>";
+                        htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }else{
                     keys.forEach(function(key) {
-                        htm_tr += "<td>" + item_p[key] + "</td>";
+                        htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }
 
@@ -464,5 +464,24 @@ class CMS{
         this.show_post_object(this.index_post_cur);
         this.load_list_action();
     }
+
+    processString(input) {
+        // Biểu thức chính quy để kiểm tra định dạng URL
+        var urlPattern = /^(https?:\/\/)?([\w\-\.]+\.[a-zA-Z]{2,})(\/[\w\-\.\?&=%]*)*$/;
+        // Biểu thức chính quy để kiểm tra nếu URL là hình ảnh
+        var imagePattern = /\.(jpg|jpeg|png|gif|bmp|webp)$/i;
+    
+        // Kiểm tra nếu input là một URL hợp lệ
+        if (urlPattern.test(input)) {
+            // Kiểm tra nếu URL là hình ảnh
+            if (imagePattern.test(input)) {
+                return `<img src="${input}" alt="Image" style="max-width: 100%; height: auto;">`;
+            } else {
+                return `<a href="${input}" target="_blank">${input}</a>`;
+            }
+        } else {
+            return input;
+        }
+    }    
 }
 var cms=new CMS();
