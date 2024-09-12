@@ -345,7 +345,7 @@ class CMS{
     show_list_menu_sidebar(){
         $("#list_post").html('');
         $.each(this.list_post,function(index,p){
-            var emp_post=$('<li class="nav-item"><a class="nav-link '+(cms.index_post_cur===index ? "active":"")+'" aria-current="page" href="#">'+p.icon+' '+p.label+'</a></li>');
+            var emp_post=$('<li role="button" class="nav-item"><a class="nav-link '+(cms.index_post_cur===index ? "active":"")+'" aria-current="page" >'+p.icon+' '+p.label+'</a></li>');
             $(emp_post).click(function(){
                 cms.index_post_cur=index;
                 cms.show_post_object(index);
