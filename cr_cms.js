@@ -317,7 +317,6 @@ class CMS{
         $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
         $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
         if(cms.data_user_login!=null){
-            console.log(cms.data_user_login);
             $("#list_info").append(this.sidebar_item_info(cms.data_user_login.full_name,'<i class="fas fa-user-circle"></i>','User Login ('+cms.data_user_login.role+')'));
             var item_user_logout=this.sidebar_item_info("Đăng Xuất",'<i class="fas fa-sign-out-alt"></i>');
             $(item_user_logout).click(function(){
@@ -358,7 +357,6 @@ class CMS{
     show_post_object(index){
         this.show_list_menu_sidebar();
         this.list_post[index].show();
-        feather.replace();
     }
 
     field(id,name,type,data=''){
@@ -428,12 +426,16 @@ class CMS{
             q.add_where("password",cms_password);
             q.set_limit(1);
             q.get_data((data)=>{
-                localStorage.setItem("user_login",JSON.stringify(data[0]));
-                cms.data_user_login=data[0];
-                cms.show();
-                return false;
+                if(data.length>0){
+                    localStorage.setItem("user_login",JSON.stringify(data[0]));
+                    cms.data_user_login=data[0];
+                    cms.show();
+                    return false;
+                }else{
+                    cr.msg("Đăng nhập không thành công!","Đăng Nhập","error");
+                }
             },()=>{
-                cr.msg("Đăng nhập không thành công!","Đăng Nhập","error");
+                cr.msg("Đăng nhập không thành công!","Đăng Nhập lỗi \nxin vui lòng thử lại!","error");
                 return false;
             });
             return false;

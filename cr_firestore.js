@@ -289,12 +289,14 @@ class Firestore_Query{
             return response.json();
         }).then(data => {
             var list=[];
-            for(var i=0;i<data.length;i++){
-                var obj_data=cr_firestore.convertFromFirestoreFormat(data[i].document.fields);
-                obj_data["id_doc"]=data[i].document.name.split("/").pop();
-                list.push(obj_data);
+            if(data.length>0){
+                for(var i=0;i<data.length;i++){
+                    var obj_data=cr_firestore.convertFromFirestoreFormat(data[i].document.fields);
+                    obj_data["id_doc"]=data[i].document.name.split("/").pop();
+                    list.push(obj_data);
+                }
             }
-            act_done(list);
+            if(act_done) act_done(list);
         }).catch(error => {
             console.error('There was a problem with your fetch operation:', error);
             if(act_fail!=null) act_fail();
