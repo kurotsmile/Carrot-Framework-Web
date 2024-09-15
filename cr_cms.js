@@ -53,14 +53,15 @@ class Post{
             html_field+='</label>';
             html_field+='<div class="input-group mb-3">';
 
+            let val_field='';
+            if(data_document!=null){
+                if(cr.alive(data_document[field.id])) val_field=data_document[field.id];
+            }
+
             if(field.type=="textarea"){
-                html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+(data_document!==null ? data_document[field.id]:"")+'</textarea>';
+                html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+val_field+'</textarea>';
             }
             else{
-                var val_field='';
-                if(data_document!=null){
-                    if(cr.alive(data_document[field.id])) val_field=data_document[field.id];
-                }
                 html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
                 
