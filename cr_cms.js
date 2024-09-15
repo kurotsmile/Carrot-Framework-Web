@@ -176,14 +176,23 @@ class Post{
 
     show_list(){
         var html='';
-        html+='<div class="w-100">';
-        html+='<h2 class="h3 mt-3">List</h2>';
-        html+='<div class="w-100 table-responsive">';
-        html+='<table class="table table-striped table-sm" id="table_list_post">';
-        html+='<thead><tr id="list_head"><tr/></thead>';
-        html+='<tbody id="list_post_table"></tbody>';
-        html+='</table>';
+        html+='<div class="w-100 mt-5">';
+
+        html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">';
+            html+='<h1 class="h3">List</h1>';
+            html+='<div class="btn-toolbar mb-2 mb-md-0">';
+                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export Data</button>';
+                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
+            html+='</div>';
         html+='</div>';
+
+        html+='<div class="w-100 table-responsive">';
+            html+='<table class="table table-striped table-sm" id="table_list_post">';
+            html+='<thead><tr id="list_head"><tr/></thead>';
+            html+='<tbody id="list_post_table"></tbody>';
+            html+='</table>';
+        html+='</div>';
+
         html+='</div>';
         return html;
     }
@@ -193,7 +202,7 @@ class Post{
         var p=this;
         cr_firestore.list(this.id_collection,(data)=>{
             $("#list_post_table").html('');
-
+            cms.data_list_temp=data;
             if(data.length==0){
                 $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
             }
@@ -203,13 +212,18 @@ class Post{
             else
                 keys= p.list_fields_table;
 
+            $("#list_head").append("<th>Action</th>");
             keys.forEach(function(key) {
                 $("#list_head").append("<th>" + key + "</th>");
             });
-            $("#list_head").append("<th>Action</th>");
-
+            
             $.each(data,function(index,item_p){
                 var htm_tr='<tr>';
+
+                htm_tr+='<td>';
+                    if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
+                    htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
+                htm_tr+='</td>';
 
                 if(p.list_fields_table!=null){
                     p.list_fields_table.forEach(function(key) {
@@ -221,10 +235,6 @@ class Post{
                     });
                 }
 
-                htm_tr+='<td>';
-                if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
-                htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
-                htm_tr+='</td>';
                 htm_tr+='</tr>';
 
                 let emp_tr=$(htm_tr);
@@ -289,6 +299,7 @@ class CMS{
     mode="dev";
 
     data_user_login=null;
+    data_list_temp=null;
 
     add(p){
         this.list_post.push(p);
@@ -534,6 +545,49 @@ class CMS{
         } else {
             return input;
         }
-    }    
+    }
+
+    export_data_list(){
+        let file_name=cms.list_post[cms.index_post_cur].id_collection;
+        cr.download(cms.data_list_temp,file_name+".json");
+        cr.msg("Export data ("+file_name+") success!","success");
+    }
+
+    import_data_list(collectionId){
+        var html_imp='';
+        html_imp+='<h1 class="h2 mt-5"><i class="fas fa-cloud-upload-alt"></i> Import data</h1>';
+        html_imp+='<p>Upload json file to import corresponding data<br/>';
+        html_imp+='<progress min="0" max="100" value="0" class="w-100" id="status_import">';
+        html_imp+='</p>';
+        html_imp+='<input type="file" id="fileimport_data" />';
+        $("#main_contain").html(html_imp);
+        $("#status_import").hide();
+
+        $('#fileimport_data').on('change', function(event) {
+            $("#status_import").show();
+            const file = event.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                try {
+                  const jsonData = JSON.parse(e.target.result);
+                  let length_progress=jsonData.length;
+                  $("#status_import").attr("max",length_progress);
+                  $.each(jsonData,function(index,d){
+                    cr_firestore.add(d,collectionId,()=>{
+                        $("#status_import").attr("value",index);
+                        if(index>=length_progress-1){
+                            cr.msg("Import Data Success!","Import Data","success");
+                        }
+                    });
+                  });
+                } catch (error) {
+                  cr.msg('Không thể phân tích file JSON:'+error,"Import Error","error");
+                }
+              };
+              reader.readAsText(file);
+            }
+        });
+    }
 }
 var cms=new CMS();
