@@ -346,8 +346,8 @@ class CMS{
         $(item_home_page).click(function(){window.open(cms.home_url,"_blank");});
         $("#list_info").append(item_home_page);
 
-        $("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
-        $("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
+        //$("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
+        //$("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
         if(cms.data_user_login!=null){
             $("#list_info").append(this.sidebar_item_info(cms.data_user_login.full_name,'<i class="fas fa-user-circle"></i>','User Login ('+cms.data_user_login.role+')'));
             var item_user_logout=this.sidebar_item_info("Đăng Xuất",'<i class="fas fa-sign-out-alt"></i>');
