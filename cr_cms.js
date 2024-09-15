@@ -342,7 +342,7 @@ class CMS{
 
     load_list_action(){
         $("#list_info").html("");
-        var item_home_page=this.sidebar_item_info("Home Page (Mẫu)",'<i class="fas fa-home"></i>');
+        var item_home_page=this.sidebar_item_info("Home Page",'<i class="fas fa-home"></i>');
         $(item_home_page).click(function(){window.open(cms.home_url,"_blank");});
         $("#list_info").append(item_home_page);
 
