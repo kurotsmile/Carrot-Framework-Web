@@ -863,5 +863,17 @@ class Carrot{
         window.history.pushState({}, newTitle, newURL);
     }
     
+    alive(val){
+        if(val==null)
+            return false;
+        else if(val=='')
+            return false;
+        else if(val==undefined)
+            return false;
+        else if(val=='undefined')
+            return false;
+        else
+            return true;
+    }
 }
 var cr=new Carrot();

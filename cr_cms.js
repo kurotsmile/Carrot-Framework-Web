@@ -53,10 +53,17 @@ class Post{
             html_field+='</label>';
             html_field+='<div class="input-group mb-3">';
 
-            if(field.type=="textarea")
+            if(field.type=="textarea"){
                 html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+(data_document!==null ? data_document[field.id]:"")+'</textarea>';
-            else
-                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+            }
+            else{
+                var val_field='';
+                if(data_document!=null){
+                    if(cr.alive(data_document[field.id])) val_field=data_document[field.id];
+                }
+                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+            }
+                
             
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
