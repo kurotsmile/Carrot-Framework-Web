@@ -47,13 +47,16 @@ class Post{
 
         $.each(fields,function(index,field){
             let html_field='<div class="mb-3">';
-            html_field+='<label for="'+field.id+'" class="form-label">'+field.name+'</label>';
+            html_field+='<label for="'+field.id+'" class="form-label">';
+            html_field+=field.name;
+            if(field.required) html_field+=' <b style="color:red">(*)</b>';
+            html_field+='</label>';
             html_field+='<div class="input-group mb-3">';
 
             if(field.type=="textarea")
                 html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+(data_document!==null ? data_document[field.id]:"")+'</textarea>';
             else
-                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data">';
+                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+(data_document!==null ? data_document[field.id]:"")+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
@@ -105,6 +108,23 @@ class Post{
         var post_cur=this;
         $(emp_form).find("#btn_frm_add").click(function(){
             var data={};
+
+            var allFilled = true;
+
+            $('input[required]').each(function() {
+              if ($(this).val() === '') {
+                allFilled = false;
+                $(this).css('border', '2px solid red');
+              } else {
+                $(this).css('border', '');
+              }
+            });
+
+            if(allFilled==false){
+                cr.msg("Vui lòng điền đẩy đủ các trường thông tin bắt buộc nhập","Lỗi các trường bắt buộc","warning");
+                return false;
+            }
+
             $(".inp_cmd_field").each(function(index,emp){
                 var v=$(emp).val();
                 var k=$(emp).attr("field-key");
@@ -363,12 +383,13 @@ class CMS{
         this.list_post[index].show();
     }
 
-    field(id,name,type,data=''){
+    field(id,name,type,data='',required=false){
         var data_field={};
         data_field["id"]=id;
         data_field["name"]=name;
         data_field["type"]=type;
         data_field["data"]=data;
+        data_field["required"]=required;
         return data_field;
     }
 
