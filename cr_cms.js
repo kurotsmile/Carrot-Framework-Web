@@ -39,6 +39,11 @@ class Post{
             }
         }else{
             html+='<a href="#" class="btn btn-info" id="btn_frm_add"><i class="fas fa-save"></i> Save</a>';
+            if(this.type=="setting"){
+                cms.data_list_temp=data_document;
+                html+='<button style="float:right" onclick="cms.export_data_list();return false;" class="btn btn-dark m-1 d-right"><i class="fas fa-file-download"></i> Export Data</button>';
+                html+='<button style="float:right" onclick="cms.import_data_list(\''+this.id_collection+'\',true);return false;" class="float-right btn btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
+            }
         }
      
         html+='</div>';
@@ -213,6 +218,8 @@ class Post{
                 keys= p.list_fields_table;
 
             $("#list_head").append("<th>Action</th>");
+
+            if(p.id_collection=="file") $("#list_head").append("<th>Preview</th>");
             keys.forEach(function(key) {
                 $("#list_head").append("<th>" + key + "</th>");
             });
@@ -226,6 +233,7 @@ class Post{
                 htm_tr+='</td>';
 
                 if(p.list_fields_table!=null){
+                    if(p.id_collection=="file")htm_tr+='<td><img style="width:50px;height:50px" class="img-thumbnail" src="'+cms.getFirebaseStorageUrl(item_p['bucket'],item_p['name'],item_p['downloadTokens'])+'"/></td>'; 
                     p.list_fields_table.forEach(function(key) {
                         htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
                     });
@@ -553,7 +561,7 @@ class CMS{
         cr.msg("Export data ("+file_name+") success!","success");
     }
 
-    import_data_list(collectionId){
+    import_data_list(collectionId,is_setting=false){
         var html_imp='';
         html_imp+='<h1 class="h2 mt-5"><i class="fas fa-cloud-upload-alt"></i> Import data</h1>';
         html_imp+='<p>Upload json file to import corresponding data<br/>';
@@ -564,23 +572,31 @@ class CMS{
         $("#status_import").hide();
 
         $('#fileimport_data').on('change', function(event) {
-            $("#status_import").show();
+            
             const file = event.target.files[0];
             if (file) {
               const reader = new FileReader();
               reader.onload = function(e) {
                 try {
-                  const jsonData = JSON.parse(e.target.result);
-                  let length_progress=jsonData.length;
-                  $("#status_import").attr("max",length_progress);
-                  $.each(jsonData,function(index,d){
-                    cr_firestore.add(d,collectionId,()=>{
-                        $("#status_import").attr("value",index);
-                        if(index>=length_progress-1){
-                            cr.msg("Import Data Success!","Import Data","success");
-                        }
-                    });
-                  });
+                    const jsonData = JSON.parse(e.target.result);
+                    if(is_setting){
+                        Swal.showLoading();
+                        cr_firestore.set(jsonData,"setting",collectionId,()=>{
+                            cr.msg("Import Data Success!", "Import Data", "success");
+                        })
+                    }else{
+                        $("#status_import").show();
+                        let length_progress = jsonData.length;
+                        $("#status_import").attr("max", length_progress);
+                        $.each(jsonData, function (index, d) {
+                            cr_firestore.add(d, collectionId, () => {
+                                $("#status_import").attr("value", index);
+                                if (index >= length_progress - 1) {
+                                    cr.msg("Import Data Success!", "Import Data", "success");
+                                }
+                            });
+                        });
+                    }
                 } catch (error) {
                   cr.msg('Không thể phân tích file JSON:'+error,"Import Error","error");
                 }
@@ -588,6 +604,12 @@ class CMS{
               reader.readAsText(file);
             }
         });
+    }
+
+    getFirebaseStorageUrl(bucketName, filePath, downloadToken) {
+        const encodedFilePath = encodeURIComponent(filePath);
+        const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedFilePath}?alt=media&token=${downloadToken}`;
+        return fileUrl;
     }
 }
 var cms=new CMS();
