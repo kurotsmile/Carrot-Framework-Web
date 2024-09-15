@@ -29,8 +29,11 @@ class CR_FireStore{
             url:'https://firestore.googleapis.com/v1/projects/'+cr_firestore.id_project+'/databases/(default)/documents/'+collection+'/'+document+'/?key='+cr_firestore.api_key,
             type: 'GET',
             success: function(response) {
-                if(act_done) act_done(cr_firestore.convertFromFirestoreFormat(response.fields));
-                console.log("Dữ liệu document từ Firestore:", response);
+                if(act_done){
+                    var obj_data=cr_firestore.convertFromFirestoreFormat(response.fields);
+                    obj_data["id_doc"]=response.name.split("/").pop();
+                    act_done(obj_data);
+                }
             },
             error: function(error) {
                 if(act_fail) act_fail();
