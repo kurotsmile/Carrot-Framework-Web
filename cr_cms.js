@@ -502,12 +502,13 @@ class CMS{
             html += '</ul>';
             html += '</div>';
 
-            if(cms.mode=="dev"){
+            if(cms.data_user_login==null){
                 html += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
                     html += '<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>';
                     html += '<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
                 html += '</div>';
             }
+
             html += '</nav>';
             html += '<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>';
             html += '</div>';
