@@ -527,7 +527,7 @@ class CMS{
     
         if (urlPattern.test(input)) {
             if (imagePattern.test(input)) {
-                return `<img src="${input}" alt="Image" style="max-width: 100%; height: auto;">`;
+                return `<i class="fas fa-regular fa-image"></i> ${input}`;
             } else {
                 return `<a href="${input}" target="_blank">${input}</a>`;
             }
