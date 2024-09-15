@@ -98,6 +98,20 @@ class Carrot{
         this.ver=ver;
     }
 
+    change_title_page(s_title,s_url){
+        document.title =s_title;
+        if(s_url!="") s_url=this.site_url+s_url;
+        if(s_url!="")
+            window.history.pushState(s_title, 'Title', s_url);
+        else
+            window.history.pushState(s_title,"",null);
+    }
+
+    change_title(s_title,s_url=''){
+        if(s_url=='') s_url=cr.site_url;
+        cr.change_title_page(s_title,s_url);
+    }
+
     addHandlebars(){
         if(window['Handlebars']==null) $("head").append('<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>');
     }
