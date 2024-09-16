@@ -14,15 +14,15 @@ class Post{
     show_form_add(data_document=null){
         var html='';
         let fields=this.data_form_add.fields;
-        html+='<form class="card mt-3">';
+        html+='<form class="card mt-3 accordion" id="accordionExample">';
         if(this.type=="list"){
-            html+='<div class="card-header">'+this.label+'</div>';
+            html+='<div class="card-header"><button class="btn btn-sm" onclick="$(\'#collapse_frm_add_body\').toggle(\'fast\');return false;"><i class="fas fa-caret-square-up"></i></button> '+this.label+'</div>';
         }
         else{
             html+='<div class="card-header">Setting ('+this.label+')</div>';
         }
 
-        html+='<div class="card-body">';
+        html+='<div class="card-body" id="collapse_frm_add_body">';
         if(this.id_document_edit=="")
             html+=' <h5 class="card-title">Add Data</h5>';
         else

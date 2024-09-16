@@ -181,7 +181,8 @@ class CR_FireStore{
         var html='';
         html+='<div class="input-group mb-3">';
         html+='<button class="btn btn-outline-secondary" type="button" id="act_upload_btn"><i class="fas fa-cloud-upload-alt"></i> Start Upload</button>';
-        html+='<input type="file" class="form-control" id="fileInput" aria-describedby="act_upload_btn" aria-label="Upload">'
+        html+='<input type="file" class="form-control" id="fileInput" aria-describedby="act_upload_btn" aria-label="Upload">';
+        html+='<div class="w-100 mt-3 text-muted"><i class="fas fa-info-circle"></i> Click the <kbd>Start Upload</kbd> button once you have selected the file to upload.</div>';
         html+='</div>';
         
         cr.msg(html,"Upload File",'',()=>{
