@@ -14,15 +14,18 @@ class Post{
     show_form_add(data_document=null){
         var html='';
         let fields=this.data_form_add.fields;
+        let style_collapse="block";
+
         html+='<form class="card mt-3 accordion" id="accordionExample">';
         if(this.type=="list"){
-            html+='<div class="card-header"><button class="btn btn-sm" onclick="$(\'#collapse_frm_add_body\').toggle(\'fast\');return false;"><i class="fas fa-caret-square-up"></i></button> '+this.label+'</div>';
+            html+='<div class="card-header"><button class="btn btn-sm" onclick="cms.collapse_box_add();return false;"><i id="icon_collapse_box_add" class="fas '+(cms.is_collapse_box_add===false ? 'fa-caret-square-up':'fa-caret-square-down')+'"></i></button> '+this.label+'</div>';
+            if(cms.is_collapse_box_add) style_collapse="none"; else style_collapse="block";
         }
         else{
             html+='<div class="card-header">Setting ('+this.label+')</div>';
         }
 
-        html+='<div class="card-body" id="collapse_frm_add_body">';
+        html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'">';
         if(this.id_document_edit=="")
             html+=' <h5 class="card-title">Add Data</h5>';
         else
@@ -308,6 +311,7 @@ class CMS{
 
     data_user_login=null;
     data_list_temp=null;
+    is_collapse_box_add=false;
 
     add(p){
         this.list_post.push(p);
@@ -610,6 +614,20 @@ class CMS{
         const encodedFilePath = encodeURIComponent(filePath);
         const fileUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedFilePath}?alt=media&token=${downloadToken}`;
         return fileUrl;
+    }
+
+    collapse_box_add(){
+        if(cms.is_collapse_box_add){
+            localStorage.setItem("is_collapse_box_add","0");
+            cms.is_collapse_box_add=false;
+            $('#collapse_frm_add_body').show('fast');
+            $('#icon_collapse_box_add').attr("class","fas fa-caret-square-up");
+        }else{
+            localStorage.setItem("is_collapse_box_add","1");
+            cms.is_collapse_box_add=true;
+            $('#collapse_frm_add_body').hide('fast');
+            $('#icon_collapse_box_add').attr("class","fas fa-caret-square-down");
+        }
     }
 }
 var cms=new CMS();
