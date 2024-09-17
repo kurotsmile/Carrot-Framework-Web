@@ -93,11 +93,12 @@ class Post{
             else
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
+            if(cr.alive(field.tip)) html_field+='<div id="emailHelp" class="form-text">'+field.tip+'</div>';
             html_field+='</div>';
             let emp_field=$(html_field);
 
             if(field.type=="collection"){
-                cr_firestore.list("network",(data)=>{
+                cr_firestore.list(field.data,(data)=>{
                     var html_list='';
                     html_list+='<datalist id="'+field.id+'_list">';
                     $.each(data,function(index,l){
@@ -432,13 +433,14 @@ class CMS{
         this.list_post[index].show();
     }
 
-    field(id,name,type,data='',required=false){
+    field(id,name,type,data='',required=false,tip=''){
         var data_field={};
         data_field["id"]=id;
         data_field["name"]=name;
         data_field["type"]=type;
         data_field["data"]=data;
         data_field["required"]=required;
+        data_field["tip"]=tip;
         return data_field;
     }
 
