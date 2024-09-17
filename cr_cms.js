@@ -28,7 +28,7 @@ class Post{
         html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'">';
         if(this.id_document_edit==""){
             if(this.type=="setting")
-                html+=' <h5 class="card-title">Update Data</h5>';
+                html+=' <h5 class="card-title">Update Data <span class="text-muted" style="font-size:12px">('+this.id_collection+')</span></h5>';
             else
                 html+=' <h5 class="card-title">Add Data</h5>';
         }
@@ -73,6 +73,13 @@ class Post{
             if(field.type=="textarea"){
                 html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+val_field+'</textarea>';
             }
+            else if(field.type=="list"||field.type=="select"){
+                html_field+='<select class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'">';
+                $.each(field.data,function(index,data_item){
+                    html_field+='<option value="'+data_item.value+'" '+(val_field==data_item.value ? "selected":"")+'>'+data_item.label+'</option>';
+                });
+                html_field+='</select>';
+            }
             else{
                 html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
@@ -81,9 +88,8 @@ class Post{
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
                 html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
-            }else if(field.type=="textarea"){
-
-            }
+            }else if(field.type=="textarea"){}
+            else if(field.type=="list"||field.type=="select"){}
             else
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
