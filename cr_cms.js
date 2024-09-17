@@ -177,6 +177,7 @@ class Post{
 
         $(emp_form).find("#btn_frm_back").click(function(){
             post_cur.id_document_edit="";
+            cms.is_collapse_box_add=false;
             $("#frm_cms_act").html(post_cur.show_form_add());
         });
         return emp_form;
@@ -325,6 +326,12 @@ class CMS{
     onLoad(){
 
         if(localStorage.getItem("user_login")) cms.data_user_login=JSON.parse(localStorage.getItem("user_login"));
+        if(localStorage.getItem("is_collapse_box_add")){
+            if(localStorage.getItem("is_collapse_box_add")=="0")
+                cms.is_collapse_box_add=false;
+            else
+                cms.is_collapse_box_add=true;
+        }
 
         this.home_url= window.location.origin;
         cr.loadJs("Carrot-Framework-Web/summernote/summernote-bs4.min.js");
