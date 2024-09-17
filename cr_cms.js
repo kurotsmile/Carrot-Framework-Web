@@ -26,8 +26,12 @@ class Post{
         }
 
         html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'">';
-        if(this.id_document_edit=="")
-            html+=' <h5 class="card-title">Add Data</h5>';
+        if(this.id_document_edit==""){
+            if(this.type=="setting")
+                html+=' <h5 class="card-title">Update Data</h5>';
+            else
+                html+=' <h5 class="card-title">Add Data</h5>';
+        }
         else
             html+=' <h5 class="card-title">Edit ('+this.id_document_edit+')</h5>';
 
