@@ -758,7 +758,7 @@ class Carrot{
         });
     }
     
-    msg(msg='',title='',icon='',act_show=null){
+    msg(msg='',title='',icon='',act_show=null,showConfirmButton=true){
         var obj_msg={
             title:title,
             iconColor: cr.color_btn,
@@ -771,6 +771,7 @@ class Carrot{
         else
             obj_msg["text"]=msg;
         if(act_show) obj_msg["didOpen"]=act_show;
+        obj_msg["showConfirmButton"]=showConfirmButton;
         Swal.fire(obj_msg);
     }
 

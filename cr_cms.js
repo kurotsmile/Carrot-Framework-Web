@@ -5,6 +5,7 @@ class Post{
     id_document_edit="";
     icon='<i class="fas fa-database"></i>';
     list_fields_table=null;
+    list_fields_show=[];
     type="list";
 
     constructor(){
@@ -201,6 +202,7 @@ class Post{
         html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">';
             html+='<h1 class="h3">List</h1>';
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
+                html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-filter"></i> Filter</button>';
                 html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export Data</button>';
                 html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
             html+='</div>';
@@ -218,8 +220,14 @@ class Post{
     }
 
     load_data_for_list(){
-        $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
         var p=this;
+        if(localStorage.getItem("filter_"+p.id_collection)) 
+            p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));
+        else
+            p.list_fields_show=p.list_fields_table;
+
+        $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
+        
         cr_firestore.list(this.id_collection,(data)=>{
             $("#list_post_table").html('');
             cms.data_list_temp=data;
@@ -227,10 +235,10 @@ class Post{
                 $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
             }
             var keys=[];
-            if(p.list_fields_table==null)
+            if(p.list_fields_show==null)
                 keys= Object.keys(data[0]);
             else
-                keys= p.list_fields_table;
+                keys= p.list_fields_show;
 
             $("#list_head").append("<th>Action</th>");
 
@@ -247,9 +255,9 @@ class Post{
                     htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                 htm_tr+='</td>';
 
-                if(p.list_fields_table!=null){
+                if(p.list_fields_show!=null){
                     if(p.id_collection=="file")htm_tr+='<td><img style="width:50px;height:50px" class="img-thumbnail" src="'+cms.getFirebaseStorageUrl(item_p['bucket'],item_p['name'],item_p['downloadTokens'])+'"/></td>'; 
-                    p.list_fields_table.forEach(function(key) {
+                    p.list_fields_show.forEach(function(key) {
                         htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }else{
@@ -661,5 +669,55 @@ class CMS{
         $('#icon_collapse_box_add').attr("class","fas fa-caret-square-down");
     }
 
+    filter_list(){
+        var fields=cms.list_post[cms.index_post_cur].data_form_add.fields;
+        var fields_select=cms.list_post[cms.index_post_cur].list_fields_show || [];
+        var html='<ul class="list-group text-left">';
+        $.each(fields,function(index,field){
+            html+='<li class="list-group-item text-left"><input data-id="'+field.id+'" class="filter_list_check_box" type="checkbox" '+($.inArray(field.id,fields_select)!==-1 ? "checked":"")+' /> '+field.name+' <small style="font-size:11px;" class="text-muted">('+field.id+')</small></li>';
+        });
+        html+='</ul>';
+        html+='<div class="w-100 mt-2 mb-2">';
+        html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_select_all()"><i class="fas fa-check-square"></i> Select All</button>';
+        html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_select_default()"><i class="fas fa-retweet"></i> Default</button>';
+        html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_save()"><i class="fas fa-save"></i> Save</button>';
+        html+='</div>';
+        cr.msg(html,"Filter","",null,false);
+    }
+
+    filter_list_select_all(){
+        $(".filter_list_check_box").each(function(index){
+            $(this).attr("checked","true");
+        });
+    }
+
+    filter_list_select_default(){
+        var fields_default=cms.list_post[cms.index_post_cur].list_fields_table || [];
+        if(fields_default.length==0){
+            cms.filter_list_select_all();
+        }else{
+            $(".filter_list_check_box").each(function(index){
+                var id_field=$(this).data("id");
+                if($.inArray(id_field,fields_default)!==-1)
+                    $(this).prop("checked", true);
+                else
+                    $(this).prop("checked", false);
+            });
+        }
+    }
+
+    filter_list_save(){
+        var post=cms.list_post[cms.index_post_cur];
+        let fields=[];
+        $(".filter_list_check_box").each(function(index){
+            if($(this).is(':checked')){
+                fields.push($(this).data("id"));
+            }
+        });
+        post.list_fields_show=fields;
+        localStorage.setItem("filter_"+post.id_collection,JSON.stringify(post.list_fields_show));
+        swal.close();
+        post.reload_list();
+    }
 }
 var cms=new CMS();
