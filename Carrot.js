@@ -876,5 +876,22 @@ class Carrot{
         else
             return true;
     }
+
+    show_menu_list(id_emp_father,id_collection){
+        cr_firestore.list(id_collection,(datas)=>{
+            $(id_emp_father).html('<ul id="'+id_collection+'_all_item" class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4"></ul>');
+            $(datas).each(function(index,m){
+                var val_href=' href="#" ';
+                var val_func_js="";
+                if(m.type=="link") val_href=' href="'+m.value+'" ';
+                if(m.type=="functionJS") val_func_js=' onClick="'+m.value+';return false;"';
+                
+                var emp_m_item='<li class="nav-item">';
+                emp_m_item+='<a id="'+m.id_doc+'" class="nav-link active" aria-current="page" '+val_func_js+' '+val_href+' >'+m.name+'</a>';
+                emp_m_item+='</li>';
+                $('#'+id_collection+'_all_item').append(emp_m_item);
+            });    
+        });
+    }
 }
 var cr=new Carrot();

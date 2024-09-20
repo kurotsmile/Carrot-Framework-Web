@@ -74,6 +74,9 @@ class Post{
             if(field.type=="textarea"){
                 html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+val_field+'</textarea>';
             }
+            else if(field.type=="icon"){
+                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+            }
             else if(field.type=="list"||field.type=="select"){
                 html_field+='<select class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'">';
                 $.each(field.data,function(index,data_item){
@@ -90,6 +93,10 @@ class Post{
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
                 html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
             }else if(field.type=="textarea"){}
+            else if(field.type=="icon"){
+                html_field+='<button onclick="cr_icon.show_select();return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+            }
             else if(field.type=="list"||field.type=="select"){}
             else
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
@@ -369,6 +376,18 @@ class CMS{
     }
 
     load_list_post(){
+
+        var p_menu_default=new Post();
+        p_menu_default.id_collection="menu";
+        p_menu_default.label="Menu";
+        p_menu_default.icon='<i class="fas fa-bars"></i>';
+        p_menu_default.data_form_add.fields.push(cms.field('name', "Tên"));
+        p_menu_default.data_form_add.fields.push(cms.field('icon', "Biểu tượng","icon"));
+        p_menu_default.data_form_add.fields.push(cms.field('type', "Loại","list",[{value:"link",label:"Liên Kết"},{value:"functionJS",label:"Chức năng javascript"},{value:"none",label:"Trống"}]));
+        p_menu_default.data_form_add.fields.push(cms.field('value', "Tham số (link,function,collection hoặt trang)"));
+        p_menu_default.data_form_add.fields.push(cms.field('father', "Mục cha (Chọn mục làm menu cha nếu bạn muốn đây là menu con)","collection","menu"));
+        this.add(p_menu_default);
+
         var p_file=new Post();
         p_file.id_collection="file";
         p_file.data_form_add=null;
@@ -382,7 +401,7 @@ class CMS{
         p_user.label="User";
         p_user.icon='<i class="fas fa-user"></i>';
         p_user.data_form_add.fields.push(cms.field('full_name', "Tên đầy đủ"));
-        p_user.data_form_add.fields.push(cms.field('role', "Vai trò"));
+        p_user.data_form_add.fields.push(cms.field('role', "Vai trò","select",[{value:"admin",label:"Admin"},{value:"editor",label:"Editor"},{value:"user",label:"User"}]));
         p_user.data_form_add.fields.push(cms.field('username', "Tên đăng nhập(username)"));
         p_user.data_form_add.fields.push(cms.field('password', "Mật khẩu (Password)"));
         this.add(p_user);
@@ -681,6 +700,7 @@ class CMS{
         html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_select_all()"><i class="fas fa-check-square"></i> Select All</button>';
         html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_select_default()"><i class="fas fa-retweet"></i> Default</button>';
         html+='<button class="btn btn-sm btn-dark m-2" onclick="cms.filter_list_save()"><i class="fas fa-save"></i> Save</button>';
+        html+='<button class="btn btn-sm btn-dark m-2" onclick="swal.close()"><i class="fas fa-times"></i> Close</button>';
         html+='</div>';
         cr.msg(html,"Filter","",null,false);
     }
