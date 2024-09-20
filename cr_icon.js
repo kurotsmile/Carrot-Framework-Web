@@ -1,29 +1,29 @@
 class CR_Icons{
 
     list_icon=[
-        '<i class="fas fa-yin-yang"></i>',
-        '<i class="fas fa-yen-sign"></i>',
-        '<i class="fas fa-x-ray"></i>',
-        '<i class="fas fa-wrench"></i>',
-        '<i class="fas fa-won-sign"></i>',
-        '<i class="fas fa-wine-glass-alt"></i>',
-        '<i class="fas fa-wine-glass"></i>',
-        '<i class="fas fa-wine-bottle"></i>',
-        '<i class="fas fa-window-restore"></i>',
-        '<i class="fas fa-window-minimize"></i>',
-        '<i class="fas fa-window-maximize"></i>',
-        '<i class="fas fa-window-close"></i>',
-        '<i class="fas fa-wind"></i>',
-        '<i class="fas fa-wifi"></i>',
-        '<i class="fas fa-wheelchair"></i>'
+        'fas fa-yin-yang',
+        'fas fa-yen-sign',
+        'fas fa-x-ray',
+        'fas fa-wrench',
+        'fas fa-won-sign',
+        'fas fa-wine-glass-alt',
+        'fas fa-wine-glass',
+        'fas fa-wine-bottle',
+        'fas fa-window-restore',
+        'fas fa-window-minimize',
+        'fas fa-window-maximize',
+        'fas fa-window-close',
+        'fas fa-wind',
+        'fas fa-wifi',
+        'fas fa-wheelchair'
     ]
 
-    show_select(act_done=null){
+    show_select(emp_inp=null){
         cr.msg('<div id="cr_all_item_icon"></div>',"Select Icon","",()=>{
             $.each(cr_icon.list_icon,function(index,ico){
-                var emp_icon=$(`<button class="btn btn-sm btn-light m-2">${ico}</button>`)
+                var emp_icon=$(`<button class="btn btn-sm btn-light m-2"><i class="${ico}"></i></button>`)
                 $(emp_icon).click(function(){
-                    if(act_done) act_done(ico);
+                    $("#"+emp_inp).val(ico);
                     Swal.close();
                 });
                 $("#cr_all_item_icon").append(emp_icon);

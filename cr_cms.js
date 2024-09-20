@@ -94,7 +94,7 @@ class Post{
                 html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
             }else if(field.type=="textarea"){}
             else if(field.type=="icon"){
-                html_field+='<button onclick="cr_icon.show_select();return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cr_icon.show_select(\''+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
