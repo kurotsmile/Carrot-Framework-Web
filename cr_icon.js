@@ -15,7 +15,11 @@ class CR_Icons{
         'fas fa-window-close',
         'fas fa-wind',
         'fas fa-wifi',
-        'fas fa-wheelchair'
+        'fas fa-wheelchair',
+        'fas fa-weight-hanging',
+        'fas fa-weight',
+        'fas fa-warehouse',
+        'fas fa-wallet'
     ]
 
     show_select(emp_inp=null){
