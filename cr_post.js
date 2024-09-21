@@ -63,6 +63,7 @@ class Post{
             html_field+='<label for="'+field.id+'" class="form-label">';
             html_field+=field.name;
             if(field.required) html_field+=' <b style="color:red">(*)</b>';
+            html_field+=' <span class="text-muted" style="font-size:12px">('+field.id+')</span>';
             html_field+='</label>';
             html_field+='<div class="input-group mb-3">';
 
