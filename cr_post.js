@@ -217,8 +217,9 @@ class Post{
             html+='<h1 class="h3">List</h1>';
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
                 html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-filter"></i> Filter</button>';
-                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export Data</button>';
-                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
+                html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-trash-alt"></i> Clear All</button>';
+                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export</button>';
+                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
             html+='</div>';
         html+='</div>';
 
@@ -247,19 +248,20 @@ class Post{
             cms.data_list_temp=data;
             if(data.length==0){
                 $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
+            }else{
+                var keys=[];
+                if(p.list_fields_show==null)
+                    keys= Object.keys(data[0]);
+                else
+                    keys= p.list_fields_show;
+
+                $("#list_head").append("<th>Action</th>");
+
+                if(p.id_collection=="file") $("#list_head").append("<th>Preview</th>");
+                keys.forEach(function(key) {
+                    $("#list_head").append("<th>" + key + "</th>");
+                });
             }
-            var keys=[];
-            if(p.list_fields_show==null)
-                keys= Object.keys(data[0]);
-            else
-                keys= p.list_fields_show;
-
-            $("#list_head").append("<th>Action</th>");
-
-            if(p.id_collection=="file") $("#list_head").append("<th>Preview</th>");
-            keys.forEach(function(key) {
-                $("#list_head").append("<th>" + key + "</th>");
-            });
             
             $.each(data,function(index,item_p){
                 var htm_tr='<tr>';

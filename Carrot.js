@@ -779,6 +779,27 @@ class Carrot{
         Swal.showLoading();
     }
 
+    msg_question(msg,title,act_yes=null,act_no=null){
+        var html='';
+        html+='<p>'+msg+'</p>';
+        html+='<p id="msg_cr_all_btn"></p>';
+        cr.msg(html,title,"question",()=>{
+            var btn_yes=$('<button class="btn btn-info m-1"><i class="fas fa-check"></i> Yes</button>');
+            $(btn_yes).click(()=>{
+                Swal.close();
+                if(act_yes) act_yes();
+            });
+
+            var btn_no=$('<button class="btn btn-dark m-1"><i class="fas fa-times"></i> No</button>');
+            $(btn_no).click(()=>{
+                Swal.close();
+                if(act_no) act_no();
+            });
+            $("#msg_cr_all_btn").append(btn_yes);
+            $("#msg_cr_all_btn").append(btn_no);
+        },false);
+    }
+
     containsHTMLTags(str) {
         const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
         return htmlTagPattern.test(str);

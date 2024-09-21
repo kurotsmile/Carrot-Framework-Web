@@ -412,5 +412,18 @@ class CMS{
         swal.close();
         post.reload_list();
     }
+
+    clear_data_list(){
+        var post=cms.list_post[cms.index_post_cur];
+        cr.msg_question("Delete all item?","Delete All",()=>{
+            $.each(cms.data_list_temp,function(index,d){
+                cr_firestore.delete(post.id_collection,d.id_doc);
+            });
+
+            setTimeout(() => {
+                post.reload_list();    
+            }, 2000);
+        });
+    }
 }
 var cms=new CMS();
