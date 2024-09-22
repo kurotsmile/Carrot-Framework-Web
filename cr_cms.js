@@ -431,11 +431,24 @@ class CMS{
         });
     }
 
-    show_list_document(id_collection){
+    show_list_document(id_collection,emp_field){
         cr.msg('<div id="all_item_collection"></div>',id_collection,"",()=>{
+            $('#all_item_collection').html('<i class="fas fa-spinner fa-spin"></i>');
             cr_firestore.list(id_collection,data=>{
+                $('#all_item_collection').empty();
                 $.each(data,function(index,item_data){
-                    var emp_item=$('<div>'+item_data.id_doc+'</div>');
+                    const firstTwoKeys = Object.keys(item_data).slice(0, 2);
+                    let key_1='';
+                    if(item_data['name']!=null)
+                        key_1=item_data['name'];
+                    else
+                        key_1=item_data[firstTwoKeys[0]];
+                    
+                    var emp_item=$('<div class="w-100 btn btn-light mt-2" style="text-align:left"><i class="fas fa-circle"></i> '+key_1+' <small class="text-muted">'+item_data.id_doc+'</small></div>');
+                    $(emp_item).click(()=>{
+                        $(emp_field).val(item_data.id_doc);
+                        Swal.close();
+                    });
                     $("#all_item_collection").append(emp_item);    
                 });
             });    

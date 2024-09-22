@@ -76,10 +76,10 @@ class Post{
                 html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+val_field+'</textarea>';
             }
             else if(field.type=="icon"){
-                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
             else if(field.type=="collection"){
-                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
             else if(field.type=="list"||field.type=="select"){
                 html_field+='<select class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'">';
@@ -89,7 +89,7 @@ class Post{
                 html_field+='</select>';
             }
             else{
-                html_field+='<input type="text" '+(field.type==="collection" ? 'list="'+field.id+'_list"': '')+' field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
                 
             
@@ -102,7 +102,7 @@ class Post{
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="collection"){
-                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\',\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
@@ -112,18 +112,6 @@ class Post{
             if(cr.alive(field.tip)) html_field+='<div id="emailHelp" class="form-text">'+field.tip+'</div>';
             html_field+='</div>';
             let emp_field=$(html_field);
-
-            if(field.type=="collection"){
-                cr_firestore.list(field.data,(data)=>{
-                    var html_list='';
-                    html_list+='<datalist id="'+field.id+'_list">';
-                    $.each(data,function(index,l){
-                        html_list+='<option value="'+l.name+'">';
-                    });
-                    html_list+='</datalist>';
-                    $(emp_field).after(html_list);
-                });    
-            }
 
             if(field.type=="textarea"){
                 setTimeout(()=>{
