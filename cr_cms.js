@@ -39,14 +39,18 @@ class CMS{
     }
 
     show_dashboar(){
+        var p=cr.arg("p");
         this.load_list_post();
-        this.show_post_object(this.index_post_cur);
+        if(p)
+            this.show_post_object(parseInt(p));
+        else
+            this.show_post_object(this.index_post_cur);
         this.load_list_action();
     }
 
     load_list_post(){
 
-        //this.add_menu("menu","Menu Default");
+        this.add_menu("menu","Menu Default");
 
         var p_file=new Post();
         p_file.id_collection="file";
@@ -131,6 +135,7 @@ class CMS{
     show_post_object(index){
         this.show_list_menu_sidebar();
         this.list_post[index].show();
+        cr.change_title(this.list_post[index].label,"?p="+index);
     }
 
     field(id,name,type,data='',required=false,tip=''){
@@ -423,6 +428,17 @@ class CMS{
             setTimeout(() => {
                 post.reload_list();    
             }, 2000);
+        });
+    }
+
+    show_list_document(id_collection){
+        cr.msg('<div id="all_item_collection"></div>',id_collection,"",()=>{
+            cr_firestore.list(id_collection,data=>{
+                $.each(data,function(index,item_data){
+                    var emp_item=$('<div>'+item_data.id_doc+'</div>');
+                    $("#all_item_collection").append(emp_item);    
+                });
+            });    
         });
     }
 }

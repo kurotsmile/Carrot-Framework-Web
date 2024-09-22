@@ -102,7 +102,7 @@ class Post{
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="collection"){
-                html_field+='<button onclick="cr_icon.show_select(\''+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
