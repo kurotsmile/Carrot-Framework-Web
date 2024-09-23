@@ -69,7 +69,14 @@ class Post{
 
             let val_field='';
             if(data_document!=null){
-                if(cr.alive(data_document[field.id])) val_field=data_document[field.id];
+                if(cr.alive(data_document[field.id])){
+                    val_field=data_document[field.id];
+                }
+                else{
+                    if(field.type=="number") val_field="0";
+                }
+            }else{
+                if(field.type=="number") val_field="0";
             }
 
             if(field.type=="textarea"){
@@ -88,8 +95,11 @@ class Post{
                 });
                 html_field+='</select>';
             }
-            else{
+            else if(field.type=='file'){
                 html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+            }
+            else{
+                html_field+='<input type="'+field.type+'" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
                 
             
@@ -206,6 +216,7 @@ class Post{
             html+='<h1 class="h3">List</h1>';
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
                 html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-filter"></i> Filter</button>';
+                html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-sort"></i> Sort</button>';
                 html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-trash-alt"></i> Clear All</button>';
                 html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export</button>';
                 html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
@@ -224,6 +235,9 @@ class Post{
     }
 
     load_data_for_list(){
+
+        $("#table_list_post tbody").sortable();
+
         var p=this;
         if(localStorage.getItem("filter_"+p.id_collection)) 
             p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));

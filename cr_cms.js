@@ -83,7 +83,7 @@ class CMS{
         p_menu_default.data_form_add.fields.push(cms.field('type', "Loại","list",[{value:"link",label:"Liên Kết"},{value:"functionJS",label:"Chức năng javascript"},{value:"none",label:"Trống"}]));
         p_menu_default.data_form_add.fields.push(cms.field('value', "Tham số (link,function,collection hoặt trang)"));
         p_menu_default.data_form_add.fields.push(cms.field('father', "Mục cha (Chọn mục làm menu cha nếu bạn muốn đây là menu con)","collection",id_collection));
-        p_menu_default.data_form_add.fields.push(cms.field('order', "Thứ tự"));
+        p_menu_default.data_form_add.fields.push(cms.field('order', "Thứ tự","number"));
         this.add(p_menu_default);
     }
 
@@ -162,16 +162,16 @@ class CMS{
         cr.msg_loading();
         cr_firestore.list("file",(data)=>{
             var html='';
-            html+='<div class="d-block w-100 text-left" ><table class="table table-sm text-left"><tbody id="list_cms_file"></tbody></table></div>';
+            html+='<div class="d-block w-100 text-left" id="csm_all_files"></div>';
             cr.msg(html,"Select File",'',()=>{
                 $.each(data,function(index,f){
-                    var f_item=$('<tr><td><i class="fa-solid fa-file"></i> <b>'+f.name+'</b></td><td>'+f.contentType+'</td><td><span class="btn btn-sm btn-info"><i class="fas fa-check"></i></span></td></tr>');
+                    var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o/' + f.name + '?alt=media&token=' + f.downloadTokens;
+                    var f_item=$('<img role="button" src="'+downloadUrl+'" class="img-thumbnail m-1" style="width:60px;height:60px"/>');
                     $(f_item).click(function(){
-                        var downloadUrl = 'https://firebasestorage.googleapis.com/v0/b/'+cr_firestore.id_project+'.appspot.com/o/' + f.name + '?alt=media&token=' + f.downloadTokens;
                         swal.close();
                         if(act_done) act_done(downloadUrl);
                     });
-                    $("#list_cms_file").append(f_item);
+                    $("#csm_all_files").append(f_item);
                 });
             });
         });
