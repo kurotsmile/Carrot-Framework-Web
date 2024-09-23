@@ -217,7 +217,8 @@ class Post{
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
                 html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-filter"></i> Filter</button>';
                 html+='<button onclick="cms.show_sort_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-sort"></i> Sort</button>';
-                html+='<button style="display:none" id="btn_list_done_sort" onclick="cms.sort_list_done();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-check-circle"></i> Done Sort</button>';
+                html+='<button style="display:none" id="btn_list_done_sort" onclick="cms.sort_list_done();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-check-circle"></i> Save Sort</button>';
+                html+='<button style="display:none" id="btn_list_cancel_sort" onclick="cms.sort_list_cancel();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-times-circle"></i> Cancel Sort</button>';
                 html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-trash-alt"></i> Clear All</button>';
                 html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-file-download"></i> Export</button>';
                 html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1  btn-list-tool"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
@@ -269,6 +270,7 @@ class Post{
                 });
                 $(".btn-list-tool").show();
                 $("#btn_list_done_sort").hide();
+                $("#btn_list_cancel_sort").hide();
             }
 
             if(is_order) data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});

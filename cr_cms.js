@@ -467,15 +467,11 @@ class CMS{
         $("#table_list_post tbody tr td .btn_move").show();
         $(".btn-list-tool").hide();
         $("#btn_list_done_sort").show();
+        $("#btn_list_cancel_sort").show();
     }
 
     sort_list_done(){
-        
-        $("#table_list_post tbody tr td .btn_edit").show();
-        $("#table_list_post tbody tr td .btn_del").show();
-        $("#table_list_post tbody tr td .btn_move").hide();
-        $(".btn-list-tool").show();
-        $("#btn_list_done_sort").hide();
+        cms.sort_list_hide();
         var post=cms.list_post[cms.index_post_cur];
         var order = $("#table_list_post tbody").sortable("toArray");
         $("#table_list_post tbody").sortable("destroy");
@@ -483,6 +479,20 @@ class CMS{
         $.each(order,function(index,id_doc){
             cr_firestore.update_field(id_doc,post.id_collection,"order",index.toString());
         });
+    }
+
+    sort_list_hide(){
+        $("#table_list_post tbody tr td .btn_edit").show();
+        $("#table_list_post tbody tr td .btn_del").show();
+        $("#table_list_post tbody tr td .btn_move").hide();
+        $(".btn-list-tool").show();
+        $("#btn_list_done_sort").hide();
+        $("#btn_list_cancel_sort").hide();
+    }
+
+    sort_list_cancel(){
+        cms.sort_list_hide();
+        $("#table_list_post tbody").sortable("destroy");
     }
 }
 var cms=new CMS();
