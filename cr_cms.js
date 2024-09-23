@@ -41,10 +41,12 @@ class CMS{
     show_dashboar(){
         var p=cr.arg("p");
         this.load_list_post();
-        if(p)
+        if(p){
             this.show_post_object(parseInt(p));
-        else
+            cms.index_post_cur=parseInt(p);
+        }else{
             this.show_post_object(this.index_post_cur);
+        }
         this.load_list_action();
     }
 
@@ -123,7 +125,7 @@ class CMS{
     show_list_menu_sidebar(){
         $("#list_post").html('');
         $.each(this.list_post,function(index,p){
-            var emp_post=$('<li role="button" class="nav-item"><a class="nav-link '+(cms.index_post_cur===index ? "active":"")+'" aria-current="page" >'+p.icon+' '+p.label+'</a></li>');
+            var emp_post=$('<li role="button" class="nav-item" id="m_p_'+index+'"><a class="nav-link" aria-current="page" >'+p.icon+' '+p.label+'</a></li>');
             $(emp_post).click(function(){
                 cms.index_post_cur=index;
                 cms.show_post_object(index);
@@ -137,6 +139,8 @@ class CMS{
         this.show_list_menu_sidebar();
         this.list_post[index].show();
         cr.change_title(this.list_post[index].label,"?p="+index);
+        $(".nav-item a").removeClass("active");
+        $("#m_p_"+index+" a").addClass("active");
     }
 
     field(id,name,type,data='',required=false,tip=''){

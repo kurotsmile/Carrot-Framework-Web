@@ -142,3 +142,35 @@ body {
     border-top-right-radius: 0;
   }
   
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000; 
+  border-radius: 10px; 
+  border: 2px solid #f0f0f0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #000000;
+}
+
+* {
+scrollbar-width: thin;
+scrollbar-color: #000000 #f0f0f0; 
+}
+
+::-webkit-scrollbar-horizontal {
+  height: 5px;
+}
+
+::-webkit-scrollbar-vertical {
+  width: 5px;
+}
