@@ -215,11 +215,12 @@ class Post{
         html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">';
             html+='<h1 class="h3">List</h1>';
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
-                html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-filter"></i> Filter</button>';
-                html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-sort"></i> Sort</button>';
-                html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-trash-alt"></i> Clear All</button>';
-                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-file-download"></i> Export</button>';
-                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
+                html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-filter"></i> Filter</button>';
+                html+='<button onclick="cms.show_sort_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-sort"></i> Sort</button>';
+                html+='<button style="display:none" id="btn_list_done_sort" onclick="cms.sort_list_done();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-check-circle"></i> Done Sort</button>';
+                html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-trash-alt"></i> Clear All</button>';
+                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-file-download"></i> Export</button>';
+                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1  btn-list-tool"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
             html+='</div>';
         html+='</div>';
 
@@ -236,8 +237,6 @@ class Post{
 
     load_data_for_list(){
 
-        $("#table_list_post tbody").sortable();
-
         var p=this;
         if(localStorage.getItem("filter_"+p.id_collection)) 
             p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));
@@ -247,11 +246,15 @@ class Post{
         $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
         
         cr_firestore.list(this.id_collection,(data)=>{
+            var is_order=false;
             $("#list_post_table").html('');
             cms.data_list_temp=data;
             if(data.length==0){
                 $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
+                $(".btn-list-tool").hide();
             }else{
+                var first_data=data[0];
+                if(cr.alive(first_data['order'])) is_order=true;
                 var keys=[];
                 if(p.list_fields_show==null)
                     keys= Object.keys(data[0]);
@@ -264,14 +267,19 @@ class Post{
                 keys.forEach(function(key) {
                     $("#list_head").append("<th>" + key + "</th>");
                 });
+                $(".btn-list-tool").show();
+                $("#btn_list_done_sort").hide();
             }
+
+            if(is_order) data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
             
             $.each(data,function(index,item_p){
-                var htm_tr='<tr>';
+                var htm_tr='<tr id="'+item_p["id_doc"]+'">';
 
                 htm_tr+='<td>';
                     if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                     htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
+                    htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
                 htm_tr+='</td>';
 
                 if(p.list_fields_show!=null){

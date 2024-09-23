@@ -81,6 +81,27 @@ class CR_FireStore{
             }
         });
     }
+
+    update_field(document_id,collection,field_id,field_val,act_done=null,act_fail=null){
+        var obj_data={};
+        var fields={};
+        fields[field_id]= { "stringValue": field_val };
+        obj_data["fields"]=fields;
+        
+        $.ajax({
+            url: 'https://firestore.googleapis.com/v1/projects/'+cr_firestore.id_project+'/databases/(default)/documents/'+collection+'/'+document_id+'/?key='+cr_firestore.api_key+'&updateMask.fieldPaths='+field_id,
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(obj_data),
+            success: function(response) {
+                console.log(response);
+                if(act_done) act_done();
+            },
+            error: function(xhr, status, error) {
+                if(act_fail) act_fail();
+            }
+        });
+    }
     
     list(collection,act_done=null,act_fail=null){
         $.ajax({

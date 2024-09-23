@@ -455,5 +455,30 @@ class CMS{
             });    
         });
     }
+
+    show_sort_list(){
+        $("#table_list_post tbody").sortable();
+        $("#table_list_post tbody tr td .btn_edit").hide();
+        $("#table_list_post tbody tr td .btn_del").hide();
+        $("#table_list_post tbody tr td .btn_move").show();
+        $(".btn-list-tool").hide();
+        $("#btn_list_done_sort").show();
+    }
+
+    sort_list_done(){
+        
+        $("#table_list_post tbody tr td .btn_edit").show();
+        $("#table_list_post tbody tr td .btn_del").show();
+        $("#table_list_post tbody tr td .btn_move").hide();
+        $(".btn-list-tool").show();
+        $("#btn_list_done_sort").hide();
+        var post=cms.list_post[cms.index_post_cur];
+        var order = $("#table_list_post tbody").sortable("toArray");
+        $("#table_list_post tbody").sortable("destroy");
+
+        $.each(order,function(index,id_doc){
+            cr_firestore.update_field(id_doc,post.id_collection,"order",index.toString());
+        });
+    }
 }
 var cms=new CMS();
