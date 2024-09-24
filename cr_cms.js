@@ -165,6 +165,8 @@ class CMS{
     show_select_file(act_done=null){
         cr.msg_loading();
         cr_firestore.list("file",(data)=>{
+            if(data.length>0) data.sort(function(a, b) { return new Date(b.updated) - new Date(a.updated);});
+
             var html='';
             html+='<div class="d-block w-100 text-left" id="csm_all_files"></div>';
             cr.msg(html,"Select File",'',()=>{

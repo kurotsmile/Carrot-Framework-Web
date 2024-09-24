@@ -198,8 +198,8 @@ class CR_FireStore{
     }
 
     upload_file(act_done=null){
-        var html='<form id="uploadForm"><input type="file" id="fileInput" /><button type="submit" class="btn btn-success" id="act_upload_btn">Upload</button></form>';
         var html='';
+        html+='<div style="display:none" class="mt-3 mb-3 text-center w-100" id="upload_status"></div>';
         html+='<div class="input-group mb-3">';
         html+='<button class="btn btn-outline-secondary" type="button" id="act_upload_btn"><i class="fas fa-cloud-upload-alt"></i> Start Upload</button>';
         html+='<input type="file" class="form-control" id="fileInput" aria-describedby="act_upload_btn" aria-label="Upload">';
@@ -215,7 +215,8 @@ class CR_FireStore{
         
                   var formData = new FormData();
                   formData.append('file', file);
-        
+                  $("#upload_status").show();
+                  $("#upload_status").html('<i class="fas fa-spinner fa-spin"></i>  Loading..');
                   $.ajax({
                       url: storageUrl,
                       type: 'POST',
@@ -226,6 +227,7 @@ class CR_FireStore{
                           'Authorization': 'Bearer '+cr_firestore.api_key
                       },
                       success: function(response) {
+                          $("#upload_status").hide();
                           console.log('Upload successful', response);
                           if(act_done) act_done(response);
                           cr_firestore.add(response,'file');
@@ -234,6 +236,7 @@ class CR_FireStore{
                       error: function(jqXHR, textStatus, errorThrown) {
                           console.error('Upload failed', textStatus, errorThrown);
                           cr.msg("Upload Faield","Upload File","error");
+                          $("#upload_status").hide();
                       }
                   });
               }else{
