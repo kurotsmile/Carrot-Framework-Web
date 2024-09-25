@@ -898,7 +898,7 @@ class Carrot{
             return true;
     }
 
-    show_menu_list(id_emp_father,id_collection){
+    show_menu_list(id_emp_father,id_collection,act_done=null){
 
         function check_ready(id_menu,array_child){
             var is_true=false;
@@ -964,6 +964,8 @@ class Carrot{
                     });
                 }
             });
+
+            if(act_done) act_done();
         });
     }
 }
