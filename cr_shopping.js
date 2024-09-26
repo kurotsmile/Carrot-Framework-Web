@@ -21,6 +21,9 @@ class Carrot_Shopping {
   accessToken="";
 
   onLoad(id_emp_cart_menu = null, api_key = "", api_scenrest = "",mode="live") {
+    if(localStorage.getItem("orderId")) cr_shopping.orderId=localStorage.getItem("orderId");
+    if(localStorage.getItem("accessToken")); cr_shopping.accessToken=localStorage.getItem("accessToken");
+
     cr_shopping.paypal_api_key = api_key;
     cr_shopping.paypal_api_scenrest = api_scenrest;
     if(mode=="live")
@@ -209,7 +212,7 @@ class Carrot_Shopping {
     return html;
   }
 
-  create_btn_checkout(id_emp_btn_paypal = "#paypal-button-container") {
+  create_btn_checkout(id_emp_btn_paypal = "#paypal-button-container",act_done=null,act_fail=null) {
     setTimeout(() => {
       $(id_emp_btn_paypal).empty();
       paypal.Buttons({
@@ -271,7 +274,10 @@ class Carrot_Shopping {
         onApprove: function (data, actions) {
           return actions.order.authorize().then(function (authorization) {
             var authorizationID = authorization.purchase_units[0].payments.authorizations[0].id;
-            window.location.href = "index.html?p=done&authorization_id=" + authorizationID;
+            cr_shopping.getAccessToken(cr_shopping.paypal_api_key, cr_shopping.paypal_api_scenrest).done(function(response) {
+              var accessToken = response.access_token;
+              cr_shopping.capturePayment_authorization(accessToken,authorizationID,act_done,act_fail);
+            });
           });
         },
         onCancel: function (data) {
@@ -340,23 +346,53 @@ class Carrot_Shopping {
       var accessToken = response.access_token;
       cr_shopping.createOrder(accessToken, name_product, price_product,url_success,url_cancel).done(function(order) {
           Swal.close();
-          alert(accessToken);
           cr_shopping.orderId=order.id;
           cr_shopping.accessToken=accessToken;
+          cr_shopping.save_session_order();
           window.location.href = order.links[1].href;
       });
     });
   }
 
+  captureOrder_cur(act_success=null,act_fail=null){
+    cr_shopping.captureOrder(cr_shopping.orderId, cr_shopping.accessToken).done(function(capture) {
+      if(act_success) act_success(capture);
+    }).fail(function(error) {
+      if(act_fail) act_fail(error);
+    });
+  }
+
   captureOrder(orderId, accessToken) {
     return $.ajax({
-        url: cr_shopping.paypal_api_url+"/v2/checkout/orders/" + orderId + "/capture",
+        url: cr_shopping.paypal_api_url+"/v2/checkout/orders/" + orderId+ "/capture",
         method: "POST",
         headers: {
             "Authorization": "Bearer " + accessToken,
             "Content-Type": "application/json"
         }
     });
+  }
+
+  capturePayment_authorization(accessToken, authorizationID,act_done=null,act_fail=null) {
+    $.ajax({
+        url: cr_shopping.paypal_api_url+"/v2/payments/authorizations/" + authorizationID + "/capture",
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + accessToken,
+            "Content-Type": "application/json"
+        },
+        success: function(response) {
+          if(act_done) act_done(response);
+        },
+        error: function(error) {
+          if(act_fail) act_fail(error);
+        }
+    });
+  }
+
+  save_session_order(){
+    localStorage.setItem("orderId",cr_shopping.orderId);
+    localStorage.setItem("accessToken",cr_shopping.accessToken);
   }
 }
 

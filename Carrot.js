@@ -970,5 +970,9 @@ class Carrot{
             if(act_done) act_done();
         });
     }
+
+    getBaseUrl() {
+        return window.location.origin;
+    }
 }
 var cr=new Carrot();
