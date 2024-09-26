@@ -940,7 +940,9 @@ class Carrot{
             return emp_m_item;
         }
 
+        $(id_emp_father).append('<li><i class="fas fa-spinner fa-spin"></i> Loading</li>');
         cr_firestore.list(id_collection,(datas)=>{
+            $(id_emp_father).empty();
             datas.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
 
             var list_m_menus=datas;

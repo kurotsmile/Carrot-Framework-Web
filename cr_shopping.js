@@ -6,10 +6,13 @@ class Carrot_Shopping{
     paypal_api_scenrest="";
     cart_data=[];
     emp_cart_menu=null;
-    shipping_price="1";
-    tax_price="1"
+    shipping_price="";
+    tax_price=""
 
     Total_price=0;
+    Subtotal=0;
+
+    type_view_cart="cart";
 
     onLoad(id_emp_cart_menu=null,api_key="",api_scenrest=""){
         cr_shopping.paypal_api_key=api_key;
@@ -44,18 +47,19 @@ class Carrot_Shopping{
     }
 
     page_cart(act_checkout=null){
+        cr_shopping.type_view_cart="cart";
         var html="";
         html+='<div class="row" id="cr_page_cart_content">';
             if(cr_shopping.cart_data.length>0){
                 html+='<div class="col-10">';
-                    html+='<ul class="list-group list-group-numbered" id="cr_list_all_item_cart"></ul>';
+                    html+='<ul class="list-group list-group-numbered" id="cartallitems"></ul>';
                 html+='</div>';
 
                 html+='<div class="col-2 text-center">';
                     html+='<b class="fs-6">Total product</b>';
-                    html+='<p class="fs-2"><i class="fas fa-people-carry"></i> '+cr_shopping.cart_data.length+'</p>';
+                    html+='<p class="fs-2"><i class="fas fa-people-carry"></i> <span id="cr_cart_total_product"></span></p>';
                     html+='<b class="fs-6">Price</b>';
-                    html+='<p class="fs-2"><i class="fas fa-dollar-sign"></i> <span id="cr_cart_total_price">'+cr_shopping.cart_data.length+'</span></p>';
+                    html+='<p class="fs-2"><i class="fas fa-dollar-sign"></i> <span id="cr_cart_total_price"></span></p>';
                     html+='<div class="btn btn-dark w-100 m-1 btn-lg" id="btn_shoping_checkout"><i class="fas fa-cart-arrow-down"></i> CheckOut</div>';
                     html+='<div class="btn btn-danger w-100 m-1" id="btn_shoping_delete_all"><i class="fas fa-broom"></i> Clear All</div>';
                 html+='</div>';
@@ -64,13 +68,6 @@ class Carrot_Shopping{
             }
         html+='</div>';
         var emp_page_cart=$(html);
-        cr_shopping.Total_price=0;
-        $.each(cr_shopping.cart_data,function(index,c_item){
-            cr_shopping.Total_price+=parseFloat(c_item.price);
-            $(emp_page_cart).find("#cr_list_all_item_cart").append(cr_shopping.cart_item(c_item));
-        });
-
-        $(emp_page_cart).find("#cr_cart_total_price").html(cr_shopping.Total_price.toFixed(2));
 
         $(emp_page_cart).find("#btn_shoping_delete_all").click(()=>{
             cr.msg_question("Are you sure you want to delete all items in your cart?","Shopping cart",()=>{
@@ -85,6 +82,7 @@ class Carrot_Shopping{
     }
 
     page_checkout(content){
+        cr_shopping.type_view_cart="checkout";
         var html_page=$(`
             <div class="row mt-5 mb-5">
             <div class="col-md-4 order-md-2 mb-4">
@@ -102,35 +100,14 @@ class Carrot_Shopping{
             <div class="col-md-8 order-md-1">${content}</div>
           </div>
         `);
-        
-        cr_shopping.Total_price=0;
-        $.each(cr_shopping.cart_data,function(index,c){
-            cr_shopping.Total_price+=parseFloat(c.price);
-            $(html_page).find("#cartallitems").append(cr_shopping.checkout_cart_item(c));
-        });
-        
-        $(html_page).find("#cartallitems").append(cr_shopping.checkout_cart_info("Total",cr_shopping.Total_price));
         return html_page;
-    }
-
-    checkout_cart_item(data){
-        var html=$(`
-                <li class="list-group-item d-flex justify-content-between lh-condensed">
-                  <div>
-                    <h6 class="my-0">${data.name}</h6>
-                    <small class="text-muted text-truncate">1 Product</small>
-                  </div>
-                  <span class="text-muted">$${parseFloat(data.price).toFixed(2)}</span>
-                </li>
-            `);
-        return html;
     }
 
     checkout_cart_info(label,price){
         var html=$(`
             <li class="list-group-item d-flex justify-content-between bg-light">
                 <span>${label}</span>
-                <strong>$${price}</strong>
+                <strong>$${parseFloat(price).toFixed(2)}</strong>
             </li>
         `);
       return html;
@@ -143,6 +120,34 @@ class Carrot_Shopping{
             $(info_cart).html(count_p);
         else
             $(cr_shopping.emp_cart_menu).append(' <span id="info_cart" class="bg-light p-1 rounded">'+count_p+'</span>');
+
+        cr_shopping.Total_price=0;
+        cr_shopping.Subtotal=0;
+        
+        $("#cartallitems").empty();
+        $.each(cr_shopping.cart_data,function(index,c){
+          cr_shopping.Total_price+=parseFloat(c.price);
+          cr_shopping.Subtotal+=parseFloat(c.price);
+          $("#cartallitems").append(cr_shopping.cart_item(c));
+        });
+
+      if(cr_shopping.type_view_cart=="checkout"){
+          if(cr_shopping.shipping_price!=""){
+                cr_shopping.Total_price+=parseFloat(cr_shopping.shipping_price);
+                $("#cartallitems").append(cr_shopping.checkout_cart_info("Shipping",cr_shopping.shipping_price));
+          }
+              
+          if(cr_shopping.tax_price!=""){
+                cr_shopping.Total_price+=parseFloat(cr_shopping.tax_price);
+                $("#cartallitems").append(cr_shopping.checkout_cart_info("Tax Amount",cr_shopping.tax_price));
+          } 
+          
+          if(cr_shopping.tax_price!=""||cr_shopping.shipping_price!="")  $("#cartallitems").append(cr_shopping.checkout_cart_info("Subtotal",cr_shopping.Subtotal));
+          $("#cartallitems").append(cr_shopping.checkout_cart_info("Total",cr_shopping.Total_price));
+      }else{
+        $("#cr_cart_total_price").html(parseFloat(cr_shopping.Subtotal).toFixed(2));
+        $("#cr_cart_total_product").html(cr_shopping.cart_data.length);
+      }
     }
 
     add_cart(data){
@@ -224,28 +229,28 @@ class Carrot_Shopping{
                     w.data_bill=data_bill;
                     localStorage.setItem("data_bill",JSON.stringify(data_bill));
                   }
-                  // Lấy giá trị sản phẩm, phí vận chuyển và thuế từ DOM hoặc tính toán chúng
-                  var itemTotal = parseFloat($('#tt_price').html())||1; // Giá trị của sản phẩm
-                  var shippingCost = parseFloat(cr_shopping.shipping_price);
-                  var taxAmount = parseFloat(cr_shopping.tax_price);
+
+                  var itemTotal = parseFloat(cr_shopping.Subtotal)||0.00;
+                  var shippingCost = parseFloat(cr_shopping.shipping_price)||0.00;
+                  var taxAmount = parseFloat(cr_shopping.tax_price)||0.00;
     
                   return actions.order.create({
                     purchase_units: [{
                       amount: {
                         currency_code: "USD",
-                        value: (itemTotal + shippingCost + taxAmount).toFixed(2), // Tổng giá trị đơn hàng bao gồm phí vận chuyển và thuế
+                        value: (itemTotal + shippingCost + taxAmount).toFixed(2),
                         breakdown: {
                           item_total: {
                             currency_code: "USD",
-                            value: itemTotal.toFixed(2) // Giá trị của sản phẩm
+                            value: itemTotal.toFixed(2)
                           },
                           shipping: {
                             currency_code: "USD",
-                            value: shippingCost.toFixed(2) // Phí vận chuyển
+                            value: shippingCost.toFixed(2)
                           },
                           tax_total: {
                             currency_code: "USD",
-                            value: taxAmount.toFixed(2) // Thuế
+                            value: taxAmount.toFixed(2)
                           }
                         }
                       }
