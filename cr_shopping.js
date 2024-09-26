@@ -15,15 +15,21 @@ class Carrot_Shopping{
         html+='<li class="list-group-item d-flex" data-id="'+data.id_doc+'">';
             html+='<div class="ms-2 me-auto">';
                 html+='<div class="fw-bold">'+data.name+'</div>';
-                html+='<small class="text-muted text-truncate">x 1 product</small>';
+                html+='<small class="text-muted text-truncate">x 1 product, Price : <span class="bg-light rounded p-1">$'+parseFloat(data.price).toFixed(2)+'</span></small>';
             html+='</div>';
             html+='<button class="btn btn-dark btn-remove-item"><i class="fas fa-trash-alt"></i></button>';
         html+='</li>';
         var emp_item=$(html);
         $(emp_item).find(".btn-remove-item").click(()=>{
-            var id=$(emp_item).data("id");
-            cr_shopping.remove_item_by_id(id);
-            $(emp_item).remove();
+            cr.msg_question("Are you sure you want to remove the product from your cart?","Shopping Cart",()=>{
+                var id=$(emp_item).data("id");
+                cr_shopping.remove_item_by_id(id);
+                if(cr_shopping.cart_data.length<=0){
+                    $("#cr_page_cart_content").html(cr_shopping.cart_empty());
+                }else{
+                    $(emp_item).remove();
+                }
+            });
         });
         return emp_item;
     }
@@ -31,22 +37,31 @@ class Carrot_Shopping{
     page_cart(act_checkout=null){
         var html="";
         html+='<div class="row" id="cr_page_cart_content">';
-            html+='<div class="col-10">';
-                html+='<ul class="list-group list-group-numbered" id="cr_list_all_item_cart"></ul>';
-            html+='</div>';
+            if(cr_shopping.cart_data.length>0){
+                html+='<div class="col-10">';
+                    html+='<ul class="list-group list-group-numbered" id="cr_list_all_item_cart"></ul>';
+                html+='</div>';
 
-            html+='<div class="col-2 text-center">';
-                html+='<b class="fs-5">Price</b>';
-                html+='<p class="fs-2">$'+cr_shopping.cart_data.length+'</p>';
-                html+='<div class="btn btn-dark w-100 m-1 btn-lg" id="btn_shoping_checkout"><i class="fas fa-cart-arrow-down"></i> CheckOut</div>';
-                html+='<div class="btn btn-danger w-100 m-1" id="btn_shoping_delete_all"><i class="fas fa-broom"></i> Clear All</div>';
-            html+='</div>';
+                html+='<div class="col-2 text-center">';
+                    html+='<b class="fs-6">Total product</b>';
+                    html+='<p class="fs-2"><i class="fas fa-people-carry"></i> '+cr_shopping.cart_data.length+'</p>';
+                    html+='<b class="fs-6">Price</b>';
+                    html+='<p class="fs-2"><i class="fas fa-dollar-sign"></i> <span id="cr_cart_total_price">'+cr_shopping.cart_data.length+'</span></p>';
+                    html+='<div class="btn btn-dark w-100 m-1 btn-lg" id="btn_shoping_checkout"><i class="fas fa-cart-arrow-down"></i> CheckOut</div>';
+                    html+='<div class="btn btn-danger w-100 m-1" id="btn_shoping_delete_all"><i class="fas fa-broom"></i> Clear All</div>';
+                html+='</div>';
+            }else{
+                html+=cr_shopping.cart_empty();
+            }
         html+='</div>';
         var emp_page_cart=$(html);
-
+        var Total_price=0;
         $.each(cr_shopping.cart_data,function(index,c_item){
+            Total_price+=parseFloat(c_item.price);
             $(emp_page_cart).find("#cr_list_all_item_cart").append(cr_shopping.cart_item(c_item));
         });
+
+        $(emp_page_cart).find("#cr_cart_total_price").html(Total_price.toFixed(2));
 
         $(emp_page_cart).find("#btn_shoping_delete_all").click(()=>{
             cr.msg_question("Are you sure you want to delete all items in your cart?","Shopping cart",()=>{
@@ -105,8 +120,16 @@ class Carrot_Shopping{
     }
 
     remove_all_item_cart(){
+        $("#cr_page_cart_content").html(cr_shopping.cart_empty());
         cr_shopping.cart_data=[];
         cr_shopping.save_cart();
+        cr_shopping.update_cart();
+    }
+
+    cart_empty(){
+        var html='';
+        html+='<div class="col-12 text-center"><div class="bg-light p-5 rounded"><b><i class="fas fa-sad-tear fa-lg"></i></b><br/>Cart is empty!</div></div>';
+        return html;
     }
 }
 
