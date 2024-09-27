@@ -319,9 +319,11 @@ class Firestore_Query{
             var list=[];
             if(data.length>0){
                 for(var i=0;i<data.length;i++){
-                    var obj_data=cr_firestore.convertFromFirestoreFormat(data[i].document.fields);
-                    obj_data["id_doc"]=data[i].document.name.split("/").pop();
-                    list.push(obj_data);
+                    if(data[i].document!=null){
+                        var obj_data=cr_firestore.convertFromFirestoreFormat(data[i].document.fields);
+                        obj_data["id_doc"]=data[i].document.name.split("/").pop();
+                        list.push(obj_data);
+                    }
                 }
             }
             if(act_done) act_done(list);
