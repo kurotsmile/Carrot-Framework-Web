@@ -36,6 +36,20 @@ class Carrot_User{
             return false;
         });
     }
+
+    check_username(username,act_done){
+        var report = {};
+        cr_firestore.get("user",username,(data)=>{
+            report["status"]="user_ready";
+            report["user"]=data;
+            act_done(report);
+            return false;
+        },()=>{
+            report["status"]="error_server";
+            act_done(report);
+            return false;
+        });
+    }
 }
 
 var cr_user=new Carrot_User();
