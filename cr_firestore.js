@@ -146,13 +146,13 @@ class CR_FireStore{
                 } else if (Array.isArray(value)) {
                     firestoreData[key] = {
                         arrayValue: {
-                            values: value.map(item => convertToFirestoreFormat({ item }).item)
+                            values: value.map(item => cr_firestore.convertToFirestoreFormat({ item }).item)
                         }
                     };
                 } else if (typeof value === 'object' && value !== null) {
                     firestoreData[key] = {
                         mapValue: {
-                            fields: convertToFirestoreFormat(value)
+                            fields: cr_firestore.convertToFirestoreFormat(value)
                         }
                     };
                 } else if (value === null) {
