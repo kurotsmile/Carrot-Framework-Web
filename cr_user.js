@@ -61,6 +61,19 @@ class Carrot_User{
             return false;
         });
     }
+
+    change_password(id_doc,password,act_done=null){
+        var report = {};
+        cr_firestore.update_field(id_doc,cr_user.id_collection,"password",password,()=>{
+            report["status"]="success";
+            if(act_done) act_done(report);
+            return false;
+        },()=>{
+            report["status"]="error_server";
+            if(act_done) act_done(report);
+            return false;
+        });
+    }
 }
 
 var cr_user=new Carrot_User();
