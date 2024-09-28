@@ -31,7 +31,7 @@ class Post{
             if(this.type=="setting")
                 html+=' <h5 class="card-title">Update Data <span class="text-muted" style="font-size:12px">('+this.id_collection+')</span></h5>';
             else
-                html+=' <h5 class="card-title">Add Data</h5>';
+                html+=' <h5 class="card-title">Add Data <span class="text-muted" style="font-size:12px">('+this.id_collection+')</span></h5>';
         }
         else
             html+=' <h5 class="card-title">Edit ('+this.id_document_edit+')</h5>';
