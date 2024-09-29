@@ -7,6 +7,7 @@ class Post{
     list_fields_table=null;
     list_fields_show=[];
     type="list";
+    type_db="firestore";//realtime
 
     constructor(){
         this.data_form_add["fields"]=[];
@@ -174,11 +175,20 @@ class Post{
             cr.msg_loading();
             if(post_cur.type=="list"){
                 if(post_cur.id_document_edit==""){
-                    cr_firestore.add(data,collection,()=>{
-                        cr.msg("Add success","Add item success!","success");
-                        $("#frm_cms_act").html(post_cur.show_form_add());
-                        post_cur.reload_list();
-                    });
+                    if(post_cur.type_db=="realtime"){
+                        var id_c=cr.create_id();
+                        cr_realtime.add(collection,id_c,data,()=>{
+                            cr.msg("Add success","Add item success!","success");
+                            $("#frm_cms_act").html(post_cur.show_form_add());
+                            post_cur.reload_list();
+                        });
+                    }else{
+                        cr_firestore.add(data,collection,()=>{
+                            cr.msg("Add success","Add item success!","success");
+                            $("#frm_cms_act").html(post_cur.show_form_add());
+                            post_cur.reload_list();
+                        });
+                    }
                 }else{
                     cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
                         cr.msg("Update success","Update item success!","success");
@@ -238,15 +248,7 @@ class Post{
 
     load_data_for_list(){
 
-        var p=this;
-        if(localStorage.getItem("filter_"+p.id_collection)) 
-            p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));
-        else
-            p.list_fields_show=p.list_fields_table;
-
-        $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
-        
-        cr_firestore.list(this.id_collection,(data)=>{
+        function load_list(data){
             var is_order=false;
             $("#list_post_table").html('');
             cms.data_list_temp=data;
@@ -277,13 +279,13 @@ class Post{
             
             $.each(data,function(index,item_p){
                 var htm_tr='<tr id="'+item_p["id_doc"]+'">';
-
+    
                 htm_tr+='<td>';
                     if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                     htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                     htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
                 htm_tr+='</td>';
-
+    
                 if(p.list_fields_show!=null){
                     if(p.id_collection=="file")htm_tr+='<td><img style="width:50px;height:50px" class="img-thumbnail" src="'+cms.getFirebaseStorageUrl(item_p['bucket'],item_p['name'],item_p['downloadTokens'])+'"/></td>'; 
                     p.list_fields_show.forEach(function(key) {
@@ -294,9 +296,9 @@ class Post{
                         htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }
-
+    
                 htm_tr+='</tr>';
-
+    
                 let emp_tr=$(htm_tr);
                 $(emp_tr).find(".btn_edit").click(function(){
                     let id_doc=$(this).attr("id-doc");
@@ -317,10 +319,34 @@ class Post{
                     return false;
                 });
                 $("#list_post_table").append(emp_tr);
-            })
-        },()=>{
-            cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
-        });
+            });
+        }
+        var p=this;
+        if(localStorage.getItem("filter_"+p.id_collection)) 
+            p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));
+        else
+            p.list_fields_show=p.list_fields_table;
+
+        $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
+        
+        if(this.type_db=="realtime"){
+            cr_realtime.list(this.id_collection,(data)=>{
+                function convertObjectToArray(obj) {
+                    return Object.keys(obj).map(function(key) {
+                        return obj[key];
+                    });
+                }
+                load_list(convertObjectToArray(data));
+            },()=>{
+                cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
+            });
+        }else{
+            cr_firestore.list(this.id_collection,(data)=>{
+                load_list(data);
+            },()=>{
+                cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
+            });
+        }
     }
 
     reload_list(){

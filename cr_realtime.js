@@ -2,31 +2,26 @@
 //<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
 
 class Carrot_Realtime_DB{
-    config=null;
-    /*
-    const firebaseConfig = {
-    apiKey: "your-api-key",
-    authDomain: "your-auth-domain",
-    databaseURL: "your-database-url",
-    projectId: "your-project-id",
-    storageBucket: "your-storage-bucket",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "your-app-id"
-    */
+
     db=null;
     firebase=null;
     ref=null;
     set=null;
     onValue=null;
-    
-    onLoad(){
-        //this.add("rot","thanh",{"name":"love"});
+
+    onLoad(config){
+        cr_realtime.db=getDatabase(initializeApp(config));
+        cr_realtime.ref=ref;
+        cr_realtime.set=set;
+        cr_realtime.onValue=onValue;
+        cr_realtime.get=get;
     }
 
-    add(id_collection,id_doc,data){
+    add(id_collection,id_doc,data,act_done=null){
         const dbRef = cr_realtime.ref(cr_realtime.db, id_collection+'/'+id_doc);
         cr_realtime.set(dbRef,data)
         .then(() => {
+            if(act_done) act_done();
           console.log("Data saved successfully!");
         })
         .catch((error) => {
@@ -34,11 +29,30 @@ class Carrot_Realtime_DB{
         });
     }
 
-    on(id_collection,id_doc,act_done=null){
-        cr_realtime.db.ref(id_collection+'/'+id_doc).on('value', (snapshot) => {
-            let data = snapshot.val();
-            if(act_done) act_done(data);
-        });        
+    getData(id_collection,id_doc,act_done) {
+        const userRef = cr_realtime.ref(cr_realtime.db, id_collection+'/'+id_doc);
+        cr_realtime.onValue(userRef, (snapshot) => {
+          const data = snapshot.val();
+          
+          if (data) {
+            act_done(data);
+          } else {
+            console.log("No data available");
+          }
+        }, (error) => {
+          console.error("Error reading data:", error);
+        });
+    }
+
+    list(id_collection,act_done=null,act_fail=null){
+        const usersRef = ref(cr_realtime.db,id_collection);
+        onValue(usersRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) act_done(data);
+        }, (error) => {
+          console.error("Error reading data:", error);
+          if(act_fail) act_fail();
+        });
     }
 };
 

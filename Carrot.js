@@ -974,5 +974,11 @@ class Carrot{
     getBaseUrl() {
         return window.location.origin;
     }
+
+    create_id() {
+        const timestamp = Date.now();
+        const randomThreeDigits = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        return timestamp + '_' + randomThreeDigits;
+    }      
 }
 var cr=new Carrot();
