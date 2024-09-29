@@ -331,12 +331,7 @@ class Post{
         
         if(this.type_db=="realtime"){
             cr_realtime.list(this.id_collection,(data)=>{
-                function convertObjectToArray(obj) {
-                    return Object.keys(obj).map(function(key) {
-                        return obj[key];
-                    });
-                }
-                load_list(convertObjectToArray(data));
+                load_list(data);
             },()=>{
                 cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
             });

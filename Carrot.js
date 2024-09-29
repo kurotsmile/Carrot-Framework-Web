@@ -979,6 +979,12 @@ class Carrot{
         const timestamp = Date.now();
         const randomThreeDigits = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
         return timestamp + '_' + randomThreeDigits;
-    }      
+    }
+    
+    convertObjectToArray(obj) {
+        return Object.keys(obj).map(function(key) {
+            return obj[key];
+        });
+    }
 }
 var cr=new Carrot();
