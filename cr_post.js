@@ -178,9 +178,8 @@ class Post{
                     if(post_cur.type_db=="realtime"){
                         var id_c=cr.create_id();
                         cr_realtime.add(collection,id_c,data,()=>{
-                            cr.msg("Add success","Add item success!","success");
+                            cr.msg("Add success","Add item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
-                            post_cur.reload_list();
                         });
                     }else{
                         cr_firestore.add(data,collection,()=>{
@@ -190,12 +189,19 @@ class Post{
                         });
                     }
                 }else{
-                    cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
-                        cr.msg("Update success","Update item success!","success");
-                        post_cur.id_document_edit="";
-                        $("#frm_cms_act").html(post_cur.show_form_add());
-                        post_cur.reload_list();
-                    });
+                    if(post_cur.type_db=="realtime"){
+                        cr_realtime.add(collection,post_cur.id_document_edit,data,()=>{
+                            cr.msg("Update success","Update item realtime success!","success");
+                            $("#frm_cms_act").html(post_cur.show_form_add());
+                        });
+                    }else{
+                        cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
+                            cr.msg("Update success","Update item success!","success");
+                            post_cur.id_document_edit="";
+                            $("#frm_cms_act").html(post_cur.show_form_add());
+                            post_cur.reload_list();
+                        });
+                    }
                 }
             }else{
                 cr_firestore.set(data,"setting",collection,()=>{
@@ -302,12 +308,22 @@ class Post{
                 let emp_tr=$(htm_tr);
                 $(emp_tr).find(".btn_edit").click(function(){
                     let id_doc=$(this).attr("id-doc");
-                    cr_firestore.get(p.id_collection,id_doc,(data_doc)=>{
-                        cr.top();
-                        p.id_document_edit=id_doc;
-                        p.show_edit(data_doc);
-                        if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
-                    });
+                    if(p.type_db=="realtime"){
+                        alert(id_doc);
+                        cr_realtime.getData(p.id_collection,id_doc,(data_doc)=>{
+                            cr.top();
+                            p.id_document_edit=id_doc;
+                            p.show_edit(data_doc);
+                            if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
+                        });
+                    }else{
+                        cr_firestore.get(p.id_collection,id_doc,(data_doc)=>{
+                            cr.top();
+                            p.id_document_edit=id_doc;
+                            p.show_edit(data_doc);
+                            if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
+                        });
+                    }
                     return false;
                 });
                 $(emp_tr).find(".btn_del").click(function(){

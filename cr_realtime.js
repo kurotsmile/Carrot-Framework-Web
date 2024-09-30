@@ -29,7 +29,7 @@ class Carrot_Realtime_DB{
         });
     }
 
-    getData(id_collection,id_doc,act_done) {
+    getData(id_collection,id_doc,act_done,act_fail=null) {
         const userRef = cr_realtime.ref(cr_realtime.db, id_collection+'/'+id_doc);
         cr_realtime.onValue(userRef, (snapshot) => {
           const data = snapshot.val();
@@ -41,6 +41,7 @@ class Carrot_Realtime_DB{
           }
         }, (error) => {
           console.error("Error reading data:", error);
+          if(act_fail) act_fail();
         });
     }
 
