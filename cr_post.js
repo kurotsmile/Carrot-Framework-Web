@@ -20,11 +20,11 @@ class Post{
 
         html+='<form class="card mt-3 accordion" id="accordionExample">';
         if(this.type=="list"){
-            html+='<div class="card-header"><button class="btn btn-sm" onclick="cms.collapse_box_add();return false;"><i id="icon_collapse_box_add" class="fas '+(cms.is_collapse_box_add===false ? 'fa-caret-square-up':'fa-caret-square-down')+'"></i></button> '+this.label+'</div>';
+            html+='<div class="card-header"><button class="btn btn-sm" onclick="cms.collapse_box_add();return false;"><i id="icon_collapse_box_add" class="fas '+(cms.is_collapse_box_add===false ? 'fa-caret-square-up':'fa-caret-square-down')+'"></i></button> '+this.label+' <small class="text-muted">('+this.type_db+')</small></div>';
             if(cms.is_collapse_box_add) style_collapse="none"; else style_collapse="block";
         }
         else{
-            html+='<div class="card-header">Setting ('+this.label+')</div>';
+            html+='<div class="card-header">Setting ('+this.label+' - '+this.type_db+')</div>';
         }
 
         html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'">';
@@ -177,6 +177,7 @@ class Post{
                 if(post_cur.id_document_edit==""){
                     if(post_cur.type_db=="realtime"){
                         var id_c=cr.create_id();
+                        data["id_doc"]=id_c;
                         cr_realtime.add(collection,id_c,data,()=>{
                             cr.msg("Add success","Add item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
@@ -236,8 +237,8 @@ class Post{
                 html+='<button style="display:none" id="btn_list_done_sort" onclick="cms.sort_list_done();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-check-circle"></i> Save Sort</button>';
                 html+='<button style="display:none" id="btn_list_cancel_sort" onclick="cms.sort_list_cancel();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-times-circle"></i> Cancel Sort</button>';
                 html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-trash-alt"></i> Clear All</button>';
-                html+='<button onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-file-download"></i> Export</button>';
-                html+='<button onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1  btn-list-tool"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
+                html+='<button id="btn_list_export" onclick="cms.export_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-file-download"></i> Export</button>';
+                html+='<button id="btn_list_import" onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-sm btn-dark m-1  btn-list-tool"><i class="fas fa-cloud-upload-alt"></i> Import</button>';
             html+='</div>';
         html+='</div>';
 
@@ -261,6 +262,7 @@ class Post{
             if(data.length==0){
                 $("#list_post_table").html('<tr><td class="w-100 text-center"><i class="fas fa-sad-tear fa-5x"></i><br/>List None!</td></tr>');
                 $(".btn-list-tool").hide();
+                $("#btn_list_import").show();
             }else{
                 var first_data=data[0];
                 if(cr.alive(first_data['order'])) is_order=true;
@@ -284,11 +286,11 @@ class Post{
             if(is_order) data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
             
             $.each(data,function(index,item_p){
-                var htm_tr='<tr id="'+item_p["id_doc"]+'">';
-    
+                var id_doc=item_p["id_doc"];
+                var htm_tr='<tr id="'+id_doc+'">';
                 htm_tr+='<td>';
-                    if(p.data_form_add!=null) htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
-                    htm_tr+='<button id-doc="'+item_p["id_doc"]+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
+                    if(p.data_form_add!=null) htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
+                    htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                     htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
                 htm_tr+='</td>';
     
