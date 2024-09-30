@@ -311,7 +311,6 @@ class Post{
                 $(emp_tr).find(".btn_edit").click(function(){
                     let id_doc=$(this).attr("id-doc");
                     if(p.type_db=="realtime"){
-                        alert(id_doc);
                         cr_realtime.getData(p.id_collection,id_doc,(data_doc)=>{
                             cr.top();
                             p.id_document_edit=id_doc;
@@ -330,10 +329,16 @@ class Post{
                 });
                 $(emp_tr).find(".btn_del").click(function(){
                     let id_doc=$(this).attr("id-doc");
-                    cr_firestore.delete(p.id_collection,id_doc,()=>{
-                        cr.msg("Delete success","Delete item success!","success");
-                        p.reload_list();
-                    });
+                    if(p.type_db=="realtime"){
+                        cr_realtime.delete(p.id_collection,id_doc,()=>{
+                            cr.msg("Delete success","Delete item success!","success");
+                        });
+                    }else{
+                        cr_firestore.delete(p.id_collection,id_doc,()=>{
+                            cr.msg("Delete success","Delete item success!","success");
+                            p.reload_list();
+                        });
+                    }
                     return false;
                 });
                 $("#list_post_table").append(emp_tr);

@@ -15,6 +15,7 @@ class Carrot_Realtime_DB{
         cr_realtime.set=set;
         cr_realtime.onValue=onValue;
         cr_realtime.get=get;
+        cr_realtime.removedb=removedb;
     }
 
     add(id_collection,id_doc,data,act_done=null){
@@ -55,6 +56,18 @@ class Carrot_Realtime_DB{
           if(act_fail) act_fail();
         });
     }
+
+    delete(id_collection, id_doc, act_done=null) {
+      const dbRef = cr_realtime.ref(cr_realtime.db, id_collection + '/' + id_doc);
+      cr_realtime.removedb(dbRef)
+      .then(() => {
+          if (act_done) act_done();
+          console.log("Data removed successfully!");
+      })
+      .catch((error) => {
+          console.error("Error removing data: ", error);
+      });
+  }
 };
 
 var cr_realtime=new Carrot_Realtime_DB();
