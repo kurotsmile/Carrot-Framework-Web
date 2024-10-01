@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CMS Carrot">
+    <meta name="author" content="Rot Tran">
+    <meta name="generator" content="Rot Tran 2024">
+    <title>CMS Manager Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="Carrot-Framework-Web/icon.ico">
+    <link href="Carrot-Framework-Web/carrot_cms.css?v=19" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#7952b3">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+    <script src="Carrot-Framework-Web/Carrot.js?v=24"></script>
+    <script src="Carrot-Framework-Web/cr_post.js?v=26"></script>
+    <script src="Carrot-Framework-Web/cr_icon.js?v=21"></script>
+    <script src="Carrot-Framework-Web/cr_firestore.js?v=24"></script>
+    <script src="Carrot-Framework-Web/cr_cms.js?v=26"></script>
+    <script src="Carrot-Framework-Web/cr_realtime.js?v=26"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+        import { getDatabase, ref, set,onValue,child,get,remove} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+    
+        window.initializeApp=initializeApp;
+        window.ref=ref;
+        window.set=set;
+        window.get=get;
+        window.getDatabase=getDatabase;
+        window.onValue=onValue;
+        window.child=child;
+        window.removedb=remove;
+      </script>
+    <script>
+        $(document).ready(function () {
+
+            var daily_missions = new Post();
+            daily_missions.id_collection = "daily_missions";
+            daily_missions.label = "Nhiệm vụ hàng ngày";
+            daily_missions.data_form_add.fields.push(cms.field("milestone", "Mốc chơi", "text",'',true));
+            daily_missions.data_form_add.fields.push(cms.field("reward", "Phần thưởng", "text",'',true));
+            daily_missions.data_form_add.fields.push(cms.field("order", "Thứ tự hiển thị", "number"));
+            cms.add(daily_missions);
+
+            var member=new Post();
+            member.id_collection = "member";
+            member.label = "Thành viên";
+            member.data_form_add.fields.push(cms.field("username", "Tên đăng nhập", "text",'',true));
+            member.data_form_add.fields.push(cms.field("password", "Mật khẩu", "text",'',true));
+            member.data_form_add.fields.push(cms.field("bank_name", "Tên ngân hàng", "text",''));
+            member.data_form_add.fields.push(cms.field("bank_account_number", "Số tài khoản", "text"));
+            member.data_form_add.fields.push(cms.field("bank_account_name", "Tên tài khoản", "text"));
+            cms.add(member);
+
+            var p_setting = new Post();
+            p_setting.type="setting";
+            p_setting.icon='<i class="fas fa-cogs"></i>';
+            p_setting.id_collection = "setting_site";
+            p_setting.label = "Cài đặt Site";
+            p_setting.data_form_add.fields.push(cms.field('logo_txt', "Logo Text (Logo bằng chữ ở đầu menu)"));
+            p_setting.data_form_add.fields.push(cms.field('title', "Tiêu đề trang web trang chủ"));
+            p_setting.data_form_add.fields.push(cms.field('subtitle', "Tiêu đề phụ giới thiệu ngắn về trang web"));
+            cms.add(p_setting);
+
+            cr.setColor("#0da4fd");
+            cr.onLoad();
+            cr.add_btn_top();
+            cr.get_json("config.json",(config_data)=>{
+                cr_realtime.onLoad(config_data);
+                cr_firestore.id_project = config_data.id_project;
+                cr_firestore.api_key = config_data.api_key;
+                cms.mode=config_data.cms_mode;
+                cms.onLoad();
+            });
+        });
+    </script>
+</head>
+
+<body></body>
+</html>

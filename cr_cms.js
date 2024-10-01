@@ -15,7 +15,6 @@ class CMS{
     }
 
     onLoad(){
-
         if(localStorage.getItem("user_login")) cms.data_user_login=JSON.parse(localStorage.getItem("user_login"));
         if(localStorage.getItem("is_collapse_box_add")){
             if(localStorage.getItem("is_collapse_box_add")=="0")
@@ -39,6 +38,47 @@ class CMS{
     }
 
     show_dashboar(){
+        var html = '';
+        html += '<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">';
+            html += '<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Manager Data</a>';
+            html += '<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>';
+            html += '<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="inp_cms_search">';
+            html += '<div class="navbar-nav">';
+            html += '<div class="nav-item text-nowrap"> ';
+            html += '<a class="nav-link px-3" href="#" onclick="cr.show_setting();return false;"><i class="fas fa-cog"></i> Setting</a>';
+            html += '</div>';
+            html += '</div>';
+        html += '</header>';
+
+        html += '<div class="container-fluid">';
+            html += '<div class="row">';
+            html += '<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">';
+            html += '<div class="position-sticky pt-3">';
+            html += '<ul class="nav flex-column" id="list_post"></ul>';
+            html += '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">';
+                html += '<span>Info Database Cloud</span>';
+                html += '<a class="link-secondary" href="#" aria-label="Add a new report"><span data-feather="plus-circle"></span></a>';
+            html += '</h6>';
+            html += '<ul class="nav flex-column mb-2" id="list_info">';
+                html += '<li class="nav-item"><a class="nav-link" href="#"><span data-feather="file-text"></span> Info Database Cloud</a></li>';
+            html += '</ul>';
+            html += '</div>';
+
+            if(cms.data_user_login==null){
+                html += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+                    html += '<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>';
+                    html += '<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+                html += '</div>';
+            }
+
+            html += '</nav>';
+            html += '<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>';
+            html += '</div>';
+        html += '</div>';
+
+        $("body").html(html);
+        $("body").removeClass("body_login text-center");
+
         var p=cr.arg("p");
         this.load_list_post();
         if(p){
@@ -80,11 +120,12 @@ class CMS{
         p_menu_default.id_collection=id_collection;
         p_menu_default.label=label;
         p_menu_default.icon=icon;
-        p_menu_default.data_form_add.fields.push(cms.field('name', "Tên"));
+        p_menu_default.data_form_add.fields.push(cms.field('name', "Tên",'text','',true));
         p_menu_default.data_form_add.fields.push(cms.field('icon', "Biểu tượng","icon"));
         p_menu_default.data_form_add.fields.push(cms.field('type', "Loại","list",[{value:"link",label:"Liên Kết"},{value:"functionJS",label:"Chức năng javascript"},{value:"none",label:"Trống"}]));
         p_menu_default.data_form_add.fields.push(cms.field('value', "Tham số (link,function,collection hoặt trang)"));
         p_menu_default.data_form_add.fields.push(cms.field('father', "Mục cha (Chọn mục làm menu cha nếu bạn muốn đây là menu con)","collection",id_collection));
+        p_menu_default.data_form_add.fields.push(cms.field('class', "Css Class Customer",'text'));
         p_menu_default.data_form_add.fields.push(cms.field('order', "Thứ tự","number"));
         this.add(p_menu_default);
     }
@@ -95,8 +136,6 @@ class CMS{
         $(item_home_page).click(function(){window.open(cms.home_url,"_blank");});
         $("#list_info").append(item_home_page);
 
-        //$("#list_info").append(this.sidebar_item_info("ID Project",'',cr_firestore.id_project));
-        //$("#list_info").append(this.sidebar_item_info("Api Key",'',cr_firestore.api_key));
         if(cms.data_user_login!=null){
             $("#list_info").append(this.sidebar_item_info(cms.data_user_login.full_name,'<i class="fas fa-user-circle"></i>','User Login ('+cms.data_user_login.role+')'));
             var item_user_logout=this.sidebar_item_info("Đăng Xuất",'<i class="fas fa-sign-out-alt"></i>');
@@ -217,7 +256,7 @@ class CMS{
                 if(data.length>0){
                     localStorage.setItem("user_login",JSON.stringify(data[0]));
                     cms.data_user_login=data[0];
-                    cms.show();
+                    cms.show_dashboar();
                     return false;
                 }else{
                     cr.msg("Đăng nhập không thành công!","Đăng Nhập","error");
@@ -228,52 +267,6 @@ class CMS{
             });
             return false;
         });
-    }
-
-    show(){
-        var html = '';
-        html += '<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">';
-            html += '<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Manager Data</a>';
-            html += '<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>';
-            html += '<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="inp_cms_search">';
-            html += '<div class="navbar-nav">';
-            html += '<div class="nav-item text-nowrap"> ';
-            html += '<a class="nav-link px-3" href="#" onclick="cr.show_setting();return false;"><i class="fas fa-cog"></i> Setting</a>';
-            html += '</div>';
-            html += '</div>';
-        html += '</header>';
-
-        html += '<div class="container-fluid">';
-            html += '<div class="row">';
-            html += '<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">';
-            html += '<div class="position-sticky pt-3">';
-            html += '<ul class="nav flex-column" id="list_post"></ul>';
-            html += '<h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">';
-                html += '<span>Info Database Cloud</span>';
-                html += '<a class="link-secondary" href="#" aria-label="Add a new report"><span data-feather="plus-circle"></span></a>';
-            html += '</h6>';
-            html += '<ul class="nav flex-column mb-2" id="list_info">';
-                html += '<li class="nav-item"><a class="nav-link" href="#"><span data-feather="file-text"></span> Info Database Cloud</a></li>';
-            html += '</ul>';
-            html += '</div>';
-
-            if(cms.data_user_login==null){
-                html += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
-                    html += '<strong>Security</strong> <small>Cms sẽ được cài mật khẩu và trang đăng nhập khi quá trình xây dựng web hoàn tất!</small>';
-                    html += '<button onclick="$(this).parent().remove();" type="button" class="close btn btn-sm btn-dark" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-                html += '</div>';
-            }
-
-            html += '</nav>';
-            html += '<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="main_contain"></main>';
-            html += '</div>';
-        html += '</div>';
-
-        $("body").html(html);
-        $("body").removeClass("body_login text-center");
-        this.show_list_menu_sidebar();
-        this.show_post_object(this.index_post_cur);
-        this.load_list_action();
     }
 
     processString(input) {

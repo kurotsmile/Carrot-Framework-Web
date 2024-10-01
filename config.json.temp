@@ -1,6 +1,13 @@
 {
     "id_project":"",
     "api_key":"",
-    "cms_mode":"dev",
-    "site_url":""
+    "cms_mode":"pub",
+    "site_url":"",
+    "apiKey": "",
+    "authDomain": "",
+    "databaseURL": "",
+    "projectId": "",
+    "storageBucket": "",
+    "messagingSenderId": "",
+    "appId": ""
 }
