@@ -125,7 +125,8 @@ class CMS{
         p_menu_default.data_form_add.fields.push(cms.field('type', "Loại","list",[{value:"link",label:"Liên Kết"},{value:"functionJS",label:"Chức năng javascript"},{value:"none",label:"Trống"}]));
         p_menu_default.data_form_add.fields.push(cms.field('value', "Tham số (link,function,collection hoặt trang)"));
         p_menu_default.data_form_add.fields.push(cms.field('father', "Mục cha (Chọn mục làm menu cha nếu bạn muốn đây là menu con)","collection",id_collection));
-        p_menu_default.data_form_add.fields.push(cms.field('class', "Css Class Customer",'text'));
+        p_menu_default.data_form_add.fields.push(cms.field('id_customer', "ID tùy biến",'text','',false,'Thêm id tùy chỉnh nếu để trống hệ thống sẽ tự động tạo id theo (id_doc)'));
+        p_menu_default.data_form_add.fields.push(cms.field('class', "Css Class tùy biến",'text'));
         p_menu_default.data_form_add.fields.push(cms.field('order', "Thứ tự","number"));
         this.add(p_menu_default);
     }

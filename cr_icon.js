@@ -177,17 +177,44 @@ class CR_Icons{
         'fas fa-envelope'
     ]
 
+    emp_inp=null;
+
     show_select(emp_inp=null){
-        cr.msg('<div id="cr_all_item_icon" style="overflow: auto;width: 100%;height: 300px;"></div>',"Select Icon","",()=>{
-            $.each(cr_icon.list_icon,function(index,ico){
-                var emp_icon=$(`<button class="btn btn-sm btn-light m-1"><i class="${ico}"></i></button>`)
-                $(emp_icon).click(function(){
-                    $("#"+emp_inp).val(ico);
-                    Swal.close();
-                });
-                $("#cr_all_item_icon").append(emp_icon);
+        var html='';
+        html+='<div class="input-group mb-3">';
+            html+='<input id="inp_search_name_icon" type="text" class="form-control" placeholder="Enter name icon">';
+            html+='<button class="btn btn-outline-secondary" type="button" id="button-search-icon"><i class="fas fa-search"></i> Search</button>';
+        html+='</div>';
+        cr.emp_inp=emp_inp;
+        html+='<div id="cr_all_item_icon" style="overflow: auto;width: 100%;height: 300px;"></div>';
+        cr.msg(html,"Select Icon","",()=>{
+            $("#button-search-icon").click(function(){
+                var val_search_name_icon=$("#inp_search_name_icon").val();
+                if(val_search_name_icon.trim()==""){
+                    cr.msg("Vui lòng nhập tên biểu tượng!","Tìm kiếm biểu tượng","warning");
+                    return false;
+                }
+
+                cr_icon.load_list_for_msg(val_search_name_icon);
             });
+            cr_icon.load_list_for_msg();
         })
+    }
+
+    load_list_for_msg(key=''){
+        $("#cr_all_item_icon").empty();
+        $.each(cr_icon.list_icon,function(index,ico){
+            if(key!=''){
+                if(!ico.includes(key)) return true;
+            }
+
+            var emp_icon=$(`<button class="btn btn-sm btn-light m-1"><i class="${ico}"></i></button>`)
+            $(emp_icon).click(function(){
+                $("#"+cr.emp_inp).val(ico);
+                Swal.close();
+            });
+            $("#cr_all_item_icon").append(emp_icon);
+        });
     }
 }
 

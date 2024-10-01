@@ -914,28 +914,34 @@ class Carrot{
         function m_menu_item(m,level='father',is_child=false){
             var val_href=' href="#" ';
             var val_func_js="";
+            var id_m="";
             let li_class='';
             let a_class='';
             let emp_icon='';
+            if(cr.alive(m.id_customer))
+                id_m="m"+m.id_customer;
+            else 
+                id_m=m.id_doc;
             if(cr.alive(m.icon)) emp_icon='<i class="'+m.icon+'"></i> ';
             if(level=='father'){
                 if(is_child)
-                    li_class='nav-item dropdown';
+                    li_class='nav-item dropdown '+m.class;
                 else
-                    li_class='nav-item';
+                    li_class='nav-item '+m.class;
                 a_class='nav-link';
             }else{
                 a_class='dropdown-item';
+                li_class=m.class;
             }
 
             if(m.type=="link") val_href=' href="'+m.value+'" ';
             if(m.type=="functionJS") val_func_js=' onClick="'+m.value+';return false;"';
             
-            var emp_m_item='<li class="'+li_class+' cr_menu_item" id="m'+m.id_doc+'">';
+            var emp_m_item='<li class="'+li_class+' cr_menu_item" id="'+id_m+'">';
             if(is_child)
-                emp_m_item+='<a id="m_a_'+m.id_doc+'" class="nav-link dropdown-toggle"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" '+val_func_js+' '+val_href+' >'+emp_icon+''+m.name+'</a>';
+                emp_m_item+='<a id="a_'+id_m+'" class="nav-link dropdown-toggle"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" '+val_func_js+' '+val_href+' >'+emp_icon+''+m.name+'</a>';
             else
-                emp_m_item+='<a id="'+m.id_doc+'" class="'+a_class+'" aria-current="page" '+val_func_js+' '+val_href+' >'+emp_icon+''+m.name+'</a>';
+                emp_m_item+='<a id="a_'+id_m+'" class="'+a_class+'" aria-current="page" '+val_func_js+' '+val_href+' >'+emp_icon+''+m.name+'</a>';
             emp_m_item+='</li>';
             return emp_m_item;
         }
