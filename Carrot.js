@@ -919,7 +919,7 @@ class Carrot{
             let a_class='';
             let emp_icon='';
             if(cr.alive(m.id_customer))
-                id_m="m"+m.id_customer;
+                id_m=m.id_customer;
             else 
                 id_m=m.id_doc;
             if(cr.alive(m.icon)) emp_icon='<i class="'+m.icon+'"></i> ';
