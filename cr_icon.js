@@ -179,7 +179,6 @@ class CR_Icons{
         'fas fa-tv',
         'fab fa-chrome',
         'fas fa-microphone',
-        'fas fa-meteor',
         'fas fa-phone-square',
         'fas fa-key',
         'fas fa-sign-in-alt',
@@ -192,7 +191,16 @@ class CR_Icons{
         'fas fa-hiking',
         'fas fa-route',
         'fab fa-facebook-square',
-        'fab fa-telegram'
+        'fab fa-telegram',
+        'fas fa-motorcycle',
+        'fas fa-language',
+        'fas fa-info-circle',
+        'fas fa-hippo',
+        'fas fa-heart',
+        'fas fa-gamepad',
+        'fas fa-frog',
+        'fas fa-fish',
+        'fas fa-eye'
     ]
 
     emp_inp=null;
@@ -212,8 +220,12 @@ class CR_Icons{
                     cr.msg("Vui lòng nhập tên biểu tượng!","Tìm kiếm biểu tượng","warning");
                     return false;
                 }
-
                 cr_icon.load_list_for_msg(val_search_name_icon);
+            });
+
+            $('#inp_search_name_icon').on('input',function(e){
+                var val_search_name_icon=$("#inp_search_name_icon").val();
+                if(val_search_name_icon.trim()!="") cr_icon.load_list_for_msg(val_search_name_icon);
             });
             cr_icon.load_list_for_msg();
         })
@@ -226,7 +238,7 @@ class CR_Icons{
                 if(!ico.includes(key)) return true;
             }
 
-            var emp_icon=$(`<button class="btn btn-sm btn-light m-1"><i class="${ico}"></i></button>`)
+            var emp_icon=$(`<button title="${ico}" class="btn btn-sm btn-light m-1"><i class="${ico}"></i></button>`)
             $(emp_icon).click(function(){
                 $("#"+cr.emp_inp).val(ico);
                 Swal.close();
