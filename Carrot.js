@@ -963,6 +963,7 @@ class Carrot{
             });
             
             $(list_m_father).each(function(index,m){
+                if(m.type=="draft") return true;
                 let is_child=check_ready(m.id_doc,list_m_child);
                 $(id_emp_father).append(m_menu_item(m,'father',is_child));
                 if(is_child){

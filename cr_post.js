@@ -143,6 +143,10 @@ class Post{
                     $(emp_field).find(".inp_cmd_field").val(l);
                 });
             });
+
+            if(field.id=="order"&&val_field=="0"){
+                setTimeout(()=>{$("#"+field.id).val($('tbody tr').length);},1000);
+            }
             emp_form.find("#list_cms_field").append(emp_field);
         });
 

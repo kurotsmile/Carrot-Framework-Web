@@ -174,7 +174,25 @@ class CR_Icons{
         'fas fa-share-alt-square',
         'fas fa-phone',
         'fas fa-map-marker-alt',
-        'fas fa-envelope'
+        'fas fa-envelope',
+        'fas fa-home',
+        'fas fa-tv',
+        'fab fa-chrome',
+        'fas fa-microphone',
+        'fas fa-meteor',
+        'fas fa-phone-square',
+        'fas fa-key',
+        'fas fa-sign-in-alt',
+        'fas fa-box',
+        'fas fa-boxes',
+        'fas fa-dolly',
+        'fas fa-hotel',
+        'fas fa-sign-out-alt',
+        'fab fa-youtube',
+        'fas fa-hiking',
+        'fas fa-route',
+        'fab fa-facebook-square',
+        'fab fa-telegram'
     ]
 
     emp_inp=null;
