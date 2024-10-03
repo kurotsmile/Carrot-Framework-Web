@@ -462,16 +462,24 @@ class CMS{
             field_view=get_fiels(3);
         }
 
-        cr_firestore.list(id_collection,datas=>{
-            cr.msg_loading();
-            cms.msg_collection_data(p,field_view,datas,(data_item)=>{
-                $(emp_field).val(data_item[field_select]);
-            });
-        });  
+        if(type_db=="firestore"){
+            cr_firestore.list(id_collection,datas=>{
+                cr.msg_loading();
+                cms.msg_collection_data(p,field_view,datas,(data_item)=>{
+                    $(emp_field).val(data_item[field_select]);
+                });
+            });  
+        }else{
+            cr_realtime.list_one(id_collection,datas=>{
+                cr.msg_loading();
+                cms.msg_collection_data(p,field_view,datas,(data_item)=>{
+                    $(emp_field).val(data_item[field_select]);
+                });
+            }); 
+        }
     }
 
     msg_collection_data(p,field_view,datas,onclick=null){
-
         function get_label_by_field_id(id){
             var label=id;
             $.each(p.data_form_add.fields,function(index,f){
