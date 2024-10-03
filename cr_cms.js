@@ -10,6 +10,8 @@ class CMS{
     data_list_temp=null;
     is_collapse_box_add=false;
 
+    label_user_collection="User";
+
     add(p){
         this.list_post.push(p);
     }
@@ -104,7 +106,7 @@ class CMS{
 
         var p_user=new Post();
         p_user.id_collection="user";
-        p_user.label="User";
+        p_user.label=cms.label_user_collection;
         p_user.icon='<i class="fas fa-user"></i>';
         p_user.data_form_add.fields.push(cms.field('full_name', "Tên đầy đủ"));
         p_user.data_form_add.fields.push(cms.field('role', "Vai trò","select",[{value:"admin",label:"Admin"},{value:"editor",label:"Editor"},{value:"user",label:"User"}]));

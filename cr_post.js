@@ -5,6 +5,7 @@ class Post{
     id_document_edit="";
     icon='<i class="fas fa-database"></i>';
     list_fields_table=null;
+    list_btn_table=[];
     list_fields_show=[];
     type="list";
     type_db="firestore";//realtime
@@ -296,6 +297,9 @@ class Post{
                     if(p.data_form_add!=null) htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                     htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                     htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
+                    $.each(p.list_btn_table,function(index,btn){
+                        htm_tr+='<span class="btn btn-sm btn-info">'+btn.label+'</span>';
+                    });
                 htm_tr+='</td>';
     
                 if(p.list_fields_show!=null){
