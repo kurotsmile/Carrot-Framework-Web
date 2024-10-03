@@ -57,6 +57,21 @@ class Carrot_Realtime_DB{
         });
     }
 
+    list_one(id_collection, act_done = null, act_fail = null) {
+      const usersRef = cr_realtime.db.collection(id_collection);
+      
+      usersRef.get().then((snapshot) => {
+          const data = [];
+          snapshot.forEach((doc) => {
+              data.push(doc.data());
+          });
+          if (act_done) act_done(cr.convertObjectToArray(data));
+      }).catch((error) => {
+          console.error("Error reading data:", error);
+          if (act_fail) act_fail();
+      });
+  }
+
     delete(id_collection, id_doc, act_done=null) {
       const dbRef = cr_realtime.ref(cr_realtime.db, id_collection + '/' + id_doc);
       cr_realtime.removedb(dbRef)

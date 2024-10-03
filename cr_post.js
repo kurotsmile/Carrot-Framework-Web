@@ -72,7 +72,6 @@ class Post{
             let val_field='';
             if(data_document!=null){
                 if(cr.alive(data_document[field.id])){
-                   
                     if(field.type=="textarea"){
                         function escapeHTML(html) {
                             return html.replace(/&/g, "&amp;")
@@ -99,6 +98,9 @@ class Post{
                     var hours = ('0' + now.getHours()).slice(-2);
                     var minutes = ('0' + now.getMinutes()).slice(-2);
                     val_field= year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                }
+                if(field.type=="user"){
+                    val_field=cms.data_user_login.username;
                 }
             }
 
@@ -128,14 +130,14 @@ class Post{
             
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
-                html_field+='<button class="btn btn-outline-secondary btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
+                html_field+='<button class="btn btn-dark btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
             }else if(field.type=="textarea"){}
             else if(field.type=="icon"){
                 html_field+='<button onclick="cr_icon.show_select(\''+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="collection"){
-                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\',\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\',\'#'+field.id+'\');return false;" class="btn btn-dark" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
@@ -259,7 +261,7 @@ class Post{
             html+='<h1 class="h3">List</h1>';
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
                 html+='<button onclick="cms.filter_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-filter"></i> Filter</button>';
-                html+='<button onclick="cms.show_sort_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-sort"></i> Sort</button>';
+                html+='<button id="btn_list_sort" onclick="cms.show_sort_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-sort"></i> Sort</button>';
                 html+='<button style="display:none" id="btn_list_done_sort" onclick="cms.sort_list_done();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-check-circle"></i> Save Sort</button>';
                 html+='<button style="display:none" id="btn_list_cancel_sort" onclick="cms.sort_list_cancel();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-times-circle"></i> Cancel Sort</button>';
                 html+='<button onclick="cms.clear_data_list();return false;" class="float-right btn btn-sm btn-dark m-1 btn-list-tool"><i class="fas fa-trash-alt"></i> Clear All</button>';
@@ -309,7 +311,12 @@ class Post{
                 $("#btn_list_cancel_sort").hide();
             }
 
-            if(is_order) data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
+            if(is_order){
+                $("#btn_list_sort").show();
+                data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
+            }else{
+                $("#btn_list_sort").hide();
+            }
             
             $.each(data,function(index,item_p){
                 var id_doc=item_p["id_doc"];
@@ -431,5 +438,16 @@ class Post{
                 $("#frm_cms_act").html(this.show_form_add());
             });
         }
+    }
+
+    get_post_by_id_collection(id_collection){
+        var post_found=null
+        $.each(cms.list_post,function(index,p){
+            if(p.id_collection==id_collection){
+                post_found=p;
+                return false;
+            }
+        });
+        return post_found;
     }
 }
