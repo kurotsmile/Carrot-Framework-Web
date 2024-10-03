@@ -438,21 +438,28 @@ class Post{
         var html='';
         html+='<div class="d-block w-100" id="frm_cms_act"></div>';
         html+='<div class="d-block w-100 mb-5" id="list_cms_data"></div>';
+        
         $("#main_contain").html('');
-        $("#main_contain").html(html);
         
         if(this.type=="list"){
+            $("#main_contain").html(html);
             if(this.data_form_add!=null) $("#frm_cms_act").html(this.show_form_add());
             $("#list_cms_data").html(this.show_list());
             this.load_data_for_list();
         }
 
         if(this.type=="setting"){
+            $("#main_contain").html(html);
             cr_firestore.get("setting",this.id_collection,(data_setting)=>{
                 $("#frm_cms_act").html(this.show_form_add(data_setting));
             },()=>{
                 $("#frm_cms_act").html(this.show_form_add());
             });
+        }
+
+        if(this.type=="page"){
+            var func_page=this.id_collection;
+            cms[func_page]();
         }
     }
 }
