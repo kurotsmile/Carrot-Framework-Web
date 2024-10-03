@@ -8,6 +8,8 @@ class CMS{
 
     data_user_login=null;
     data_list_temp=null;
+    collection_msg_box=null;
+
     is_collapse_box_add=false;
 
     label_user_collection="User";
@@ -435,24 +437,78 @@ class CMS{
     }
 
     show_list_document(id_collection,emp_field){
-        cr.msg('<div id="all_item_collection"></div>',id_collection,"",()=>{
+
+        var p=cms.get_post_by_id_collection(id_collection);
+        var type_db=p.type_db;
+        var field_view=[];
+        var field_select='id_doc';
+
+        function get_fiels(limit=3){
+            var array_field=[];
+            $.each(p.data_form_add.fields,function(index,f){
+                if(index>=limit) return false;
+                array_field.push(f.id);
+            });
+            return array_field;
+        }
+
+        function get_label_by_field_id(id){
+            var label=id;
+            $.each(p.data_form_add.fields,function(index,f){
+                if(f.id==id){
+                    label=f.name;
+                    return false;
+                }
+            });
+            return label;
+        }
+
+        if(cms.collection_msg_box!=null){
+            if(cms.collection_msg_box.field_view!=null)
+                field_view=cms.collection_msg_box.field_view;
+            else
+                field_view=get_fiels(3);
+            if(cms.collection_msg_box.field_select!=null) field_select=cms.collection_msg_box.field_select;
+        }else{
+            field_view=get_fiels(3);
+        }
+
+        function item_tr(item_data){
+            var html_row='<tr role="button" class="w-100" style="text-align:left">';
+            html_row+='<td>'+p.icon+'</td>';
+            $.each(field_view,function(index,f){
+                html_row+='<td>'+item_data[f.toString()]+'</td>';
+            });
+            html_row+='</tr>';
+            var emp_item=$(html_row);
+            $(emp_item).click(()=>{
+                $(emp_field).val(item_data[field_select]);
+                Swal.close();
+            });
+            return emp_item;
+        }
+
+        var htm_table='<div class="table-responsive">';
+        htm_table+='<table class="table table-linght table-sm table-striped table-hover">';
+
+        htm_table+='<thead>';
+        htm_table+='<tr>';
+            htm_table+='<th scope="col">#</th>';
+            $.each(field_view,function(index,f){
+                htm_table+='<th scope="col">'+get_label_by_field_id(f)+'</th>';
+            });
+        htm_table+='</tr>';
+        htm_table+='</thead>';
+
+        htm_table+='<tbody id="all_item_collection"></tbody>';
+        htm_table+='</table>';
+        htm_table+='</div>';
+        cr.msg(htm_table,p.label,"",()=>{
             $('#all_item_collection').html('<i class="fas fa-spinner fa-spin"></i>');
             cr_firestore.list(id_collection,data=>{
                 $('#all_item_collection').empty();
                 $.each(data,function(index,item_data){
-                    const firstTwoKeys = Object.keys(item_data).slice(0, 2);
-                    let key_1='';
-                    if(item_data['name']!=null)
-                        key_1=item_data['name'];
-                    else
-                        key_1=item_data[firstTwoKeys[0]];
-                    
-                    var emp_item=$('<div class="w-100 btn btn-light mt-2" style="text-align:left"><i class="fas fa-circle"></i> '+key_1+' <small class="text-muted">'+item_data.id_doc+'</small></div>');
-                    $(emp_item).click(()=>{
-                        $(emp_field).val(item_data.id_doc);
-                        Swal.close();
-                    });
-                    $("#all_item_collection").append(emp_item);    
+                    $("#all_item_collection").append(item_tr(item_data)); 
                 });
             });    
         });
@@ -491,6 +547,17 @@ class CMS{
     sort_list_cancel(){
         cms.sort_list_hide();
         $("#table_list_post tbody").sortable("destroy");
+    }
+
+    get_post_by_id_collection(id_collection){
+        var post_found=null
+        $.each(cms.list_post,function(index,p){
+            if(p.id_collection==id_collection){
+                post_found=p;
+                return false;
+            }
+        });
+        return post_found;
     }
 }
 var cms=new CMS();

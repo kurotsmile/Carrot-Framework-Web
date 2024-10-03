@@ -137,7 +137,7 @@ class Post{
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="collection"){
-                html_field+='<button onclick="cms.show_list_document(\''+field.data+'\',\'#'+field.id+'\');return false;" class="btn btn-dark" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button class="btn btn-dark btn-sel-collection" type="button"><i class="fas fa-list"></i> Select</button>';
                 html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
@@ -167,6 +167,21 @@ class Post{
                     $(emp_field).find(".inp_cmd_field").val(l);
                 });
             });
+
+            if(field.type=="collection"){
+                $(emp_field).find(".btn-sel-collection").click(()=>{
+                    var id_collection="";
+                    if (typeof field.data === 'string') {
+                        id_collection=field.data;
+                        cms.collection_msg_box=null;
+                    } else if (typeof field.data === 'object' && field.data !== null) {
+                        id_collection=field.data.id_collection;
+                        cms.collection_msg_box=field.data;
+                    }
+                    cms.show_list_document(id_collection,'#'+field.id);
+                    return false;
+                });
+            }
 
             if(field.id=="order"&&val_field=="0"){
                 setTimeout(()=>{$("#"+field.id).val($('tbody tr').length);},1000);
@@ -438,16 +453,5 @@ class Post{
                 $("#frm_cms_act").html(this.show_form_add());
             });
         }
-    }
-
-    get_post_by_id_collection(id_collection){
-        var post_found=null
-        $.each(cms.list_post,function(index,p){
-            if(p.id_collection==id_collection){
-                post_found=p;
-                return false;
-            }
-        });
-        return post_found;
     }
 }
