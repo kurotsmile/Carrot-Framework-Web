@@ -72,13 +72,34 @@ class Post{
             let val_field='';
             if(data_document!=null){
                 if(cr.alive(data_document[field.id])){
-                    val_field=data_document[field.id];
+                   
+                    if(field.type=="textarea"){
+                        function escapeHTML(html) {
+                            return html.replace(/&/g, "&amp;")
+                                       .replace(/</g, "&lt;")
+                                       .replace(/>/g, "&gt;")
+                                       .replace(/"/g, "&quot;")
+                                       .replace(/'/g, "&#039;");
+                        }
+                        val_field=escapeHTML(data_document[field.id]);
+                    }else{
+                        val_field=data_document[field.id];
+                    }
                 }
                 else{
                     if(field.type=="number") val_field="0";
                 }
             }else{
                 if(field.type=="number") val_field="0";
+                if(field.type=="datetime-local"){
+                    var now = new Date();
+                    var year = now.getFullYear();
+                    var month = ('0' + (now.getMonth() + 1)).slice(-2);
+                    var day = ('0' + now.getDate()).slice(-2);
+                    var hours = ('0' + now.getHours()).slice(-2);
+                    var minutes = ('0' + now.getMinutes()).slice(-2);
+                    val_field= year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                }
             }
 
             if(field.type=="textarea"){
@@ -293,13 +314,10 @@ class Post{
             $.each(data,function(index,item_p){
                 var id_doc=item_p["id_doc"];
                 var htm_tr='<tr id="'+id_doc+'">';
-                htm_tr+='<td>';
+                htm_tr+='<td class="list_btn_tr">';
                     if(p.data_form_add!=null) htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
                     htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                     htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
-                    $.each(p.list_btn_table,function(index,btn){
-                        htm_tr+='<span class="btn btn-sm btn-info">'+btn.label+'</span>';
-                    });
                 htm_tr+='</td>';
     
                 if(p.list_fields_show!=null){
@@ -349,6 +367,19 @@ class Post{
                     }
                     return false;
                 });
+
+                if(p.list_btn_table.length>0){
+                    $.each(p.list_btn_table,function(index,btn){
+                        var html_btn='';
+                        html_btn+='<span class="btn btn-sm btn-info '+(cr.alive(btn.class)? btn.class:"")+'">'+btn.label+'</span>';
+                        var emp_btn=$(html_btn);
+                        $(emp_btn).click(()=>{
+                            cms.data_select=item_p;
+                            cms[btn.onclick]();
+                        });
+                        $(emp_tr).find(".list_btn_tr").append(emp_btn);
+                    });
+                }
                 $("#list_post_table").append(emp_tr);
             });
         }
