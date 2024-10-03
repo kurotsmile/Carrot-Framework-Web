@@ -315,6 +315,7 @@ class Post{
                 else
                     keys= p.list_fields_show;
 
+                $("#list_head").empty();
                 $("#list_head").append("<th>Action</th>");
 
                 if(p.id_collection=="file") $("#list_head").append("<th>Preview</th>");

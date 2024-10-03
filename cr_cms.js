@@ -451,6 +451,26 @@ class CMS{
             });
             return array_field;
         }
+        
+        if(cms.collection_msg_box!=null){
+            if(cms.collection_msg_box.field_view!=null)
+                field_view=cms.collection_msg_box.field_view;
+            else
+                field_view=get_fiels(3);
+            if(cms.collection_msg_box.field_select!=null) field_select=cms.collection_msg_box.field_select;
+        }else{
+            field_view=get_fiels(3);
+        }
+
+        cr_firestore.list(id_collection,datas=>{
+            cr.msg_loading();
+            cms.msg_collection_data(p,field_view,datas,(data_item)=>{
+                $(emp_field).val(data_item[field_select]);
+            });
+        });  
+    }
+
+    msg_collection_data(p,field_view,datas,onclick=null){
 
         function get_label_by_field_id(id){
             var label=id;
@@ -463,26 +483,19 @@ class CMS{
             return label;
         }
 
-        if(cms.collection_msg_box!=null){
-            if(cms.collection_msg_box.field_view!=null)
-                field_view=cms.collection_msg_box.field_view;
-            else
-                field_view=get_fiels(3);
-            if(cms.collection_msg_box.field_select!=null) field_select=cms.collection_msg_box.field_select;
-        }else{
-            field_view=get_fiels(3);
-        }
-
         function item_tr(item_data){
             var html_row='<tr role="button" class="w-100" style="text-align:left">';
             html_row+='<td>'+p.icon+'</td>';
             $.each(field_view,function(index,f){
-                html_row+='<td>'+item_data[f.toString()]+'</td>';
+                if(cr.alive(item_data[f.toString()]))
+                    html_row+='<td>'+item_data[f.toString()]+'</td>';
+                else
+                    html_row+='<td>&nbsp;</td>';
             });
             html_row+='</tr>';
             var emp_item=$(html_row);
             $(emp_item).click(()=>{
-                $(emp_field).val(item_data[field_select]);
+                if(onclick) onclick(item_data);
                 Swal.close();
             });
             return emp_item;
@@ -504,13 +517,10 @@ class CMS{
         htm_table+='</table>';
         htm_table+='</div>';
         cr.msg(htm_table,p.label,"",()=>{
-            $('#all_item_collection').html('<i class="fas fa-spinner fa-spin"></i>');
-            cr_firestore.list(id_collection,data=>{
                 $('#all_item_collection').empty();
-                $.each(data,function(index,item_data){
+                $.each(datas,function(index,item_data){
                     $("#all_item_collection").append(item_tr(item_data)); 
-                });
-            });    
+                });  
         });
     }
 
