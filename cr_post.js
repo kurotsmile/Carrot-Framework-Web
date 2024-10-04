@@ -7,8 +7,9 @@ class Post{
     list_fields_table=null;
     list_btn_table=[];
     list_fields_show=[];
-    type="list";
+    type="list"; //type list,page or setting
     js=null;
+    js_act_done_frm=null;//Action for form done add or Update
     type_db="firestore";//realtime
 
     constructor(){
@@ -224,12 +225,14 @@ class Post{
                         cr_realtime.add(collection,id_c,data,()=>{
                             cr.msg("Add success","Add item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
+                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm]();
                         });
                     }else{
                         cr_firestore.add(data,collection,()=>{
                             cr.msg("Add success","Add item success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             post_cur.reload_list();
+                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm]();
                         });
                     }
                 }else{
@@ -238,6 +241,7 @@ class Post{
                         cr_realtime.add(collection,post_cur.id_document_edit,data,()=>{
                             cr.msg("Update success","Update item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
+                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm]();
                         });
                     }else{
                         cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
@@ -245,12 +249,14 @@ class Post{
                             post_cur.id_document_edit="";
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             post_cur.reload_list();
+                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm]();
                         });
                     }
                 }
             }else{
                 cr_firestore.set(data,"setting",collection,()=>{
                     cr.msg("Setting","Update success!","success");
+                    if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm]();
                 })
             }
    
@@ -406,6 +412,7 @@ class Post{
                 }
                 $("#list_post_table").append(emp_tr);
             });
+            if(p.js!=null) cms[p.js]();
         }
         var p=this;
         if(localStorage.getItem("filter_"+p.id_collection)) 
@@ -431,8 +438,10 @@ class Post{
     }
 
     reload_list(){
-        $("#list_cms_data").html(this.show_list());
-        this.load_data_for_list();
+        if($("#list_cms_data").length>0){
+            $("#list_cms_data").html(this.show_list());
+            this.load_data_for_list();
+        }
     }
 
     show(){
