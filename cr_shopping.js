@@ -133,7 +133,7 @@ class Carrot_Shopping {
     if (info_cart.length > 0)
       $(info_cart).html(count_p);
     else
-      $(cr_shopping.emp_cart_menu).append(' <span id="info_cart" class="bg-light p-1 rounded">' + count_p + '</span>');
+      $(cr_shopping.emp_cart_menu).append('<span id="info_cart" class="badge badge-light text-black">' + count_p + '</span>');
 
     cr_shopping.Total_price = 0;
     cr_shopping.Subtotal = 0;

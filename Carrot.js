@@ -925,13 +925,13 @@ class Carrot{
             if(cr.alive(m.icon)) emp_icon='<i class="'+m.icon+'"></i> ';
             if(level=='father'){
                 if(is_child)
-                    li_class='nav-item dropdown '+m.class;
+                    li_class='nav-item dropdown '+(cr.alive(m.class)? m.class:'');
                 else
-                    li_class='nav-item '+m.class;
+                    li_class='nav-item '+(cr.alive(m.class)? m.class:'');
                 a_class='nav-link';
             }else{
                 a_class='dropdown-item';
-                li_class=m.class;
+                if(cr.alive(m.class)) li_class=m.class;
             }
 
             if(m.type=="link") val_href=' href="'+m.value+'" ';
