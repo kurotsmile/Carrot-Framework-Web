@@ -338,6 +338,11 @@ class Post{
                 $("#btn_list_sort").show();
                 data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
             }else{
+                if(cr.alive(first_data['date'])){
+                    data.sort(function(a, b) {
+                        return new Date(b['date']) - new Date(a['date']);
+                    });
+                }
                 $("#btn_list_sort").hide();
             }
             
