@@ -8,6 +8,7 @@ class Post{
     list_btn_table=[];
     list_fields_show=[];
     type="list";
+    js=null;
     type_db="firestore";//realtime
 
     constructor(){
@@ -126,8 +127,7 @@ class Post{
             else{
                 html_field+='<input type="'+field.type+'" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
-                
-            
+
             if(field.type=="file"){
                 html_field+='<button class="btn btn-outline-secondary btn_upload_file" type="button"><i class="fas fa-cloud-upload-alt"></i> Upload</button>';
                 html_field+='<button class="btn btn-dark btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
@@ -234,6 +234,7 @@ class Post{
                     }
                 }else{
                     if(post_cur.type_db=="realtime"){
+                        data['id_doc']=post_cur.id_document_edit;
                         cr_realtime.add(collection,post_cur.id_document_edit,data,()=>{
                             cr.msg("Update success","Update item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
@@ -346,11 +347,11 @@ class Post{
                 if(p.list_fields_show!=null){
                     if(p.id_collection=="file")htm_tr+='<td><img style="width:50px;height:50px" class="img-thumbnail" src="'+cms.getFirebaseStorageUrl(item_p['bucket'],item_p['name'],item_p['downloadTokens'])+'"/></td>'; 
                     p.list_fields_show.forEach(function(key) {
-                        htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
+                        htm_tr += "<td class='col_t_"+key+"'>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }else{
                     keys.forEach(function(key) {
-                        htm_tr += "<td>" + cms.processString(item_p[key]) + "</td>";
+                        htm_tr += "<td class='col_t_"+key+"'>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }
     
@@ -438,7 +439,7 @@ class Post{
         var html='';
         html+='<div class="d-block w-100" id="frm_cms_act"></div>';
         html+='<div class="d-block w-100 mb-5" id="list_cms_data"></div>';
-        
+
         $("#main_contain").html('');
         
         if(this.type=="list"){
@@ -458,8 +459,10 @@ class Post{
         }
 
         if(this.type=="page"){
-            var func_page=this.id_collection;
-            cms[func_page]();
+            if(this.js!=null){
+                var func_page=this.js;
+                cms[func_page]();
+            }
         }
     }
 }
