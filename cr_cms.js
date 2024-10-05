@@ -155,15 +155,19 @@ class CMS{
             $("#list_info").append(this.sidebar_item_info(cms.data_user_login.full_name,'<i class="fas fa-user-circle"></i>','User Login ('+cms.data_user_login.role+')'));
             var item_user_logout=this.sidebar_item_info("Đăng Xuất",'<i class="fas fa-sign-out-alt"></i>');
             $(item_user_logout).click(function(){
-                localStorage.removeItem("user_login");
-                cms.data_user_login=null;
-                cms.show_login();
+                cms.logout();
             });
             $("#list_info").append(item_user_logout);
         }
         $("#inp_cms_search").change(function(){
             cms.act_search();
         });
+    }
+
+    logout(){
+        localStorage.removeItem("user_login");
+        cms.data_user_login=null;
+        cms.show_login();
     }
 
     sidebar_item_info(name,icon='',val=''){
@@ -308,7 +312,7 @@ class CMS{
     import_data_list(collectionId,is_setting=false){
         var html_imp='';
         html_imp+='<h1 class="h2 mt-5"><i class="fas fa-cloud-upload-alt"></i> Import data</h1>';
-        html_imp+='<p>Upload json file to import corresponding data<br/>';
+        html_imp+='<p>Upload json file to import corresponding data for <b>'+collectionId+'</b><br/>';
         html_imp+='<progress min="0" max="100" value="0" class="w-100" id="status_import">';
         html_imp+='</p>';
         html_imp+='<input type="file" id="fileimport_data" />';
@@ -333,7 +337,7 @@ class CMS{
                         let length_progress = jsonData.length;
                         $("#status_import").attr("max", length_progress);
                         $.each(jsonData, function (index, d) {
-                            cr_firestore.add(d, collectionId, () => {
+                            cr_firestore.set(d, collectionId, () => {
                                 $("#status_import").attr("value", index);
                                 if (index >= length_progress - 1) {
                                     cr.msg("Import Data Success!", "Import Data", "success");
@@ -591,6 +595,18 @@ class CMS{
     dashboard_general(){
 
         var dashboard_chart=null;
+        var messages = [
+            "Hope you have a productive day!",
+            "Wishing you a successful day at work!",
+            "May your day be filled with accomplishments!",
+            "Stay positive and have a great workday!",
+            "Good luck with your tasks today!",
+            "Hope today brings you closer to your goals!",
+            "Have a smooth and efficient workday!",
+            "May today be your best workday yet!",
+            "Keep up the great work and have an amazing day!",
+            "Wishing you a stress-free and fulfilling day!"
+        ];
 
         function initializeChart() {
             var ctx = document.getElementById('dashboardChart').getContext('2d');
@@ -666,12 +682,14 @@ class CMS{
                 if(p.type=="list"){
                     if(p.type_db=="firestore"){
                         cr_firestore.list(p.id_collection,datas_p=>{
+                            p.data_temp=datas_p;
                             chart_addData(p.label,datas_p.length);
                         });
                     }
 
                     if(p.type_db=="realtime"){
                         cr_realtime.list(p.id_collection,datas_p=>{
+                            p.data_temp=datas_p;
                             chart_addData(p.label,datas_p.length);
                         });
                     }
@@ -681,16 +699,28 @@ class CMS{
 
         var html='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
         html+='<h3 class="h3">Dashboard</h3>';
-            /*
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
             html+='<div class="btn-group me-2">';
-                html+='<button type="button" class="btn btn-sm btn-outline-secondary">Share</button>';
-                html+='<button type="button" class="btn btn-sm btn-outline-secondary">Export</button>';
+                html+='<button type="button" class="btn btn-sm btn-outline-secondary" onclick="cms.export_all_data()"><i class="fas fa-cloud-download-alt"></i> Backup</button>';
+                html+='<button type="button" class="btn btn-sm btn-outline-secondary" onclick="cms.import_data_list(\'*\')"><i class="fas fa-cloud-upload-alt"></i> Recover</button>';
             html+='</div>';
-            html+='<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">Ta</button>';
-            html+='</div>';
-            */
+            html+='</div>'
         html+='</div>';
+
+        if(cms.data_user_login!=null){
+            html+='<div class="row mb-3" id="welcome">';
+            html+='<div class="col-12">';
+                html+='<div class="w-100 bg-secondary rounded p-2 text-white d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">';
+                html+='<div>Welcome <b>'+cms.data_user_login.full_name+'</b> <br>'+messages[Math.floor(Math.random() * messages.length)]+'</div>';
+                    html+='<div>';
+                        html+='<button class="btn btn-outline-light m-1" onclick="cms.logout();"><i class="fas fa-sign-out-alt"></i></button>';
+                        html+='<button class="btn btn-outline-light m-1" onclick="$(\'#welcome\').remove();"><i class="fas fa-times-circle"></i></button>';
+                    html+='</div>';
+                html+='</div>';
+            html+='</div>';
+            html+='</div>';
+        }
+
         html+='<div class="row" id="all_item_dashboard"></div>';
         html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
         html+='<h5 class="h5">Chart</h5>';
@@ -711,6 +741,10 @@ class CMS{
             initializeChart();
             load_list_dashboard();
         }
+    }
+
+    export_all_data(){
+        cr.download(cms.list_post,"Backup-"+cr.getDateTimeCur()+".json");
     }
 }
 var cms=new CMS();
