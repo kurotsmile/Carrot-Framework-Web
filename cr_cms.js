@@ -650,7 +650,12 @@ class CMS{
                 html_item+='</div>';
                 var dashboard_item=$(html_item);
                 $(dashboard_item).find(".list_attr").append(general_item("Type Object",p.type));
-                $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
+                if(p.type_db=="firestore")
+                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
+                else if(p.type_db=="realtime")
+                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",'<i class="fas fa-circle live" ></i> '+p.type_db));
+                else 
+                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
                 $(dashboard_item).click(()=>{
                     cms.index_post_cur=index;
                     cms.show_post_object(index);
@@ -661,6 +666,12 @@ class CMS{
                 if(p.type=="list"){
                     if(p.type_db=="firestore"){
                         cr_firestore.list(p.id_collection,datas_p=>{
+                            chart_addData(p.label,datas_p.length);
+                        });
+                    }
+
+                    if(p.type_db=="realtime"){
+                        cr_realtime.list(p.id_collection,datas_p=>{
                             chart_addData(p.label,datas_p.length);
                         });
                     }
@@ -700,9 +711,6 @@ class CMS{
             initializeChart();
             load_list_dashboard();
         }
-
-
-
     }
 }
 var cms=new CMS();
