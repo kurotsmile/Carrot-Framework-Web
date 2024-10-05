@@ -590,6 +590,38 @@ class CMS{
 
     dashboard_general(){
 
+        var dashboard_chart=null;
+
+        function initializeChart() {
+            var ctx = document.getElementById('dashboardChart').getContext('2d');
+            dashboard_chart=new Chart(ctx, {
+                type: 'bar',
+                data:  {
+                    labels: [],
+                    datasets: [{
+                        label: 'Overview data',
+                        data: [],
+                        backgroundColor: '#0e87d1a6',
+                        borderColor: cr.color_btn,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function chart_addData(label,val) {
+            dashboard_chart.data.labels.push(label);
+            dashboard_chart.data.datasets[0].data.push(val);
+            dashboard_chart.update();
+        }
+
         function general_item(key,val=0){
             var htm_item=$(`
                 <li class="list-group-item m-0 p-0 d-flex justify-content-between align-items-center">
@@ -599,8 +631,45 @@ class CMS{
             return htm_item;
         }
 
+        function load_list_dashboard(){
+            $.each(cms.list_post,function(index,p){
+                if(index==0) return true;
+                var html_item='';
+                html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
+                    html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
+                        html_item+='<div class="card-header"><h6 class="my-0 font-weight-normal">'+p.label+'</h6></div>';
+                        html_item+='<div class="card-body">';
+                            html_item+='<div class="row">';
+                                html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
+                                html_item+='<div class="col-9">';
+                                html_item+='<ul class="list-group list_attr list-group-flush"></ul>';
+                                html_item+='</div>';
+                            html_item+='</div>';
+                        html_item+='</div>';
+                    html_item+='</div>';
+                html_item+='</div>';
+                var dashboard_item=$(html_item);
+                $(dashboard_item).find(".list_attr").append(general_item("Type Object",p.type));
+                $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
+                $(dashboard_item).click(()=>{
+                    cms.index_post_cur=index;
+                    cms.show_post_object(index);
+                    return false;
+                });
+                $("#all_item_dashboard").append(dashboard_item);
+    
+                if(p.type=="list"){
+                    if(p.type_db=="firestore"){
+                        cr_firestore.list(p.id_collection,datas_p=>{
+                            chart_addData(p.label,datas_p.length);
+                        });
+                    }
+                }
+            });
+        }
+
         var html='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
-            html+='<h3 class="h3">Dashboard</h3>';
+        html+='<h3 class="h3">Dashboard</h3>';
             /*
             html+='<div class="btn-toolbar mb-2 mb-md-0">';
             html+='<div class="btn-group me-2">';
@@ -611,35 +680,28 @@ class CMS{
             html+='</div>';
             */
         html+='</div>';
-
         html+='<div class="row" id="all_item_dashboard"></div>';
+        html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
+        html+='<h5 class="h5">Chart</h5>';
+        html+='</div>';
+        html+='<canvas id="dashboardChart" style="width:100%;height:300px" class="w-100"></canvas>';
+
         $("main").html(html);
-        $.each(cms.list_post,function(index,p){
-            if(index==0) return true;
-            var html_item='';
-            html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
-                html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
-                    html_item+='<div class="card-header"><h6 class="my-0 font-weight-normal">'+p.label+'</h6></div>';
-                    html_item+='<div class="card-body">';
-                        html_item+='<div class="row">';
-                            html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
-                            html_item+='<div class="col-9">';
-                            html_item+='<ul class="list-group list_attr list-group-flush"></ul>';
-                            html_item+='</div>';
-                        html_item+='</div>';
-                    html_item+='</div>';
-                html_item+='</div>';
-            html_item+='</div>';
-            var dashboard_item=$(html_item);
-            $(dashboard_item).find(".list_attr").append(general_item("Type Object",p.type));
-            $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
-            $(dashboard_item).click(()=>{
-                cms.index_post_cur=index;
-                cms.show_post_object(index);
-                return false;
-            });
-            $("#all_item_dashboard").append(dashboard_item);
-        });
+
+        if (typeof Chart === 'undefined') {
+            var script = document.createElement('script');
+            script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+            script.onload = function() {
+                initializeChart();
+                load_list_dashboard();
+            };
+            document.head.appendChild(script);
+        } else {
+            initializeChart();
+            load_list_dashboard();
+        }
+
+
 
     }
 }
