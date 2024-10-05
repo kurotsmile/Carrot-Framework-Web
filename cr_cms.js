@@ -13,6 +13,16 @@ class CMS{
     is_collapse_box_add=false;
 
     label_user_collection="User";
+    
+    constructor(){
+        var dashboard_general=new Post();
+        dashboard_general.id_collection="all";
+        dashboard_general.label="Dashboard";
+        dashboard_general.icon='<i class="fas fa-tachometer-alt"></i>';
+        dashboard_general.type="page";
+        dashboard_general.js="dashboard_general";
+        this.add(dashboard_general);
+    }
 
     add(p){
         this.list_post.push(p);
@@ -576,6 +586,61 @@ class CMS{
             }
         });
         return post_found;
+    }
+
+    dashboard_general(){
+
+        function general_item(key,val=0){
+            var htm_item=$(`
+                <li class="list-group-item m-0 p-0 d-flex justify-content-between align-items-center">
+                    ${key} <div class="bg-light rounded">${val}</div>
+                </li>
+            `);
+            return htm_item;
+        }
+
+        var html='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
+            html+='<h3 class="h3">Dashboard</h3>';
+            /*
+            html+='<div class="btn-toolbar mb-2 mb-md-0">';
+            html+='<div class="btn-group me-2">';
+                html+='<button type="button" class="btn btn-sm btn-outline-secondary">Share</button>';
+                html+='<button type="button" class="btn btn-sm btn-outline-secondary">Export</button>';
+            html+='</div>';
+            html+='<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">Ta</button>';
+            html+='</div>';
+            */
+        html+='</div>';
+
+        html+='<div class="row" id="all_item_dashboard"></div>';
+        $("main").html(html);
+        $.each(cms.list_post,function(index,p){
+            if(index==0) return true;
+            var html_item='';
+            html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
+                html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
+                    html_item+='<div class="card-header"><h6 class="my-0 font-weight-normal">'+p.label+'</h6></div>';
+                    html_item+='<div class="card-body">';
+                        html_item+='<div class="row">';
+                            html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
+                            html_item+='<div class="col-9">';
+                            html_item+='<ul class="list-group list_attr list-group-flush"></ul>';
+                            html_item+='</div>';
+                        html_item+='</div>';
+                    html_item+='</div>';
+                html_item+='</div>';
+            html_item+='</div>';
+            var dashboard_item=$(html_item);
+            $(dashboard_item).find(".list_attr").append(general_item("Type Object",p.type));
+            $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
+            $(dashboard_item).click(()=>{
+                cms.index_post_cur=index;
+                cms.show_post_object(index);
+                return false;
+            });
+            $("#all_item_dashboard").append(dashboard_item);
+        });
+
     }
 }
 var cms=new CMS();

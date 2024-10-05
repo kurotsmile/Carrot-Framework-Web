@@ -174,3 +174,8 @@ scrollbar-color: #000000 #f0f0f0;
 ::-webkit-scrollbar-vertical {
   width: 5px;
 }
+
+.card_cms .card-body div i{
+  font-size: 35px;
+  color: #9b9b9b;
+}
