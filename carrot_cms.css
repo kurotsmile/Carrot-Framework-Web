@@ -60,10 +60,18 @@ body {
   .sidebar .nav-link.active .feather {
     color: inherit;
   }
-  
+
   .sidebar-heading {
     font-size: .75rem;
     text-transform: uppercase;
+  }
+
+  .nav-item div .btn-mini{
+    color: #c3c3c3 !important;
+  }
+  
+  .nav-item div .btn-mini:hover{
+    color: #2470dc !important;
   }
   
   /*

@@ -16,21 +16,10 @@ class Post{
         this.data_form_add["fields"]=[];
     }
 
-    show_form_add(data_document=null){
-        var html='';
+    form_body(data_document=null){
+        var html='<div>';
         let fields=this.data_form_add.fields;
-        let style_collapse="block";
 
-        html+='<form class="card mt-3 accordion" id="accordionExample">';
-        if(this.type=="list"){
-            html+='<div class="card-header"><button class="btn btn-sm" onclick="cms.collapse_box_add();return false;"><i id="icon_collapse_box_add" class="fas '+(cms.is_collapse_box_add===false ? 'fa-caret-square-up':'fa-caret-square-down')+'"></i></button> '+this.label+' <small class="text-muted">('+this.type_db+')</small></div>';
-            if(cms.is_collapse_box_add) style_collapse="none"; else style_collapse="block";
-        }
-        else{
-            html+='<div class="card-header">Setting ('+this.label+' - '+this.type_db+')</div>';
-        }
-
-        html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'">';
         if(this.id_document_edit==""){
             if(this.type=="setting")
                 html+=' <h5 class="card-title">Update Data <span class="text-muted" style="font-size:12px">('+this.id_collection+')</span></h5>';
@@ -40,7 +29,7 @@ class Post{
         else
             html+=' <h5 class="card-title">Edit ('+this.id_document_edit+')</h5>';
 
-        html+='<div class="w-100" id="list_cms_field"></div>';
+        html+='<div class="w-100 list_cms_field"></div>';
 
         if(this.type=='list'){
             if(this.id_document_edit==""){
@@ -57,11 +46,11 @@ class Post{
                 html+='<button style="float:right" onclick="cms.import_data_list(\''+this.id_collection+'\',true);return false;" class="float-right btn btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
             }
         }
-     
-        html+='</div>';
-        html+='</form>';
+        html+='<div>';
         var emp_form=$(html);
-
+        var collection=this.id_collection;
+        var post_cur=this;
+        
         $.each(fields,function(index,field){
             let html_field='<div class="mb-3">';
             html_field+='<label for="'+field.id+'" class="form-label">';
@@ -185,19 +174,23 @@ class Post{
             }
 
             if(field.id=="order"&&val_field=="0"){
-                setTimeout(()=>{$("#"+field.id).val($('tbody tr').length);},1000);
+                if(cr.alive(post_cur.data_temp)){
+                    setTimeout(()=>{$("#"+field.id).val(post_cur.data_temp.length);},1000);
+                }
+                else{
+                    if($('#list_cms_data_'+post_cur.id_collection).length>0) setTimeout(()=>{$("#"+field.id).val($('#list_cms_data_'+post_cur.id_collection+' tbody tr').length);},1000);
+                }
             }
-            emp_form.find("#list_cms_field").append(emp_field);
+            emp_form.find(".list_cms_field").append(emp_field);
         });
 
-        var collection=this.id_collection;
-        var post_cur=this;
+
         $(emp_form).find("#btn_frm_add").click(function(){
             var data={};
 
             var allFilled = true;
 
-            $('input[required]').each(function() {
+            $(emp_form).find('input[required]').each(function() {
               if ($(this).val() === '') {
                 allFilled = false;
                 $(this).css('border', '2px solid red');
@@ -211,7 +204,7 @@ class Post{
                 return false;
             }
 
-            $(".inp_cmd_field").each(function(index,emp){
+            $(emp_form).find(".inp_cmd_field").each(function(index,emp){
                 var v=$(emp).val();
                 var k=$(emp).attr("field-key");
                 data[k]=v;
@@ -225,6 +218,7 @@ class Post{
                         cr_realtime.add(collection,id_c,data,()=>{
                             cr.msg("Add success","Add item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
+                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                             if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
                         });
                     }else{
@@ -232,6 +226,7 @@ class Post{
                             cr.msg("Add success","Add item success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             post_cur.reload_list();
+                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                             if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
                         });
                     }
@@ -241,6 +236,7 @@ class Post{
                         cr_realtime.add(collection,post_cur.id_document_edit,data,()=>{
                             cr.msg("Update success","Update item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
+                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                             if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
                         });
                     }else{
@@ -249,6 +245,7 @@ class Post{
                             post_cur.id_document_edit="";
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             post_cur.reload_list();
+                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                             if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
                         });
                     }
@@ -257,6 +254,7 @@ class Post{
                 cr_firestore.set(data,"setting",collection,()=>{
                     cr.msg("Setting","Update success!","success");
                     if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
+                    if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                 })
             }
    
@@ -269,6 +267,27 @@ class Post{
             $("#frm_cms_act").html(post_cur.show_form_add());
         });
         return emp_form;
+    }
+
+    show_form_add(data_document=null){
+        var html='';
+        let style_collapse="block";
+
+        html+='<form class="card mt-3 accordion" id="frm_act_'+this.id_collection+'">';
+        if(this.type=="list"){
+            html+='<div class="card-header"><button class="btn btn-sm" onclick="cms.collapse_box_add();return false;"><i id="icon_collapse_box_add" class="fas '+(cms.is_collapse_box_add===false ? 'fa-caret-square-up':'fa-caret-square-down')+'"></i></button> '+this.label+' <small class="text-muted">('+this.type_db+')</small></div>';
+            if(cms.is_collapse_box_add) style_collapse="none"; else style_collapse="block";
+        }
+        else{
+            html+='<div class="card-header">Setting ('+this.label+' - '+this.type_db+')</div>';
+        }
+
+        html+='<div class="card-body" id="collapse_frm_add_body" style="display: '+style_collapse+'"></div>';
+        html+='</form>';
+       
+        var emp_frm=$(html);
+        $(emp_frm).find("#collapse_frm_add_body").append(this.form_body(data_document));
+        return emp_frm;
     }
 
     show_edit(data){
@@ -443,8 +462,8 @@ class Post{
     }
 
     reload_list(){
-        if($("#list_cms_data").length>0){
-            $("#list_cms_data").html(this.show_list());
+        if($("#list_cms_data_"+this.id_collection).length>0){
+            $("#list_cms_data_"+this.id_collection).html(this.show_list());
             this.load_data_for_list();
         }
     }
@@ -452,14 +471,14 @@ class Post{
     show(){
         var html='';
         html+='<div class="d-block w-100" id="frm_cms_act"></div>';
-        html+='<div class="d-block w-100 mb-5" id="list_cms_data"></div>';
+        html+='<div class="d-block w-100 mb-5" id="list_cms_data_'+this.id_collection+'"></div>';
 
         $("#main_contain").html('');
         
         if(this.type=="list"){
             $("#main_contain").html(html);
             if(this.data_form_add!=null) $("#frm_cms_act").html(this.show_form_add());
-            $("#list_cms_data").html(this.show_list());
+            $("#list_cms_data_"+this.id_collection).html(this.show_list());
             this.load_data_for_list();
         }
 

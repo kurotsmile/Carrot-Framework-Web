@@ -182,13 +182,42 @@ class CMS{
 
     show_list_menu_sidebar(){
         $("#list_post").html('');
+        var p_cur_id=this.list_post[this.index_post_cur];
         $.each(this.list_post,function(index,p){
-            var emp_post=$('<li role="button" class="nav-item" id="m_p_'+index+'"><a class="nav-link" aria-current="page" >'+p.icon+' '+p.label+'</a></li>');
-            $(emp_post).click(function(){
-                cms.index_post_cur=index;
-                cms.show_post_object(index);
-                return false;
-            });
+            var htm_item='<li role="button" class="nav-item d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center" id="m_p_'+index+'">';
+            htm_item+='<a class="nav-link" aria-current="page" >'+p.icon+' '+p.label+'</a>';
+            var emp_post=null;
+            if(p_cur_id.id_collection!=p.id_collection){
+                if(p.type=="list"&&p.id_collection!="file"){
+                    htm_item+='<div>';
+                        htm_item+='<i class="fas fa-list m-1 text-muted btn-list btn-mini" title="Quick View"></i>';
+                        htm_item+='<i class="fas fa-plus-circle m-1 text-muted btn-add btn-mini" title="Quick Add"></i>';
+                    htm_item+='</div>';
+                }
+                htm_item+='</li>';
+                emp_post=$(htm_item);
+                $(emp_post).find(".btn-list").click(()=>{
+                    cms.show_list_document(p.id_collection);
+                    return false;
+                });
+    
+                $(emp_post).find(".btn-add").click(()=>{
+                    cms.box('<div id="frm_add_mini"></div>','Quick Add ('+p.label+')',()=>{
+                        $("#frm_add_mini").append(p.form_body());
+                        return false;
+                    });
+                    return false;
+                });
+    
+                $(emp_post).click(function(){
+                    cms.index_post_cur=index;
+                    cms.show_post_object(index);
+                    return false;
+                });
+            }else{
+                emp_post=$(htm_item);
+            }
+
             $("#list_post").append(emp_post);
         });
     }
@@ -450,7 +479,7 @@ class CMS{
         });
     }
 
-    show_list_document(id_collection,emp_field){
+    show_list_document(id_collection,emp_field=null){
 
         var p=cms.get_post_by_id_collection(id_collection);
         var type_db=p.type_db;
@@ -480,14 +509,14 @@ class CMS{
             cr_firestore.list(id_collection,datas=>{
                 cr.msg_loading();
                 cms.msg_collection_data(p,field_view,datas,(data_item)=>{
-                    $(emp_field).val(data_item[field_select]);
+                    if(emp_field) $(emp_field).val(data_item[field_select]);
                 });
             });  
         }else{
             cr_realtime.list_one(id_collection,datas=>{
                 cr.msg_loading();
                 cms.msg_collection_data(p,field_view,datas,(data_item)=>{
-                    $(emp_field).val(data_item[field_select]);
+                    if(emp_field) $(emp_field).val(data_item[field_select]);
                 });
             }); 
         }
@@ -525,8 +554,8 @@ class CMS{
 
         var htm_table='<div class="w-100">';
         htm_table+='<div class="input-group mb-3"><input id="inp_search_collection" type="text" class="form-control" placeholder="Search '+p.label+'"><button class="btn btn-outline-secondary" type="button" id="button-search-collection"><i class="fas fa-search"></i> Search</button></div>';
-        htm_table+='<div class="table-responsive">';
-        htm_table+='<table class="table table-linght table-sm table-striped table-hover" style="overflow: auto;width: 100%;max-height: 320px;">';
+        htm_table+='<div class="table-responsive" style="max-height:320px">';
+        htm_table+='<table class="table table-linght table-sm table-striped table-hover" style="overflow: auto;width: 100%;">';
         htm_table+='<thead>';
         htm_table+='<tr>';
             htm_table+='<th scope="col">#</th>';
@@ -539,7 +568,8 @@ class CMS{
         htm_table+='<tbody id="all_item_collection"></tbody>';
         htm_table+='</table>';
         htm_table+='</div>';
-        cr.msg(htm_table,p.label,"",()=>{
+        cms.box(htm_table,p.label,()=>{
+                Swal.close();
                 $('#all_item_collection').empty();
                 $.each(datas,function(index,item_data){
                     $("#all_item_collection").append(item_tr(item_data)); 
@@ -753,6 +783,28 @@ class CMS{
 
     export_all_data(){
         cr.download(cms.list_post,"Backup-"+cr.getDateTimeCur()+".json");
+    }
+
+    box(body,title,act_show=null){
+        var html_box='';
+        html_box+='<div class="modal fade modal-lg" id="box_cms" tabindex="-1" role="dialog" aria-labelledby="boxModalLabel" aria-hidden="true">';
+        html_box+='<div class="modal-dialog" role="document">';
+            html_box+='<div class="modal-content">';
+            html_box+='<div class="modal-header">';
+                html_box+='<h5 class="modal-title" id="boxModalLabel">'+title+'</h5>';
+                html_box+='<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$(\'#box_cms\').modal(\'hide\')">';
+                html_box+='<span aria-hidden="true">&times;</span>';
+                html_box+='</button>';
+            html_box+='</div>';
+            html_box+='<div class="modal-body">'+body+'</div>';
+        html_box+='</div>';
+        html_box+='</div>';
+        html_box+='</div>';
+        var emp_box=$(html_box);
+        if($('#box_cms').length>0) $('#box_cms').remove();
+        $("body").append(emp_box);
+        $('#box_cms').modal('show');
+        if(act_show) act_show();
     }
 }
 var cms=new CMS();
