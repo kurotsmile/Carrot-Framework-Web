@@ -523,9 +523,10 @@ class CMS{
             return emp_item;
         }
 
-        var htm_table='<div class="table-responsive">';
-        htm_table+='<table class="table table-linght table-sm table-striped table-hover">';
-
+        var htm_table='<div class="w-100">';
+        htm_table+='<div class="input-group mb-3"><input id="inp_search_collection" type="text" class="form-control" placeholder="Search '+p.label+'"><button class="btn btn-outline-secondary" type="button" id="button-search-collection"><i class="fas fa-search"></i> Search</button></div>';
+        htm_table+='<div class="table-responsive">';
+        htm_table+='<table class="table table-linght table-sm table-striped table-hover" style="overflow: auto;width: 100%;max-height: 320px;">';
         htm_table+='<thead>';
         htm_table+='<tr>';
             htm_table+='<th scope="col">#</th>';
@@ -543,6 +544,13 @@ class CMS{
                 $.each(datas,function(index,item_data){
                     $("#all_item_collection").append(item_tr(item_data)); 
                 });  
+
+                $("#inp_search_collection").on("keyup", function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#all_item_collection tr").filter(function() {
+                      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
         });
     }
 

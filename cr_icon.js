@@ -223,9 +223,11 @@ class CR_Icons{
                 cr_icon.load_list_for_msg(val_search_name_icon);
             });
 
-            $('#inp_search_name_icon').on('input',function(e){
-                var val_search_name_icon=$("#inp_search_name_icon").val();
-                if(val_search_name_icon.trim()!="") cr_icon.load_list_for_msg(val_search_name_icon);
+            $("#inp_search_name_icon").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#cr_all_item_icon button").filter(function() {
+                  $(this).toggle($(this).attr("title").toLowerCase().indexOf(value) > -1);
+                });
             });
             cr_icon.load_list_for_msg();
         })
