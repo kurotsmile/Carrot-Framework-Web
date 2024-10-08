@@ -82,13 +82,7 @@ class Post{
             }else{
                 if(field.type=="number") val_field="0";
                 if(field.type=="datetime-local"){
-                    var now = new Date();
-                    var year = now.getFullYear();
-                    var month = ('0' + (now.getMonth() + 1)).slice(-2);
-                    var day = ('0' + now.getDate()).slice(-2);
-                    var hours = ('0' + now.getHours()).slice(-2);
-                    var minutes = ('0' + now.getMinutes()).slice(-2);
-                    val_field= year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+                    val_field=cr.getDateCur();
                 }
                 if(field.type=="user"){
                     val_field=cms.data_user_login.username;

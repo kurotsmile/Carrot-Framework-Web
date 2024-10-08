@@ -1005,5 +1005,16 @@ class Carrot{
         const localDateTime = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
         return localDateTime;
     }
+
+    getDateCur(){
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var day = ('0' + now.getDate()).slice(-2);
+        var hours = ('0' + now.getHours()).slice(-2);
+        var minutes = ('0' + now.getMinutes()).slice(-2);
+        return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+    }
+
 }
 var cr=new Carrot();
