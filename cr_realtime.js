@@ -30,6 +30,18 @@ class Carrot_Realtime_DB{
         });
     }
 
+    updateData(id_collection, id_doc, newData, act_done = null, act_fail = null) {
+      const db = getDatabase();
+      const dataRef = cr_realtime.ref(db, `${id_collection}/${id_doc}`); 
+  
+      cr_realtime.update(dataRef, newData).then(() => {
+          if (act_done) act_done();
+      }).catch((error) => {
+          console.error("Error updating data:", error);
+          if (act_fail) act_fail();
+      });
+    }
+
     getData(id_collection,id_doc,act_done,act_fail=null) {
         const userRef = cr_realtime.ref(cr_realtime.db, id_collection+'/'+id_doc);
         cr_realtime.onValue(userRef, (snapshot) => {
