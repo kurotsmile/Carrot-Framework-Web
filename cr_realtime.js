@@ -38,6 +38,7 @@ class Carrot_Realtime_DB{
           if (data) {
             act_done(data);
           } else {
+            act_done(null);
             console.log("No data available");
           }
         }, (error) => {
