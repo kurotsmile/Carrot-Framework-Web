@@ -588,9 +588,13 @@ class Carrot{
         navigator.share(shareData);
     }
 
-    copy(emp) {
+    copy(emp,is_input=true) {
         var $temp = $("<input>");$("body").append($temp);
-        var s_copy=$(emp).val();
+        var s_copy='';
+        if(is_input)
+            s_copy=$(emp).val();
+        else
+            s_copy=$(emp).html();
         $temp.val(s_copy).select();
         document.execCommand("copy");$temp.remove();
     }
