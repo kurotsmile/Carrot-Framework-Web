@@ -806,5 +806,9 @@ class CMS{
         $('#box_cms').modal('show');
         if(act_show) act_show();
     }
+
+    close_box(){
+        $('#box_cms').modal('hide');
+    }
 }
 var cms=new CMS();
