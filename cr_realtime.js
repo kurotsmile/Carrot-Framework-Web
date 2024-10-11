@@ -83,6 +83,7 @@ class Carrot_Realtime_DB {
     onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
       if (data) act_done(cr.convertObjectToArray(data));
+      else act_done(null);
     }, (error) => {
       console.error("Error reading data:", error);
       if (act_fail) act_fail();
