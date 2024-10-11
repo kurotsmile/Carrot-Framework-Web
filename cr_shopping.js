@@ -65,11 +65,11 @@ class Carrot_Shopping {
     var html = "";
     html += '<div class="row" id="cr_page_cart_content">';
     if (cr_shopping.cart_data.length > 0) {
-      html += '<div class="col-10">';
+      html += '<div class="col-12 col-md-10 col-lg-10 col-xl-10 mb-3">';
       html += '<ul class="list-group list-group-numbered" id="cartallitems"></ul>';
       html += '</div>';
 
-      html += '<div class="col-2 text-center">';
+      html += '<div class="col-12 text-center col-md-2 col-lg-2 col-xl-2 mt-sm-3">';
       html += '<b class="fs-6">Total product</b>';
       html += '<p class="fs-2"><i class="fas fa-people-carry"></i> <span id="cr_cart_total_product"></span></p>';
       html += '<b class="fs-6">Price</b>';
