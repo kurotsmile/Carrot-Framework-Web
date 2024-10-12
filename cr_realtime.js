@@ -17,6 +17,7 @@ class Carrot_Realtime_DB {
     cr_realtime.get = get;
     cr_realtime.removedb = removedb;
     cr_realtime.update = updatedb;
+    cr_realtime.off=off;
   }
 
   add(id_collection, id_doc, data, act_done = null) {
@@ -43,16 +44,30 @@ class Carrot_Realtime_DB {
     });
   }
 
-  getData(id_collection, id_doc, act_done, act_fail = null) {
+  getData(id_collection, id_doc, act_done, act_fail = null,emp_check=null) {
     const userRef = cr_realtime.ref(cr_realtime.db, id_collection + '/' + id_doc);
-    cr_realtime.onValue(userRef, (snapshot) => {
-      const data = snapshot.val();
 
-      if (data) {
-        act_done(data);
-      } else {
-        act_done(null);
-        console.log("No data available");
+    const listener = cr_realtime.onValue(userRef, (snapshot) => {
+      const data = snapshot.val();
+      if(emp_check==null){
+        if (data) {
+          act_done(data);
+        } else {
+          act_done(null);
+          console.log("No data available");
+        }
+      }else{
+        if ($(emp_check).length) {
+          if (data) {
+            act_done(data);
+          } else {
+            act_done(null);
+            console.log("No data available");
+          }
+        } else {
+          cr_realtime.off(userRef, 'value', listener);
+          console.log("Emplement không còn tồn tại, listener đã được hủy.");
+        }
       }
     }, (error) => {
       console.error("Error reading data:", error);

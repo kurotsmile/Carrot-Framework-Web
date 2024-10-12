@@ -395,7 +395,7 @@ class Post{
                             p.id_document_edit=id_doc;
                             p.show_edit(data_doc);
                             if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
-                        });
+                        },null,'#frm_cms_act');
                     }else{
                         cr_firestore.get(p.id_collection,id_doc,(data_doc)=>{
                             cr.top();
