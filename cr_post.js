@@ -17,7 +17,7 @@ class Post{
         this.data_form_add["fields"]=[];
     }
 
-    form_body(data_document=null){
+    form_body(data_document=null,sub_box='box'){
         var html='<div>';
         let fields=this.data_form_add.fields;
 
@@ -91,26 +91,26 @@ class Post{
             }
 
             if(field.type=="textarea"){
-                html_field+='<textarea class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'" rows="10">'+val_field+'</textarea>';
+                html_field+='<textarea class="inp_cmd_field w-100 form-control" field-key="'+field.id+'" id="'+post_cur.id_collection+'_'+field.id+'"  rows="10">'+val_field+'</textarea>';
             }
             else if(field.type=="icon"){
-                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+post_cur.id_collection+'_'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
             else if(field.type=="collection"){
-                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+post_cur.id_collection+'_'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
             else if(field.type=="list"||field.type=="select"){
-                html_field+='<select class="inp_cmd_field w-100 form-control" id="'+field.id+'" field-key="'+field.id+'">';
+                html_field+='<select class="inp_cmd_field w-100 form-control" id="'+post_cur.id_collection+'_'+field.id+'" field-key="'+field.id+'">';
                 $.each(field.data,function(index,data_item){
                     html_field+='<option value="'+data_item.value+'" '+(val_field==data_item.value ? "selected":"")+'>'+data_item.label+'</option>';
                 });
                 html_field+='</select>';
             }
             else if(field.type=='file'){
-                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="text" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+post_cur.id_collection+'_'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
             else{
-                html_field+='<input type="'+field.type+'" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
+                html_field+='<input type="'+field.type+'" field-key="'+field.id+'" class="form-control inp_cmd_field" id="'+post_cur.id_collection+'_'+field.id+'" value="'+val_field+'" placeholder="Enter data" '+(field.required===true? "required":"")+'>';
             }
 
             if(field.type=="file"){
@@ -118,16 +118,16 @@ class Post{
                 html_field+='<button class="btn btn-dark btn_select_file" type="button"><i class="fas fa-folder-open"></i> Select</button>';
             }else if(field.type=="textarea"){}
             else if(field.type=="icon"){
-                html_field+='<button onclick="cr_icon.show_select(\''+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
-                html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+                html_field+='<button onclick="cr_icon.show_select(\''+post_cur.id_collection+'_'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-list"></i> Select</button>';
+                html_field+='<button onclick="cr.paste(\'#'+post_cur.id_collection+'_'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="collection"){
                 html_field+='<button class="btn btn-dark btn-sel-collection" type="button"><i class="fas fa-list"></i> Select</button>';
-                html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+                html_field+='<button onclick="cr.paste(\'#'+post_cur.id_collection+'_'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             }
             else if(field.type=="list"||field.type=="select"){}
             else
-                html_field+='<button onclick="cr.paste(\'#'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+                html_field+='<button onclick="cr.paste(\'#'+post_cur.id_collection+'_'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
             if(cr.alive(field.tip)) html_field+='<div id="emailHelp" class="form-text">'+field.tip+'</div>';
             html_field+='</div>';
@@ -163,17 +163,17 @@ class Post{
                         id_collection=field.data.id_collection;
                         cms.collection_msg_box=field.data;
                     }
-                    cms.show_list_document(id_collection,'#'+field.id);
+                    cms.show_list_document(id_collection,'#'+post_cur.id_collection+'_'+field.id,sub_box);
                     return false;
                 });
             }
 
             if(field.id=="order"&&val_field=="0"){
                 if(cr.alive(post_cur.data_temp)){
-                    setTimeout(()=>{$("#"+field.id).val(post_cur.data_temp.length);},1000);
+                    setTimeout(()=>{$("#"+post_cur.id_collection+'_'+field.id).val(post_cur.data_temp.length);},1000);
                 }
                 else{
-                    if($('#list_cms_data_'+post_cur.id_collection).length>0) setTimeout(()=>{$("#"+field.id).val($('#list_cms_data_'+post_cur.id_collection+' tbody tr').length);},1000);
+                    if($('#list_cms_data_'+post_cur.id_collection).length>0) setTimeout(()=>{$("#"+post_cur.id_collection+'_'+field.id).val($('#list_cms_data_'+post_cur.id_collection+' tbody tr').length);},1000);
                 }
             }
             emp_form.find(".list_cms_field").append(emp_field);

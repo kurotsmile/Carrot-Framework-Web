@@ -499,7 +499,7 @@ class CMS{
         });
     }
 
-    show_list_document(id_collection,emp_field=null){
+    show_list_document(id_collection,emp_field=null,sub_box='box'){
 
         var p=cms.get_post_by_id_collection(id_collection);
         var type_db=p.type_db;
@@ -530,19 +530,19 @@ class CMS{
                 cr.msg_loading();
                 cms.msg_collection_data(p,field_view,datas,(data_item)=>{
                     if(emp_field) $(emp_field).val(data_item[field_select]);
-                });
+                },sub_box); 
             });  
         }else{
             cr_realtime.list_one(id_collection,datas=>{
                 cr.msg_loading();
                 cms.msg_collection_data(p,field_view,datas,(data_item)=>{
                     if(emp_field) $(emp_field).val(data_item[field_select]);
-                });
+                },sub_box);
             }); 
         }
     }
 
-    msg_collection_data(p,field_view,datas,onclick=null){
+    msg_collection_data(p,field_view,datas,onclick=null,sub_box='box'){
         function get_label_by_field_id(id){
             var label=id;
             $.each(p.data_form_add.fields,function(index,f){
@@ -568,7 +568,10 @@ class CMS{
             $(emp_item).click(()=>{
                 if(onclick){
                     onclick(item_data);
-                    cms.close_box();
+                    if(sub_box=='box')
+                        cms.close_box();
+                    else
+                        Swal.close();
                 }
             });
             return emp_item;
@@ -590,7 +593,8 @@ class CMS{
         htm_table+='<tbody id="all_item_collection"></tbody>';
         htm_table+='</table>';
         htm_table+='</div>';
-        cms.box(htm_table,p.label,()=>{
+        if(sub_box=='box'){
+            cms.box(htm_table,p.label,()=>{
                 Swal.close();
                 $('#all_item_collection').empty();
                 $.each(datas,function(index,item_data){
@@ -603,7 +607,22 @@ class CMS{
                       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                     });
                 });
-        });
+            });
+        }else{
+            cr.msg(htm_table,p.label,'',()=>{
+                $('#all_item_collection').empty();
+                $.each(datas,function(index,item_data){
+                    $("#all_item_collection").append(item_tr(item_data)); 
+                });  
+
+                $("#inp_search_collection").on("keyup", function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#all_item_collection tr").filter(function() {
+                      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+            },false);
+        }
     }
 
     show_sort_list(){
