@@ -91,19 +91,19 @@ class Carrot_Realtime_DB {
   }
 
   list_one(id_collection, act_done = null, act_fail = null) {
-    const dataRef = ref(cr_realtime.db, id_collection); // Tham chiếu đến nhánh dữ liệu cần lấy
+    const dataRef = ref(cr_realtime.db, id_collection);
 
     get(dataRef).then((snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val(); // Lấy giá trị của nhánh dữ liệu
-        if (act_done) act_done(cr.convertObjectToArray(data)); // Chuyển đổi dữ liệu nếu cần
+        const data = snapshot.val();
+        if (act_done) act_done(cr.convertObjectToArray(data));
       } else {
         console.log("No data available");
-        if (act_fail) act_fail(); // Xử lý trường hợp không có dữ liệu
+        if (act_fail) act_fail();
       }
     }).catch((error) => {
       console.error("Error reading data:", error);
-      if (act_fail) act_fail(); // Xử lý lỗi
+      if (act_fail) act_fail();
     });
   }
 

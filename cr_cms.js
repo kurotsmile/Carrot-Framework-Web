@@ -339,14 +339,16 @@ class CMS{
     }
 
     import_data_list(collectionId,is_setting=false){
+        var p=cms.get_post_by_id_collection(collectionId);
+        alert(JSON.stringify(p));
+
         var html_imp='';
         html_imp+='<h1 class="h2 mt-5"><i class="fas fa-cloud-upload-alt"></i> Import data</h1>';
         html_imp+='<p>Upload json file to import corresponding data for <b>'+collectionId+'</b><br/>';
-        html_imp+='<progress min="0" max="100" value="0" class="w-100" id="status_import">';
+        html_imp+='<p id="status_import">Length:<b id="import_item_length">0</b> Done Item:<b id="import_item_count_done">0</b></p>';
         html_imp+='</p>';
         html_imp+='<input type="file" id="fileimport_data" />';
         $("#main_contain").html(html_imp);
-        $("#status_import").hide();
 
         $('#fileimport_data').on('change', function(event) {
             
@@ -356,22 +358,41 @@ class CMS{
               reader.onload = function(e) {
                 try {
                     const jsonData = JSON.parse(e.target.result);
-                    if(is_setting){
+                    if(p.type=='setting'){
                         Swal.showLoading();
                         cr_firestore.set(jsonData,"setting",collectionId,()=>{
                             cr.msg("Import Data Success!", "Import Data", "success");
-                        })
+                        });
                     }else{
                         $("#status_import").show();
                         let length_progress = jsonData.length;
-                        $("#status_import").attr("max", length_progress);
+                        $("#import_item_length").html(length_progress);
                         $.each(jsonData, function (index, d) {
-                            cr_firestore.set(d, collectionId, () => {
-                                $("#status_import").attr("value", index);
-                                if (index >= length_progress - 1) {
-                                    cr.msg("Import Data Success!", "Import Data", "success");
+                            if(p.type_db=='firestore'){
+                                cr_firestore.set(d, collectionId, () => {
+                                    $("#import_item_count_done").html(index);
+                                    if (index >= length_progress - 1) {
+                                        cr.msg("Import Data Success!", "Import Data", "success");
+                                    }
+                                });
+                            }else{
+                                var id_doc='';
+                                if(cr.alive(d["id_doc"])){
+                                    id_doc=d["id_doc"];
                                 }
-                            });
+                                else{
+                                    id_doc=cr.create_id();
+                                    d["id_doc"]=id_doc;
+                                }
+
+                                cr_realtime.add(collectionId,id_doc,d, () => {
+                                    $("#import_item_count_done").html(index);
+                                    if (index >= length_progress - 1) {
+                                        cr.msg("Import Data Success!", "Import Data", "success");
+                                    }
+                                });
+                            }
+
                         });
                     }
                 } catch (error) {
@@ -722,15 +743,19 @@ class CMS{
                 if(p.type=="list"){
                     if(p.type_db=="firestore"){
                         cr_firestore.list(p.id_collection,datas_p=>{
-                            p.data_temp=datas_p;
-                            chart_addData(p.label,datas_p.length);
+                            if(datas_p!=null){
+                                p.data_temp=datas_p;
+                                chart_addData(p.label,datas_p.length);
+                            }
                         });
                     }
 
                     if(p.type_db=="realtime"){
                         cr_realtime.list(p.id_collection,datas_p=>{
-                            p.data_temp=datas_p;
-                            chart_addData(p.label,datas_p.length);
+                            if(datas_p!=null){
+                                p.data_temp=datas_p;
+                                chart_addData(p.label,datas_p.length);
+                            }
                         });
                     }
                 }

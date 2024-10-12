@@ -442,13 +442,19 @@ class Post{
         
         if(this.type_db=="realtime"){
             cr_realtime.list(this.id_collection,(data)=>{
-                load_list(data);
+                if(data) 
+                    load_list(data);
+                else
+                    load_list([]);
             },()=>{
                 cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
             });
         }else{
             cr_firestore.list(this.id_collection,(data)=>{
-                load_list(data);
+                if(data) 
+                    load_list(data);
+                else
+                    load_list([]);
             },()=>{
                 cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
             });
