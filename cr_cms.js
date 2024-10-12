@@ -339,7 +339,7 @@ class CMS{
         cr.msg("Export data ("+file_name+") success!","success");
     }
 
-    import_data_list(collectionId,is_setting=false){
+    import_data_list(collectionId){
         var p=cms.get_post_by_id_collection(collectionId);
         alert(JSON.stringify(p));
 
@@ -378,8 +378,8 @@ class CMS{
                                 });
                             }else{
                                 var id_doc='';
-                                if(cr.alive(d["id_doc"])){
-                                    id_doc=d["id_doc"];
+                                if(cr.alive(d[p.key_main])){
+                                    id_doc=d[p.key_main];
                                 }
                                 else{
                                     id_doc=cr.create_id();

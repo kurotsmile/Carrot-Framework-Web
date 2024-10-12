@@ -16,6 +16,7 @@ class Carrot_Realtime_DB {
     cr_realtime.onValue = onValue;
     cr_realtime.get = get;
     cr_realtime.removedb = removedb;
+    cr_realtime.update = updatedb;
   }
 
   add(id_collection, id_doc, data, act_done = null) {
@@ -33,7 +34,7 @@ class Carrot_Realtime_DB {
   updateData(id_collection, id_doc, newData, act_done = null, act_fail = null) {
     const db = getDatabase();
     const dataRef = cr_realtime.ref(db, `${id_collection}/${id_doc}`);
-
+    // newData ={key_field:value_new}
     cr_realtime.update(dataRef, newData).then(() => {
       if (act_done) act_done();
     }).catch((error) => {
@@ -96,10 +97,14 @@ class Carrot_Realtime_DB {
     get(dataRef).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-        if (act_done) act_done(cr.convertObjectToArray(data));
+        if(data!=null){
+          act_done(cr.convertObjectToArray(data));
+        }else{
+          act_done(null);
+        }
       } else {
         console.log("No data available");
-        if (act_fail) act_fail();
+        if(act_done)act_done(null);
       }
     }).catch((error) => {
       console.error("Error reading data:", error);

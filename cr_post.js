@@ -11,6 +11,7 @@ class Post{
     js=null;
     js_act_done_frm=null;//Action for form done add or Update at data
     type_db="firestore";//realtime
+    key_main='id_doc';
 
     constructor(){
         this.data_form_add["fields"]=[];
@@ -43,7 +44,7 @@ class Post{
             if(this.type=="setting"){
                 cms.data_list_temp=data_document;
                 html+='<button style="float:right" onclick="cms.export_data_list();return false;" class="btn btn-dark m-1 d-right"><i class="fas fa-file-download"></i> Export Data</button>';
-                html+='<button style="float:right" onclick="cms.import_data_list(\''+this.id_collection+'\',true);return false;" class="float-right btn btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
+                html+='<button style="float:right" onclick="cms.import_data_list(\''+this.id_collection+'\');return false;" class="float-right btn btn-dark m-1"><i class="fas fa-cloud-upload-alt"></i> Import Data</button>';
             }
         }
         html+='<div>';
@@ -207,7 +208,11 @@ class Post{
             if(post_cur.type=="list"){
                 if(post_cur.id_document_edit==""){
                     if(post_cur.type_db=="realtime"){
-                        var id_c=cr.create_id();
+                        var id_c='';
+                        if(post_cur.key_main!='id_doc') 
+                            id_c=data[post_cur.key_main];
+                        else
+                            id_c=cr.create_id();
                         data["id_doc"]=id_c;
                         cr_realtime.add(collection,id_c,data,()=>{
                             cr.msg("Add success","Add item realtime success!","success");
@@ -360,7 +365,7 @@ class Post{
             }
             
             $.each(data,function(index,item_p){
-                var id_doc=item_p["id_doc"];
+                var id_doc=item_p[p.key_main];
                 var htm_tr='<tr id="'+id_doc+'">';
                 htm_tr+='<td class="list_btn_tr">';
                     if(p.data_form_add!=null) htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
