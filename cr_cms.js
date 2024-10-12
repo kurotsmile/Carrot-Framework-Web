@@ -318,6 +318,7 @@ class CMS{
     }
 
     processString(input) {
+        if(!cr.alive(input)) return '';
         var urlPattern = /^(https?:\/\/)?([\w\-\.]+\.[a-zA-Z]{2,})(\/[\w\-\.\?&=%]*)*$/;
         var imagePattern = /\.(jpg|jpeg|png|gif|bmp|webp)$/i;
     
