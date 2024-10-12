@@ -345,18 +345,18 @@ class Post{
                 $(".btn-list-tool").show();
                 $("#btn_list_done_sort").hide();
                 $("#btn_list_cancel_sort").hide();
-            }
 
-            if(is_order){
-                $("#btn_list_sort").show();
-                data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
-            }else{
-                if(cr.alive(first_data['date'])){
-                    data.sort(function(a, b) {
-                        return new Date(b['date']) - new Date(a['date']);
-                    });
+                if(is_order){
+                    $("#btn_list_sort").show();
+                    data.sort(function(a, b) { return parseInt(a.order) - parseInt(b.order);});
+                }else{
+                    if(cr.alive(first_data['date'])){
+                        data.sort(function(a, b) {
+                            return new Date(b['date']) - new Date(a['date']);
+                        });
+                    }
+                    $("#btn_list_sort").hide();
                 }
-                $("#btn_list_sort").hide();
             }
             
             $.each(data,function(index,item_p){

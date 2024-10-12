@@ -546,8 +546,10 @@ class CMS{
             html_row+='</tr>';
             var emp_item=$(html_row);
             $(emp_item).click(()=>{
-                if(onclick) onclick(item_data);
-                Swal.close();
+                if(onclick){
+                    onclick(item_data);
+                    cms.close_box();
+                }
             });
             return emp_item;
         }

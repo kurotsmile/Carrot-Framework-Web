@@ -32,6 +32,10 @@ body {
       top: 5rem;
     }
   }
+
+  #sidebarMenu{
+    overflow-y: auto;
+  }
   
   .sidebar-sticky {
     position: relative;
