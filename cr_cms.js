@@ -341,8 +341,6 @@ class CMS{
 
     import_data_list(collectionId){
         var p=cms.get_post_by_id_collection(collectionId);
-        alert(JSON.stringify(p));
-
         var html_imp='';
         html_imp+='<h1 class="h2 mt-5"><i class="fas fa-cloud-upload-alt"></i> Import data</h1>';
         html_imp+='<p>Upload json file to import corresponding data for <b>'+collectionId+'</b><br/>';
