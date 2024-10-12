@@ -94,12 +94,30 @@ class Carrot_Realtime_DB {
       });
   }
 
-  list(id_collection, act_done = null, act_fail = null) {
+  list(id_collection, act_done = null, act_fail = null,emp_check=null) {
     const usersRef = ref(cr_realtime.db, id_collection);
-    onValue(usersRef, (snapshot) => {
+    const listener = cr_realtime.onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) act_done(cr.convertObjectToArray(data));
-      else act_done(null);
+      if(emp_check==null){
+        if (data) {
+          act_done(cr.convertObjectToArray(data));
+        } else {
+          act_done([]);
+          console.log("No data available");
+        }
+      }else{
+        if ($(emp_check).length) {
+          if (data) {
+            act_done(cr.convertObjectToArray(data));
+          } else {
+            act_done([]);
+            console.log("No data available");
+          }
+        } else {
+          cr_realtime.off(usersRef, 'value', listener);
+          console.log("Emplement không còn tồn tại, listener đã được hủy.");
+        }
+      }
     }, (error) => {
       console.error("Error reading data:", error);
       if (act_fail) act_fail();
