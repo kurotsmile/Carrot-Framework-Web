@@ -135,7 +135,7 @@ class Post{
 
             if(field.type=="textarea"){
                 setTimeout(()=>{
-                    $('#'+field.id).summernote();
+                    $('#'+post_cur.id_collection+'_'+field.id).summernote();
                 },200);
             }
 
