@@ -13,6 +13,7 @@ class Post{
     js_act_show_frm=null;//Actinon after create form add
     type_db="firestore";//realtime
     key_main='id_doc';
+    path_realtime=null;
 
     constructor(){
         this.data_form_add["fields"]=[];
@@ -209,13 +210,19 @@ class Post{
             if(post_cur.type=="list"){
                 if(post_cur.id_document_edit==""){
                     if(post_cur.type_db=="realtime"){
+                        var path_doc='';
                         var id_c='';
                         if(post_cur.key_main!='id_doc') 
                             id_c=data[post_cur.key_main];
                         else
                             id_c=cr.create_id();
                         data["id_doc"]=id_c;
-                        cr_realtime.add(collection,id_c,data,()=>{
+                        if(post_cur.path_realtime!=null) 
+                            path_doc=data[post_cur.path_realtime]+"/"+id_c;
+                        else
+                            path_doc=id_c;
+
+                        cr_realtime.add(collection,path_doc,data,()=>{
                             cr.msg("Add success","Add item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
@@ -232,8 +239,14 @@ class Post{
                     }
                 }else{
                     if(post_cur.type_db=="realtime"){
-                        data['id_doc']=post_cur.id_document_edit;
-                        cr_realtime.add(collection,post_cur.id_document_edit,data,()=>{
+                        var path_doc='';
+                        if(post_cur.path_realtime==null)
+                            data['id_doc']=post_cur.id_document_edit;
+                        else
+                            data['id_doc']=post_cur.id_document_edit.replace(data[post_cur.path_realtime]+"/","");
+                        
+                        path_doc=post_cur.id_document_edit;
+                        cr_realtime.add(collection,path_doc,data,()=>{
                             cr.msg("Update success","Update item realtime success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
@@ -328,6 +341,7 @@ class Post{
     }
 
     load_data_for_list(){
+        var p=this;
 
         function load_list(data){
             var is_order=false;
@@ -372,10 +386,16 @@ class Post{
             
             $.each(data,function(index,item_p){
                 var id_doc=item_p[p.key_main];
+                var path_doc='';
+                if(p.path_realtime!=null) 
+                    path_doc=item_p[p.path_realtime]+"/"+id_doc;
+                else
+                    path_doc=id_doc;
+
                 var htm_tr='<tr id="'+id_doc+'">';
                 htm_tr+='<td class="list_btn_tr">';
-                    if(p.data_form_add!=null) htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
-                    htm_tr+='<button id-doc="'+id_doc+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
+                    if(p.data_form_add!=null) htm_tr+='<button id-doc="'+path_doc+'" class="btn btn-sm btn-info m-1 btn_edit"><i class="fas fa-edit"></i></button>';
+                    htm_tr+='<button id-doc="'+path_doc+'" class="btn btn-sm btn-info m-1 btn_del"><i class="fas fa-trash"></i></button>';
                     htm_tr+='<span style="display:none" class="btn btn-sm btn-info m-1 btn_move"><i class="fas fa-arrows-alt"></i></span>';
                 htm_tr+='</td>';
     
@@ -443,7 +463,7 @@ class Post{
             });
             if(p.js!=null) cms[p.js]();
         }
-        var p=this;
+        
         if(localStorage.getItem("filter_"+p.id_collection)) 
             p.list_fields_show=JSON.parse(localStorage.getItem("filter_"+p.id_collection));
         else
@@ -452,14 +472,24 @@ class Post{
         $("#list_post_table").html('<tr><td class="w-100"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>');
         
         if(this.type_db=="realtime"){
-            cr_realtime.list(this.id_collection,(data)=>{
-                if(data) 
-                    load_list(data);
-                else
-                    load_list([]);
-            },()=>{
-                cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
-            });
+            if(this.path_realtime==null){
+                cr_realtime.list(this.id_collection,(data)=>{
+                    if(data) load_list(data); else load_list([]);
+                },()=>{ cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");},"#table_list_post");
+            }else{
+                cr_realtime.list(this.id_collection,(data)=>{
+                    if(data){
+                        var list_item=[];
+                        $.each(data,function(index,d){
+                            $.each(d,function(index,sub_obj){
+                                list_item.push(sub_obj);
+                            })
+                        })
+                        load_list(list_item);
+                    }else load_list([]);
+                },()=>{ cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");},"#table_list_post");
+            }
+
         }else{
             cr_firestore.list(this.id_collection,(data)=>{
                 if(data) 
