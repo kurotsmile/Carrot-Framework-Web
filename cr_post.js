@@ -10,6 +10,7 @@ class Post{
     type="list"; //type list,page or setting
     js=null;
     js_act_done_frm=null;//Action for form done add or Update at data
+    js_act_show_frm=null;//Actinon after create form add
     type_db="firestore";//realtime
     key_main='id_doc';
 
@@ -265,6 +266,11 @@ class Post{
             cms.is_collapse_box_add=false;
             $("#frm_cms_act").html(post_cur.show_form_add());
         });
+
+        if(post_cur.js_act_show_frm){
+            if(post_cur.js_act_show_frm!=null) cms[post_cur.js_act_show_frm]();
+        }
+
         return emp_form;
     }
 
