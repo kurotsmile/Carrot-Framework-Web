@@ -241,6 +241,7 @@ class Post{
                     }
 
                     if(post_cur.type_db=="mysql"){
+                        data["id_doc"]=cr.create_id();
                         cr_mysql.add(post_cur.id_collection,data,()=>{
                             cr.msg("Add success","Add item success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
@@ -250,6 +251,15 @@ class Post{
                         });
                     }
                 }else{
+
+                    function update_post_success(data){
+                        post_cur.id_document_edit="";
+                        $("#frm_cms_act").html(post_cur.show_form_add());
+                        post_cur.reload_list();
+                        if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
+                        if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
+                    }
+
                     if(post_cur.type_db=="realtime"){
                         var path_doc='';
                         if(post_cur.path_realtime==null)
@@ -260,18 +270,22 @@ class Post{
                         path_doc=post_cur.id_document_edit;
                         cr_realtime.add(collection,path_doc,data,()=>{
                             cr.msg("Update success","Update item realtime success!","success");
-                            $("#frm_cms_act").html(post_cur.show_form_add());
-                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
-                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
+                            update_post_success(data);
                         });
-                    }else{
+                    }
+                    
+                    if(post_cur.type_db=="firestore"){
                         cr_firestore.update(data,collection,post_cur.id_document_edit,()=>{
                             cr.msg("Update success","Update item success!","success");
-                            post_cur.id_document_edit="";
-                            $("#frm_cms_act").html(post_cur.show_form_add());
-                            post_cur.reload_list();
-                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
-                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
+                            update_post_success(data);
+                        });
+                    }
+
+                    if(post_cur.type_db=="mysql"){
+                        data['id_doc']=post_cur.id_document_edit;
+                        cr_mysql.update(collection,data,()=>{
+                            cr.msg("Update success","Update item mysql success!","success");
+                            update_post_success(data);
                         });
                     }
                 }
@@ -399,10 +413,14 @@ class Post{
             $.each(data,function(index,item_p){
                 var id_doc=item_p[p.key_main];
                 var path_doc='';
-                if(p.path_realtime!=null) 
-                    path_doc=item_p[p.path_realtime]+"/"+id_doc;
-                else
-                    path_doc=id_doc;
+                if(p.type_db=="mysql"){
+                    path_doc=item_p["id_doc"];
+                }else{
+                    if(p.path_realtime!=null) 
+                        path_doc=item_p[p.path_realtime]+"/"+id_doc;
+                    else
+                        path_doc=id_doc;
+                }
 
                 var htm_tr='<tr id="'+id_doc+'">';
                 htm_tr+='<td class="list_btn_tr">';
@@ -433,8 +451,19 @@ class Post{
                             p.show_edit(data_doc);
                             if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
                         },null,'#frm_cms_act');
-                    }else{
+                    }
+                    
+                    if(p.type_db=="firestore"){
                         cr_firestore.get(p.id_collection,id_doc,(data_doc)=>{
+                            cr.top();
+                            p.id_document_edit=id_doc;
+                            p.show_edit(data_doc);
+                            if(cms.is_collapse_box_add) cms.collapse_box_add_show('none');
+                        });
+                    }
+
+                    if(p.type_db=="mysql"){
+                        cr_mysql.get(p.id_collection,id_doc,(data_doc)=>{
                             cr.top();
                             p.id_document_edit=id_doc;
                             p.show_edit(data_doc);

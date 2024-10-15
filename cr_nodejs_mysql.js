@@ -55,6 +55,22 @@ const add = async (table, data, act_done, act_fail) => {
   }
 };
 
+const update = async (table, data, act_done, act_fail) => {
+  try {
+    const connection = await connectDB();
+    const jsonData = JSON.parse(data);
+    const keys = Object.keys(jsonData);
+    const values = Object.values(jsonData);
+    const id_doc = jsonData.id_doc; 
+    const updateQuery = "UPDATE " + table + " SET " + keys.map(key => `${key} = ?`).join(', ') + " WHERE id_doc = ?";
+    await connection.execute(updateQuery, [...values, id_doc]);
+      connection.end();
+      act_done({ message: `Record with id_doc '${id_doc}' updated successfully.` });
+  } catch (error) {
+      act_fail(error);
+  }
+};
+
 const listRows = async (id_collection) => {
   try {
       const connection = await connectDB();
@@ -75,7 +91,23 @@ const listRows = async (id_collection) => {
   }
 };
 
-const executeQuery = (query, params) => {
+const get = async (table, id_doc, act_done, act_fail) => {
+  try {
+      const connection = await connectDB();
+      const [rows] = await connection.execute("SELECT * FROM `"+table+"` WHERE `id_doc`= '"+id_doc+"'");
+      connection.end();
+
+      if (rows.length === 0) {
+          act_done(null);
+      } else {
+          act_done(rows[0]);
+      }
+  } catch (error) {
+      act_fail(error); 
+  }
+};
+
+const q = (query, params) => {
   return new Promise((resolve, reject) => {
     pool.query(query, params, (error, results) => {
       if (error) { return reject(error);}
@@ -95,8 +127,5 @@ const closeConnection = () => {
 };
 
 module.exports = {
-  executeQuery,
-  closeConnection,
-  listRows,
-  add
+  q,closeConnection,listRows,add,get,insert_data,update
 };
