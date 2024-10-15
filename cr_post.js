@@ -11,7 +11,7 @@ class Post{
     js=null;
     js_act_done_frm=null;//Action for form done add or Update at data
     js_act_show_frm=null;//Actinon after create form add
-    type_db="firestore";//realtime
+    type_db="firestore";//firestore|realtime|mysql|mysql_realtime
     key_main='id_doc';
     path_realtime=null;
 
