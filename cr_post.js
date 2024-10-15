@@ -473,18 +473,29 @@ class Post{
                     return false;
                 });
                 $(emp_tr).find(".btn_del").click(function(){
-                    let id_doc=$(this).attr("id-doc");
-                    if(p.type_db=="realtime"){
-                        cr_realtime.delete(p.id_collection,id_doc,()=>{
-                            cr.msg("Delete success","Delete item success!","success");
-                        });
-                    }else{
-                        cr_firestore.delete(p.id_collection,id_doc,()=>{
-                            cr.msg("Delete success","Delete item success!","success");
-                            p.reload_list();
-                        });
-                    }
-                    return false;
+                    cr.msg_question("Are you sure you want to delete this item?","Delete",()=>{
+                        let id_doc=$(this).attr("id-doc");
+                        if(p.type_db=="realtime"){
+                            cr_realtime.delete(p.id_collection,id_doc,()=>{
+                                cr.msg("Delete success","Delete item success!","success");
+                            });
+                        }
+                        
+                        if(p.type_db=="firestore"){
+                            cr_firestore.delete(p.id_collection,id_doc,()=>{
+                                cr.msg("Delete success","Delete item success!","success");
+                                p.reload_list();
+                            });
+                        }
+    
+                        if(p.type_db=="mysql"){
+                            cr_mysql.delete(p.id_collection,id_doc,()=>{
+                                cr.msg("Delete success","Delete item success!","success");
+                                p.reload_list();
+                            });
+                        }
+                        return false;
+                    });
                 });
 
                 if(p.list_btn_table.length>0){
