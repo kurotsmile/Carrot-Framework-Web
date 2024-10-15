@@ -409,7 +409,6 @@ class Post{
                         htm_tr += "<td class='col_t_"+key+"'>" + cms.processString(item_p[key]) + "</td>";
                     });
                 }
-    
                 htm_tr+='</tr>';
     
                 let emp_tr=$(htm_tr);
