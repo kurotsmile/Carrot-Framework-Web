@@ -203,7 +203,7 @@ class CMS{
     
                 $(emp_post).find(".btn-add").click(()=>{
                     cms.box('<div id="frm_add_mini"></div>','Quick Add ('+p.label+')',()=>{
-                        $("#frm_add_mini").append(p.form_body());
+                        $("#frm_add_mini").append(p.form_body(null,"msg"));
                         return false;
                     });
                     return false;
