@@ -228,8 +228,20 @@ class Post{
                             if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
                             if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
                         });
-                    }else{
+                    }
+                    
+                    if(post_cur.type_db=="firestore"){
                         cr_firestore.add(data,collection,()=>{
+                            cr.msg("Add success","Add item success!","success");
+                            $("#frm_cms_act").html(post_cur.show_form_add());
+                            post_cur.reload_list();
+                            if($('#box_cms').length>0) $('#box_cms').modal('hide').remove();
+                            if(post_cur.js_act_done_frm!=null) cms[post_cur.js_act_done_frm](data);
+                        });
+                    }
+
+                    if(post_cur.type_db=="mysql"){
+                        cr_mysql.add(post_cur.id_collection,data,()=>{
                             cr.msg("Add success","Add item success!","success");
                             $("#frm_cms_act").html(post_cur.show_form_add());
                             post_cur.reload_list();
@@ -489,12 +501,17 @@ class Post{
                 },()=>{ cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");},"#table_list_post");
             }
 
-        }else{
+        }
+
+        if(this.type_db=="mysql"){
+            cr_mysql.list(this.id_collection,(data)=>{
+                if(data) load_list(data); else load_list([]);
+            });
+        }
+        
+        if(this.type_db=="firestore"){
             cr_firestore.list(this.id_collection,(data)=>{
-                if(data) 
-                    load_list(data);
-                else
-                    load_list([]);
+                if(data) load_list(data); else load_list([]);
             },()=>{
                 cr.msg("Kết nối tới dữ liệu gặp xự cố","Kết nối lấy dữ liệu","error");
             });

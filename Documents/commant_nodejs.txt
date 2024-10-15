@@ -1,3 +1,5 @@
 npm init -y
 npm install ws
 npm install express mysql body-parser bcryptjs
+npm install mysql2
+npm install cors
