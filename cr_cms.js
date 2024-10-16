@@ -489,9 +489,19 @@ class CMS{
     clear_data_list(){
         var post=cms.list_post[cms.index_post_cur];
         cr.msg_question("Delete all item?","Delete All",()=>{
-            $.each(cms.data_list_temp,function(index,d){
-                cr_firestore.delete(post.id_collection,d.id_doc);
-            });
+
+            if(post.type_db=="firestore"||post.type_db=="realtime"){
+                $.each(cms.data_list_temp,function(index,d){
+                    cr_firestore.delete(post.id_collection,d.id_doc);
+                });
+            }
+
+            if(post.type_db=="mysql"){
+                cr.msg_loading();
+                cr_mysql.delete_all(post.id_collection,()=>{
+                    Swal.close();
+                });
+            }
 
             setTimeout(() => {
                 post.reload_list();    

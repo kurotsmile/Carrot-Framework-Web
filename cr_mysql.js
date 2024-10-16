@@ -76,6 +76,20 @@ class CR_Mysql{
             }
         });
     }
+
+    delete_all(id_collection,act_done=null,act_fail=null){
+        $.ajax({
+            url: cr_mysql.api_mysql_url+"/api/del_all",
+            type: "POST",
+            data: {table: id_collection},
+            success: function(response) {
+                if(act_done) act_done(response);
+            },
+            error: function(xhr, status, error) {
+                if(act_fail) act_fail();
+            }
+        });
+    }
 }
 
 var  cr_mysql=new CR_Mysql();

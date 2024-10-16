@@ -118,6 +118,17 @@ const del = async (table, id_doc, act_done, act_fail) => {
   }
 };
 
+const del_all = async (table, act_done, act_fail) => {
+  try {
+      const connection = await connectDB();
+      const [result] = await connection.execute("DELETE FROM `" + table + "`");
+      connection.end();
+      act_done({ message: `Table with id '${table}' deleted successfully.`});
+  } catch (error) {
+      act_fail(error);
+  }
+};
+
 const q = (query, params) => {
   return new Promise((resolve, reject) => {
     pool.query(query, params, (error, results) => {
@@ -138,5 +149,5 @@ const closeConnection = () => {
 };
 
 module.exports = {
-  q,closeConnection,listRows,add,get,insert_data,update,del
+  q,closeConnection,listRows,add,get,insert_data,update,del,del_all
 };
