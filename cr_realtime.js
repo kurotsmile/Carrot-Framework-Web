@@ -156,6 +156,19 @@ class Carrot_Realtime_DB {
         console.error("Error removing data: ", error);
       });
   }
+
+  delete_collection(id_collection,act_done = null) {
+    const dbRef = cr_realtime.ref(cr_realtime.db, id_collection);
+    cr_realtime.removedb(dbRef)
+      .then(() => {
+        if (act_done) act_done();
+        console.log("Data removed successfully!");
+      })
+      .catch((error) => {
+        console.error("Error removing data: ", error);
+      });
+  }
+
 };
 
 var cr_realtime = new Carrot_Realtime_DB();
