@@ -661,7 +661,14 @@ class CMS{
         $("#table_list_post tbody").sortable("destroy");
 
         $.each(order,function(index,id_doc){
-            cr_firestore.update_field(id_doc,post.id_collection,"order",index.toString());
+            if(post.type_db=="firestore") cr_firestore.update_field(id_doc,post.id_collection,"order",index.toString());
+            if(post.type_db=="realtime") cr_realtime.updateData(post.id_collection,id_doc,{"order":index.toString()});
+            if(post.type_db=="mysql") {
+                var obj_new_order={};
+                obj_new_order["id_doc"]=id_doc;
+                obj_new_order["order"]=index.toString();
+                cr_mysql.update(post.id_collection,obj_new_order);
+            }
         });
     }
 
