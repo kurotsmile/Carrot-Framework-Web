@@ -81,6 +81,7 @@ class Post{
                 }
                 else{
                     if(field.type=="number") val_field="0";
+                    if(field.type=="user") val_field=cms.data_user_login.username;
                 }
             }else{
                 if(field.type=="number") val_field="0";
