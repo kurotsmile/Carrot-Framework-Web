@@ -223,23 +223,7 @@ class CMS{
                 emp_post=$(htm_item);
 
                 $(emp_post).find(".btn-info-post").click(()=>{
-                    var html_info='';
-                    html_info+='<div class="table-responsive" style="max-height:320px">';
-                    html_info+='<table class="table table-striped table-sm" id="table_list_post">';
-                    html_info+='<thead>';
-                        html_info+='<tr>';
-                            html_info+='<th>Field</th>';
-                            html_info+='<th>Value</th>';
-                        html_info+='</tr>';
-                    html_info+='</thead>';
-                    html_info+='<tbody>';
-                    $.each(p, function( key, value ) {
-                        if(cr.alive(value)) html_info+='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
-                    });
-                    html_info+='</tbody>';
-                    html_info+='</table>';
-                    html_info+='</div>';
-                    cr.msg(html_info,"Thông tin cơ sỡ dữ liệu");
+                    cms.show_info_post(p);
                     return false;
                 });
             }
@@ -764,11 +748,7 @@ class CMS{
                     }]
                 },
                 options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                    scales: {y: {beginAtZero: true}}
                 }
             });
         }
@@ -794,7 +774,7 @@ class CMS{
                 var html_item='';
                 html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
                     html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
-                        html_item+='<div class="card-header"><h6 class="my-0 font-weight-normal">'+p.label+'</h6></div>';
+                        html_item+='<div class="card-header d-flex justify-content-between flex-wrap"><h6 class="my-0 font-weight-normal">'+p.label+'</h6><i class="btn_info_post fas fa-info-circle" style="color:#c3c3c3 !important"></i></div>';
                         html_item+='<div class="card-body">';
                             html_item+='<div class="row">';
                                 html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
@@ -813,6 +793,12 @@ class CMS{
                     $(dashboard_item).find(".list_attr").append(general_item("Type Database",'<i class="fas fa-circle live" ></i> '+p.type_db));
                 else 
                     $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
+
+                $(dashboard_item).find(".btn_info_post").click(()=>{
+                    cms.show_info_post(p);
+                    return false;
+                });
+
                 $(dashboard_item).click(()=>{
                     cms.index_post_cur=index;
                     cms.show_post_object(index);
@@ -832,6 +818,15 @@ class CMS{
 
                     if(p.type_db=="realtime"){
                         cr_realtime.list(p.id_collection,datas_p=>{
+                            if(datas_p!=null){
+                                p.data_temp=datas_p;
+                                chart_addData(p.label,datas_p.length);
+                            }
+                        });
+                    }
+
+                    if(p.type_db=="mysql"){
+                        cr_mysql.list(p.id_collection,datas_p=>{
                             if(datas_p!=null){
                                 p.data_temp=datas_p;
                                 chart_addData(p.label,datas_p.length);
@@ -916,6 +911,27 @@ class CMS{
 
     close_box(){
         $('#box_cms').modal('hide');
+    }
+
+    show_info_post(p){
+        var html_info='';
+        html_info+='<div class="table-responsive" style="max-height:320px">';
+        html_info+='<table class="table table-striped table-sm" id="table_list_post">';
+        html_info+='<thead>';
+            html_info+='<tr>';
+                html_info+='<th>Field</th>';
+                html_info+='<th>Value</th>';
+            html_info+='</tr>';
+        html_info+='</thead>';
+        html_info+='<tbody>';
+        $.each(p, function( key, value ) {
+            if(cr.alive(value)) html_info+='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
+        });
+        html_info+='</tbody>';
+        html_info+='</table>';
+        html_info+='</div>';
+        cr.msg(html_info,"Thông tin cơ sỡ dữ liệu");
+        return false;
     }
 }
 var cms=new CMS();
