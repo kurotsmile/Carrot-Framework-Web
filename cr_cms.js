@@ -94,13 +94,14 @@ class CMS{
         $("body").removeClass("body_login text-center");
 
         var p=cr.arg("p");
-        this.load_list_post();
+        
         if(p){
             this.show_post_object(parseInt(p));
             cms.index_post_cur=parseInt(p);
         }else{
             this.show_post_object(this.index_post_cur);
         }
+        this.load_list_post();
         this.load_list_action();
     }
 
@@ -215,7 +216,32 @@ class CMS{
                     return false;
                 });
             }else{
+                htm_item+='<div>';
+                    htm_item+='<i class="fas fa-info-circle m-1 text-muted btn-info-post btn-mini" title="Struct View"></i>';
+                htm_item+='</div>';
+
                 emp_post=$(htm_item);
+
+                $(emp_post).find(".btn-info-post").click(()=>{
+                    var html_info='';
+                    html_info+='<div class="table-responsive" style="max-height:320px">';
+                    html_info+='<table class="table table-striped table-sm" id="table_list_post">';
+                    html_info+='<thead>';
+                        html_info+='<tr>';
+                            html_info+='<th>Field</th>';
+                            html_info+='<th>Value</th>';
+                        html_info+='</tr>';
+                    html_info+='</thead>';
+                    html_info+='<tbody>';
+                    $.each(p, function( key, value ) {
+                        if(cr.alive(value)) html_info+='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
+                    });
+                    html_info+='</tbody>';
+                    html_info+='</table>';
+                    html_info+='</div>';
+                    cr.msg(html_info,"Thông tin cơ sỡ dữ liệu");
+                    return false;
+                });
             }
 
             $("#list_post").append(emp_post);
