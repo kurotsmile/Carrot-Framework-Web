@@ -915,7 +915,7 @@ class CMS{
 
     show_info_post(p){
         var html_info='';
-        html_info+='<div class="table-responsive" style="max-height:320px">';
+        html_info+='<div class="table-responsive" style="max-height:320px;text-align: left;">';
         html_info+='<table class="table table-striped table-sm" id="table_list_post">';
         html_info+='<thead>';
             html_info+='<tr>';
@@ -923,14 +923,31 @@ class CMS{
                 html_info+='<th>Value</th>';
             html_info+='</tr>';
         html_info+='</thead>';
-        html_info+='<tbody>';
-        $.each(p, function( key, value ) {
-            if(cr.alive(value)) html_info+='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
-        });
-        html_info+='</tbody>';
+        html_info+='<tbody id="all_field_frm_view"></tbody>';
         html_info+='</table>';
         html_info+='</div>';
-        cr.msg(html_info,"Thông tin cơ sỡ dữ liệu");
+        cr.msg(html_info,"Thông tin cơ sỡ dữ liệu","",()=>{
+            $.each(p, function( key, value ) {
+                if(cr.alive(value)){
+                    var html_item='';
+                    var is_show=false;
+                    if (typeof value === 'string') {
+                        html_item='<tr><td class="text-muted">'+key+'</td><td>'+value+'</td></tr>';
+                    } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                        html_item='<tr><td><i class="fas fa-object-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Object</button></td></tr>';
+                        is_show=true;
+                    } else if (Array.isArray(value)) {
+                        html_item='<tr><td><i class="fas fa-layer-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Array</button></td></tr>';
+                        is_show=true;
+                    } else {
+                        html_item='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
+                    }
+                    var emp_item=$(html_item);
+                    if(is_show){$(emp_item).click(()=>{ cms.show_info_post(value);});}
+                    $("#all_field_frm_view").append(emp_item);
+                }
+            });
+        });
         return false;
     }
 }
