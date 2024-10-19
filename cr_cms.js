@@ -256,7 +256,26 @@ class CMS{
     }
 
     act_search(){
-        $("#main_contain").html('<div><h2 class="">Search Result</h2></div>');
+        
+        var keyword = $("#inp_cms_search").val();
+        if(keyword.trim()==""){
+            cr.msg("Từ khóa tìm kiếm không được để trống!","Tìm kiếm","warning");
+        }
+
+        var result = this.list_post.filter(function(item) {
+            return Object.keys(item).some(function(key) {
+                if(item[key]!=null) return item[key].toString().toLowerCase().includes(keyword.toLowerCase());
+            });
+        });
+
+        var html='';
+        html+='<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">';
+        html+='<h3 class="h3">Search Result : <small class="text-muted">'+keyword+'</small></h3>';
+        html+='</div>';
+
+        html+='<div id="all_item_search_result"></div>';
+        html+=JSON.stringify(result);
+        $("#main_contain").html(html);
     }
 
     show_select_file(act_done=null){
@@ -933,12 +952,16 @@ class CMS{
                     var is_show=false;
                     if (typeof value === 'string') {
                         html_item='<tr><td class="text-muted">'+key+'</td><td>'+value+'</td></tr>';
-                    } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                        html_item='<tr><td><i class="fas fa-object-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Object</button></td></tr>';
-                        is_show=true;
+                    } else if (typeof value === 'object'&& !Array.isArray(value)){
+                        if (Object.keys(value).length!= 0){
+                            html_item='<tr><td><i class="fas fa-object-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Object</button></td></tr>';
+                            is_show=true;
+                        }
                     } else if (Array.isArray(value)) {
-                        html_item='<tr><td><i class="fas fa-layer-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Array</button></td></tr>';
-                        is_show=true;
+                        if(value.length!=0){
+                            html_item='<tr><td><i class="fas fa-layer-group"></i> '+key+'</td><td><button class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> View data Array</button></td></tr>';
+                            is_show=true;
+                        }
                     } else {
                         html_item='<tr><td>'+key+'</td><td>'+value+'</td></tr>';
                     }
