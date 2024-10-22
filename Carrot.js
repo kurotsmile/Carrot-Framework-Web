@@ -971,7 +971,7 @@ class Carrot{
                 let is_child=check_ready(m.id_doc,list_m_child);
                 $(id_emp_father).append(m_menu_item(m,'father',is_child));
                 if(is_child){
-                    $('#m'+m.id_doc).append('<ul class="dropdown-menu" aria-labelledby="m_a_'+m.id_doc+'" id="list_m_child_'+m.id_doc+'"></ul>');
+                    $('#'+m.id_doc).append('<ul class="dropdown-menu" aria-labelledby="m_a_'+m.id_doc+'" id="list_m_child_'+m.id_doc+'"></ul>');
                     $(list_m_child).each(function(index,c){
                         $('#list_m_child_'+m.id_doc).append(m_menu_item(c,'child'));
                     });
