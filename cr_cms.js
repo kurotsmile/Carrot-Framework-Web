@@ -185,6 +185,7 @@ class CMS{
         $("#list_post").html('');
         var p_cur_id=this.list_post[this.index_post_cur];
         $.each(this.list_post,function(index,p){
+            p.index=index;
             var htm_item='<li role="button" class="nav-item d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center" id="m_p_'+index+'">';
             htm_item+='<a class="nav-link" aria-current="page" >'+p.icon+' '+p.label+'</a>';
             var emp_post=null;
@@ -256,7 +257,6 @@ class CMS{
     }
 
     act_search(){
-        
         var keyword = $("#inp_cms_search").val();
         if(keyword.trim()==""){
             cr.msg("Từ khóa tìm kiếm không được để trống!","Tìm kiếm","warning");
@@ -274,8 +274,11 @@ class CMS{
         html+='</div>';
 
         html+='<div id="all_item_search_result"></div>';
-        html+=JSON.stringify(result);
         $("#main_contain").html(html);
+        $.each(result,function(index,p){
+            $("#all_item_search_result").append(cms.dashboard_item(p));
+        });
+        $("#inp_cms_search").val('');
     }
 
     show_select_file(act_done=null){
@@ -736,6 +739,53 @@ class CMS{
         return post_found;
     }
 
+    general_item(key,val=0){
+        var htm_item=$(`
+            <li class="list-group-item m-0 p-0 d-flex justify-content-between align-items-center">
+                ${key} <div class="bg-light rounded">${val}</div>
+            </li>
+        `);
+        return htm_item;
+    }
+
+    dashboard_item(p){
+        if(p.index==0) return;
+        var html_item='';
+        html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
+            html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
+                html_item+='<div class="card-header d-flex justify-content-between flex-wrap"><h6 class="my-0 font-weight-normal">'+p.label+'</h6><i class="btn_info_post fas fa-info-circle" style="color:#c3c3c3 !important"></i></div>';
+                html_item+='<div class="card-body">';
+                    html_item+='<div class="row">';
+                        html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
+                        html_item+='<div class="col-9">';
+                        html_item+='<ul class="list-group list_attr list-group-flush"></ul>';
+                        html_item+='</div>';
+                    html_item+='</div>';
+                html_item+='</div>';
+            html_item+='</div>';
+        html_item+='</div>';
+        var dashboard_item=$(html_item);
+        $(dashboard_item).find(".list_attr").append(cms.general_item("Type Object",p.type));
+        if(p.type_db=="firestore")
+            $(dashboard_item).find(".list_attr").append(cms.general_item("Type Database",p.type_db));
+        else if(p.type_db=="realtime")
+            $(dashboard_item).find(".list_attr").append(cms.general_item("Type Database",'<i class="fas fa-circle live" ></i> '+p.type_db));
+        else 
+            $(dashboard_item).find(".list_attr").append(cms.general_item("Type Database",p.type_db));
+
+        $(dashboard_item).find(".btn_info_post").click(()=>{
+            cms.show_info_post(p);
+            return false;
+        });
+
+        $(dashboard_item).click(()=>{
+            cms.index_post_cur=p.index;
+            cms.show_post_object(p.index);
+            return false;
+        });
+        return dashboard_item;
+    }
+
     dashboard_general(){
 
         var dashboard_chart=null;
@@ -778,53 +828,9 @@ class CMS{
             dashboard_chart.update();
         }
 
-        function general_item(key,val=0){
-            var htm_item=$(`
-                <li class="list-group-item m-0 p-0 d-flex justify-content-between align-items-center">
-                    ${key} <div class="bg-light rounded">${val}</div>
-                </li>
-            `);
-            return htm_item;
-        }
-
         function load_list_dashboard(){
             $.each(cms.list_post,function(index,p){
-                if(index==0) return true;
-                var html_item='';
-                html_item+='<div class="col-6 col-md-3 col-xl-3 col-lg-3">';
-                    html_item+='<div role="button" class="card mb-4 box-shadow card_cms">';
-                        html_item+='<div class="card-header d-flex justify-content-between flex-wrap"><h6 class="my-0 font-weight-normal">'+p.label+'</h6><i class="btn_info_post fas fa-info-circle" style="color:#c3c3c3 !important"></i></div>';
-                        html_item+='<div class="card-body">';
-                            html_item+='<div class="row">';
-                                html_item+='<div class="col-3 text-center">'+p.icon+'</div>';
-                                html_item+='<div class="col-9">';
-                                html_item+='<ul class="list-group list_attr list-group-flush"></ul>';
-                                html_item+='</div>';
-                            html_item+='</div>';
-                        html_item+='</div>';
-                    html_item+='</div>';
-                html_item+='</div>';
-                var dashboard_item=$(html_item);
-                $(dashboard_item).find(".list_attr").append(general_item("Type Object",p.type));
-                if(p.type_db=="firestore")
-                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
-                else if(p.type_db=="realtime")
-                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",'<i class="fas fa-circle live" ></i> '+p.type_db));
-                else 
-                    $(dashboard_item).find(".list_attr").append(general_item("Type Database",p.type_db));
-
-                $(dashboard_item).find(".btn_info_post").click(()=>{
-                    cms.show_info_post(p);
-                    return false;
-                });
-
-                $(dashboard_item).click(()=>{
-                    cms.index_post_cur=index;
-                    cms.show_post_object(index);
-                    return false;
-                });
-                $("#all_item_dashboard").append(dashboard_item);
-    
+                $("#all_item_dashboard").append(cms.dashboard_item(p));
                 if(p.type=="list"){
                     if(p.type_db=="firestore"){
                         cr_firestore.list(p.id_collection,datas_p=>{
@@ -834,7 +840,7 @@ class CMS{
                             }
                         });
                     }
-
+        
                     if(p.type_db=="realtime"){
                         cr_realtime.list(p.id_collection,datas_p=>{
                             if(datas_p!=null){
@@ -843,7 +849,7 @@ class CMS{
                             }
                         });
                     }
-
+        
                     if(p.type_db=="mysql"){
                         cr_mysql.list(p.id_collection,datas_p=>{
                             if(datas_p!=null){
