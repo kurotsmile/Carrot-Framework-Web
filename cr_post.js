@@ -132,7 +132,7 @@ class Post{
             else
                 html_field+='<button onclick="cr.paste(\'#'+post_cur.id_collection+'_'+field.id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
             html_field+='</div>';
-            if(cr.alive(field.tip)) html_field+='<div id="emailHelp" class="form-text">'+field.tip+'</div>';
+            if(cr.alive(field.tip)) html_field+='<div id="'+field.id+'Help" class="form-text">'+field.tip+'</div>';
             html_field+='</div>';
             let emp_field=$(html_field);
 

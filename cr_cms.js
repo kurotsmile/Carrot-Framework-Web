@@ -13,6 +13,8 @@ class CMS{
     is_collapse_box_add=false;
 
     label_user_collection="User";
+
+    db_types=["firestore","realtime","mysql","mysql_realtime"];
     
     constructor(){
         var dashboard_general=new Post();
@@ -869,6 +871,10 @@ class CMS{
                 html+='<button type="button" class="btn btn-sm btn-outline-secondary" onclick="cms.export_all_data()"><i class="fas fa-cloud-download-alt"></i> Backup</button>';
                 html+='<button type="button" class="btn btn-sm btn-outline-secondary" onclick="cms.import_data_list(\'*\')"><i class="fas fa-cloud-upload-alt"></i> Recover</button>';
             html+='</div>';
+
+            html+='<div class="btn-group me-2">';
+                html+='<button type="button" class="btn btn-sm btn-outline-info" onclick="cms.show_add_database();return false;"><i class="fas fa-plus-square"></i> Add Database</button>';
+            html+='</div>';
             html+='</div>'
         html+='</div>';
 
@@ -978,6 +984,51 @@ class CMS{
             });
         });
         return false;
+    }
+
+    show_add_database(){
+        var html_d='';
+        html_d+=cr.field("id_db","ID Database","text","",true,'');
+        html_d+=cr.field("label_db","Label Database","text","",true,'');
+        html_d+=cr.field("icon_db","Icon","text","",false,'','','<button onclick="cr_icon.show_select(\'icon_db\');return false;" class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> Select Icon</button>');
+        html_d+=cr.field("type_db","Type Database","select","",false,'');
+        html_d+=cr.field("tip_db","Description","textarea","",false,'');
+        html_d+='<div class="mb-3">';
+            html_d+='<label for="tip_db" class="form-label">Description</label>';
+            html_d+='<textarea class="form-control" id="tip_db" rows="3" placeholder="Enter a short description of the database function"></textarea>';
+        html_d+='</div>';
+        html_d+='<div class="mb-3"><button class="btn btn-success" id="btn-add-db"><i class="fas fa-plus-square"></i> Add Database</button></div>';
+        cms.box(html_d,"Add Database",()=>{
+            $.each(cms.db_types,function(index,t){
+                $("#type_db").append('<option value="'+t+'">'+t+'</option>');
+            });
+
+            $("#btn-add-db").click(()=>{
+                var id_db=$("#id_db").val();
+                var label_db=$("#label_db").val();
+                var type_db=$("#type_db").val();
+
+                if(id_db.trim()==""){
+                    cr.msg("Please enter database ID!","Add database","alert");
+                    return false;
+                }
+
+                if(label_db.trim()==""){
+                    cr.msg("Please enter database label!","alert");
+                    return false;
+                }
+
+                var obj_db={};
+                obj_db["id_collection"]=id_db.toString();
+                obj_db["label"]=label_db.toString();
+                obj_db["type_db"]=type_db.toString();
+
+                cr_firestore.add(obj_db,"db",()=>{
+                    cr.msg("Add database sucess!","Add database","success");
+                    cms.close_box();
+                })
+            });
+        });
     }
 }
 var cms=new CMS();
