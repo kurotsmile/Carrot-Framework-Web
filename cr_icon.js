@@ -208,7 +208,7 @@ class CR_Icons{
     show_select(emp_inp=null){
         var html='';
         html+='<div class="input-group mb-3">';
-            html+='<input id="inp_search_name_icon" type="text" class="form-control" placeholder="Enter name icon">';
+            html+='<input id="inp_search_name_icon" type="text" class="form-control" placeholder="Enter name icon" tabindex="-1">';
             html+='<button class="btn btn-outline-secondary" type="button" id="button-search-icon"><i class="fas fa-search"></i> Search</button>';
         html+='</div>';
         cr.emp_inp=emp_inp;
@@ -230,7 +230,9 @@ class CR_Icons{
                 });
             });
             cr_icon.load_list_for_msg();
-        })
+
+            if($('#box_cms').length>0) $('#box_cms').modal('hide');
+        });
     }
 
     load_list_for_msg(key=''){
@@ -244,6 +246,7 @@ class CR_Icons{
             $(emp_icon).click(function(){
                 $("#"+cr.emp_inp).val(ico);
                 Swal.close();
+                if($('#box_cms').length>0) $('#box_cms').modal('show');
             });
             $("#cr_all_item_icon").append(emp_icon);
         });

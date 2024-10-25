@@ -1025,7 +1025,7 @@ class Carrot{
         html+='<div class="mb-3">';
             html+='<label for="'+id+'" class="form-label">'+label+''+(required?' <b style="color:red">(*)</b>':'')+'</label>';
             html+='<div class="input-group">';
-                html+='<input type="'+type+'" value="'+val+'" class="form-control" id="'+id+'" placeholder="'+placeholder+'">';
+                html+='<input type="'+type+'" value="'+val+'" class="form-control" id="'+id+'" placeholder="'+placeholder+'" tabindex="-1">';
                 if(btn_extension!='') html+=btn_extension;
             html+='</div>';
             if(cr.alive(tip)) html+='<div id="'+id+'Help" class="form-text">'+tip+'</div>';

@@ -633,8 +633,10 @@ class CMS{
                     onclick(item_data);
                     if(sub_box=='box')
                         cms.close_box();
-                    else
+                    else{
+                        if($('#box_cms').length>0) $('#box_cms').modal('show');
                         Swal.close();
+                    }
                 }
             });
             return emp_item;
@@ -684,6 +686,7 @@ class CMS{
                       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                     });
                 });
+                if($('#box_cms').length>0) $('#box_cms').modal('hide');
             },false);
         }
     }
@@ -920,7 +923,7 @@ class CMS{
 
     box(body,title,act_show=null){
         var html_box='';
-        html_box+='<div class="modal fade modal-lg" id="box_cms" tabindex="-1" role="dialog" aria-labelledby="boxModalLabel" aria-hidden="true">';
+        html_box+='<div class="modal fade modal-lg" id="box_cms" role="dialog" aria-labelledby="boxModalLabel" aria-hidden="true">';
         html_box+='<div class="modal-dialog" role="document">';
             html_box+='<div class="modal-content">';
             html_box+='<div class="modal-header">';
