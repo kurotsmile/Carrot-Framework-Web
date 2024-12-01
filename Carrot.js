@@ -1020,12 +1020,26 @@ class Carrot{
         return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
     }
 
-    field(id,label,type='text',val='',required=false,tip='',placeholder='Enter data here...',btn_extension=''){
+    field(id,label,type='text',val='',required=false,tip='',placeholder='',btn_extension=''){
+        if(placeholder=='') placeholder='Enter data here...';
         var html='';
         html+='<div class="mb-3">';
             html+='<label for="'+id+'" class="form-label">'+label+''+(required?' <b style="color:red">(*)</b>':'')+'</label>';
             html+='<div class="input-group">';
-                html+='<input type="'+type+'" value="'+val+'" class="form-control" id="'+id+'" placeholder="'+placeholder+'" tabindex="-1">';
+                if(type=='select'){
+                    html+='<select class="inp_cmd_field w-100 form-control" id="'+id+'" field-key="'+id+'">';
+                    if(val!=''){
+                        $.each(val,function(index,data_item){
+                            html+='<option value="'+data_item.value+'" '+(val_field==data_item.value ? "selected":"")+'>'+data_item.label+'</option>';
+                        });
+                    }
+                    html+='</select>';
+                }else if(type=='textarea'){
+                    html+='<textarea class="form-control" id="'+id+'" rows="3" placeholder="'+placeholder+'"></textarea>';
+                }else{
+                    html+='<input type="'+type+'" value="'+val+'" class="form-control" id="'+id+'" placeholder="'+placeholder+'" tabindex="-1">';
+                    html+='<button onclick="cr.paste(\'#'+id+'\');return false;" class="btn btn-outline-secondary" type="button"><i class="fas fa-clipboard"></i> Paste</button>';
+                }
                 if(btn_extension!='') html+=btn_extension;
             html+='</div>';
             if(cr.alive(tip)) html+='<div id="'+id+'Help" class="form-text">'+tip+'</div>';

@@ -15,6 +15,7 @@ class CMS{
     label_user_collection="User";
 
     db_types=["firestore","realtime","mysql","mysql_realtime"];
+    obj_types=["list","page","setting"];
     
     constructor(){
         var dashboard_general=new Post();
@@ -996,10 +997,6 @@ class CMS{
         html_d+=cr.field("icon_db","Icon","text","",false,'','','<button onclick="cr_icon.show_select(\'icon_db\');return false;" class="btn btn-sm btn-dark"><i class="fas fa-list-alt"></i> Select Icon</button>');
         html_d+=cr.field("type_db","Type Database","select","",false,'');
         html_d+=cr.field("tip_db","Description","textarea","",false,'');
-        html_d+='<div class="mb-3">';
-            html_d+='<label for="tip_db" class="form-label">Description</label>';
-            html_d+='<textarea class="form-control" id="tip_db" rows="3" placeholder="Enter a short description of the database function"></textarea>';
-        html_d+='</div>';
         html_d+='<div class="mb-3"><button class="btn btn-success" id="btn-add-db"><i class="fas fa-plus-square"></i> Add Database</button></div>';
         cms.box(html_d,"Add Database",()=>{
             $.each(cms.db_types,function(index,t){
